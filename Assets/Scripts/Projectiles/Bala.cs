@@ -3,12 +3,13 @@
 // ### \ ######## / ###                                                     #
 // #### \ ###### / ####       CONQUISTADOR                                  #
 // ##### :-'""'-: #####       ------------                                  #
-// ## .-'  ____  `-. ##       Autor:        Guido Insua                     #
-// # ( (  (_()_)  ) ) #       Materia:      Programación 1                  #
-// ## `-.   ^^   .-' ##       Cuatrimestre: Segundo cuatrimestre 2026       #
+// ## .-'  ____  `-. ##       Autor:   Guido Insua                          #
+// # ( (  (_()_)  ) ) #       Mail:    insua.guido@gmail.com                #
+// ## `-.   ^^   .-' ##       Materia: Programacion 1 2do Cuatri 2026       #
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
+// Desc: Bala del jugador: sube y daña al enemigo que toca.
 
 using UnityEngine;
 

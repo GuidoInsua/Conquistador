@@ -3,12 +3,13 @@
 // ### \ ######## / ###                                                     #
 // #### \ ###### / ####       CONQUISTADOR                                  #
 // ##### :-'""'-: #####       ------------                                  #
-// ## .-'  ____  `-. ##       Autor:        Guido Insua                     #
-// # ( (  (_()_)  ) ) #       Materia:      Programación 1                  #
-// ## `-.   ^^   .-' ##       Cuatrimestre: Segundo cuatrimestre 2026       #
+// ## .-'  ____  `-. ##       Autor:   Guido Insua                          #
+// # ( (  (_()_)  ) ) #       Mail:    insua.guido@gmail.com                #
+// ## `-.   ^^   .-' ##       Materia: Programacion 1 2do Cuatri 2026       #
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
+// Desc: Mueve la nave, cambia sus sprites según la dirección y aplica el boost de velocidad.
 
 using UnityEngine;
 using UnityEngine.InputSystem;
