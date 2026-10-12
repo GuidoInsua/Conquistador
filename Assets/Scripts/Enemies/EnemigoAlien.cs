@@ -74,11 +74,10 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
         // Si el enemigo vuelve al pool y se reusa, ResetEnemy cambia el id y este bucle termina.
         int id = movimientoId;
 
-        while (Vector3.Distance(transform.position, target) > arrivalDistance)
+        // this == null: el alien fue destruido (por ejemplo al recargar la escena).
+        while (this != null && id == movimientoId && gameObject.activeInHierarchy
+            && Vector3.Distance(transform.position, target) > arrivalDistance)
         {
-            if (id != movimientoId || !gameObject.activeInHierarchy)
-                return;
-
             Vector3 direction = (target - transform.position).normalized;
 
             transform.position += direction * speedMove * Time.deltaTime;
@@ -86,7 +85,7 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
             await Awaitable.NextFrameAsync();
         }
 
-        if (id != movimientoId || !gameObject.activeInHierarchy)
+        if (this == null || id != movimientoId || !gameObject.activeInHierarchy)
             return;
 
         transform.position = target;

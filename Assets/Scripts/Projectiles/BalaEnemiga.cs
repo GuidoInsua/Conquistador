@@ -16,6 +16,7 @@ using UnityEngine;
 public class BalaEnemiga : MonoBehaviour
 {
 	[SerializeField] private float velocidad = 5f;
+	[SerializeField] private int dano = 10;
 
 	private void Update()
 	{
@@ -34,7 +35,7 @@ public class BalaEnemiga : MonoBehaviour
 			VidaJugador vidaJugador = collision.GetComponent<VidaJugador>();
 			if (vidaJugador != null)
 			{
-				vidaJugador.actualizarVida(-10);
+				vidaJugador.actualizarVida(-dano);
 			}
 
 			Destroy(gameObject);

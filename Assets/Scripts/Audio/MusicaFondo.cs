@@ -12,26 +12,28 @@
 // Desc: Reproduce en bucle la música de fondo de la escena.
 
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class MusicaFondo : MonoBehaviour
 {
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	[SerializeField] AudioSource musicSource;
 
-	public AudioClip BackgroundMusic;
+	[FormerlySerializedAs("BackgroundMusic")]
+	[SerializeField] AudioClip musicaFondo;
 
 
 	private void Start()
 	{
-		if (musicSource != null && BackgroundMusic != null)
+		if (musicSource != null && musicaFondo != null)
 		{
-			musicSource.clip = BackgroundMusic;
+			musicSource.clip = musicaFondo;
 			musicSource.loop = true;
 			musicSource.Play();
 		}
 		else
 		{
-			Debug.LogWarning("AudioSource or BackgroundMusic is not assigned.");
+			Debug.LogWarning("MusicaFondo: falta asignar musicSource o musicaFondo.");
 		}
 	}
 }

@@ -15,7 +15,9 @@ using UnityEngine;
 
 public static class Pantalla
 {
-	// Con un margen de 50 píxeles para que no desaparezcan justo en el borde.
+	// Margen en píxeles para que no desaparezcan justo en el borde.
+	private const float margenPixeles = 50f;
+
 	public static bool EstaFuera(Vector3 posicionMundo)
 	{
 		Camera mainCamera = Camera.main;
@@ -24,7 +26,7 @@ public static class Pantalla
 
 		Vector3 screenPos = mainCamera.WorldToScreenPoint(posicionMundo);
 
-		return screenPos.x < -50 || screenPos.x > Screen.width + 50 ||
-			   screenPos.y < -50 || screenPos.y > Screen.height + 50;
+		return screenPos.x < -margenPixeles || screenPos.x > Screen.width + margenPixeles ||
+			   screenPos.y < -margenPixeles || screenPos.y > Screen.height + margenPixeles;
 	}
 }

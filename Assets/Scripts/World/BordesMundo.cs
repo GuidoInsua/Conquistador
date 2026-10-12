@@ -26,6 +26,13 @@ public class BordesMundo : MonoBehaviour
 		if (mainCamera == null)
 			mainCamera = Camera.main;
 
+		if (mainCamera == null)
+		{
+			Debug.LogError("BordesMundo: no hay cámara.");
+			enabled = false;
+			return;
+		}
+
 		screenBounds = mainCamera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, mainCamera.transform.position.z));
 
 		containerWidth = screenBounds.x;
@@ -58,10 +65,6 @@ public class BordesMundo : MonoBehaviour
 		BoxCollider2D collider = wall.AddComponent<BoxCollider2D>();
 		collider.size = new Vector2(width, height);
 		collider.isTrigger = false;
-
-		Rigidbody2D rb = wall.AddComponent<Rigidbody2D>();
-		rb.bodyType = RigidbodyType2D.Static;
-		rb.gravityScale = 0;
 	}
 
 #if UNITY_EDITOR

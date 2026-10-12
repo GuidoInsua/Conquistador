@@ -26,6 +26,13 @@ public class VidaJugador : MonoBehaviour
 
 	void Awake()
 	{
+		if (textoVida == null)
+		{
+			Debug.LogError("VidaJugador: falta asignar textoVida.");
+			enabled = false;
+			return;
+		}
+
 		vidaActual = vidaMaxima;
 		actualizarTextoVida();
 	}

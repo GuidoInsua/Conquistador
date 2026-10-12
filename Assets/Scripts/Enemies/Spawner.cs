@@ -288,28 +288,13 @@ public class Spawner : MonoBehaviour
 
         enemigosActivos++;
 
-        _ = MoverEnemigoAsync(
-            enemy,
-            posicionFinal.position
+        _ = enemy.MoveToPositionAsync(
+            posicionFinal.position,
+            velocidadMovimiento
         );
 
 
         return true;
-    }
-
-
-    private async Awaitable MoverEnemigoAsync(
-        EnemigoAlien enemy,
-        Vector3 destino)
-    {
-        if (enemy == null)
-            return;
-
-
-        await enemy.MoveToPositionAsync(
-            destino,
-            velocidadMovimiento
-        );
     }
 
 

@@ -24,13 +24,10 @@ public class PowerUp : MonoBehaviour
     [SerializeField] private ParticleSystem collectEffect; // Partículas opcionales al ser recogido
 
     private bool isCollected = false;
-    private Collider2D powerUpCollider;
 
     void Start()
     {
-        powerUpCollider = GetComponent<Collider2D>();
-
-        if (powerUpCollider == null)
+        if (GetComponent<Collider2D>() == null)
         {
             Debug.LogWarning("PowerUp no tiene Collider2D. No será interactivo.");
         }

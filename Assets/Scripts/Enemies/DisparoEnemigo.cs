@@ -18,13 +18,20 @@ public class DisparoEnemigo : MonoBehaviour
     [SerializeField] Transform posicionArma; 
     [SerializeField] GameObject balaPrefab; 
     
-    private const float intervaloDisparo = 6f;
+    [SerializeField] float intervaloDisparo = 6f;
+
     private float tiempoDesdeUltimoDisparo = 1f;
     private EnemigoAlien enemigoAlien;
 
-    void Start()
+    void Awake()
     {
         enemigoAlien = GetComponent<EnemigoAlien>();
+
+        if (enemigoAlien == null)
+        {
+            Debug.LogError("DisparoEnemigo: falta el componente EnemigoAlien.");
+            enabled = false;
+        }
     }
 
     // El enemigo vuelve del pool: el temporizador empieza de nuevo.
@@ -49,7 +56,11 @@ public class DisparoEnemigo : MonoBehaviour
     }
 
     public void shoot()
-    {   
+    {
+        // Evento de la animación: si el alien ya está muriendo, no disparar ni pisar la muerte.
+        if (enemigoAlien == null || enemigoAlien.GetSalud() <= 0)
+            return;
+
         if (balaPrefab != null && posicionArma != null)
         {
             Instantiate(balaPrefab, posicionArma.position, posicionArma.rotation);

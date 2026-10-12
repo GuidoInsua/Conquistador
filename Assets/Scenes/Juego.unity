@@ -2650,6 +2650,8 @@ GameObject:
   - component: {fileID: 1886397568}
   - component: {fileID: 1886397569}
   - component: {fileID: 1886397570}
+  - component: {fileID: 1886397571}
+  - component: {fileID: 1886397572}
   m_Layer: 6
   m_Name: Jugador
   m_TagString: Player
@@ -2700,33 +2702,46 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovimientoJugador
   rigidBody: {fileID: 1886397565}
-  spriteRenderer: {fileID: 0}
+  animacion: {fileID: 1886397572}
   speed: 4
-  spriteMappings:
-  - state: 0
-    sprite: {fileID: 1584843744090649036, guid: 516695aab2c150747bf92b842a61c6d0, type: 3}
-  - state: 1
-    sprite: {fileID: 1659722528376296437, guid: 8a5314ccd59256c4e865a605293b10c8, type: 3}
-  - state: 2
-    sprite: {fileID: -3883810677964661383, guid: 946e30d1a3ea94940a7663d0b84af39f, type: 3}
-  - state: 3
-    sprite: {fileID: 1584843744090649036, guid: 516695aab2c150747bf92b842a61c6d0, type: 3}
-  - state: 4
-    sprite: {fileID: 1659722528376296437, guid: 8a5314ccd59256c4e865a605293b10c8, type: 3}
-  - state: 5
-    sprite: {fileID: -3883810677964661383, guid: 946e30d1a3ea94940a7663d0b84af39f, type: 3}
-  transitionSpriteMappings:
-  - state: 0
-    sprite: {fileID: 7506941494141547786, guid: 7faf5aa936569ea42b196e7a3aa37a36, type: 3}
-  - state: 1
-    sprite: {fileID: 4446560777004582973, guid: 558babe433ad4b849978f35c9d2bfcc0, type: 3}
-  - state: 2
-    sprite: {fileID: 7506941494141547786, guid: 7faf5aa936569ea42b196e7a3aa37a36, type: 3}
-  - state: 3
-    sprite: {fileID: 4446560777004582973, guid: 558babe433ad4b849978f35c9d2bfcc0, type: 3}
-  transitionDuration: 0.08
   transitionSpeedMultiplier: 0.75
-  idleTransitionDuration: 0.05
+--- !u!95 &1886397571
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1886397561}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7c8f18d3eed64897b72897bb47be5adf, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1886397572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1886397561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79e1a76fadad4ed68acb31409b1e6bac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimacionJugador
+  animator: {fileID: 1886397571}
+  duracionTransicion: 0.08
+  duracionPausaIdle: 0.05
 --- !u!50 &1886397565
 Rigidbody2D:
   serializedVersion: 5
