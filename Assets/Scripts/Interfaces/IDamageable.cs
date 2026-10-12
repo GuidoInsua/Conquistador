@@ -1,5 +1,3 @@
-using UnityEngine;
-
 /// <summary>
 /// Interface para cualquier objeto que puede recibir daño
 /// Úsala en enemigos, jefe, estructuras, etc.

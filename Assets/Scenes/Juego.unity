@@ -1592,7 +1592,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1547509835}
-        m_TargetAssemblyTypeName: Reinicio, Assembly-CSharp
+        m_TargetAssemblyTypeName: Reinicio, Conquistador
         m_MethodName: abrirMenu
         m_Mode: 1
         m_Arguments:
@@ -1756,7 +1756,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1547509835}
-        m_TargetAssemblyTypeName: Reinicio, Assembly-CSharp
+        m_TargetAssemblyTypeName: Reinicio, Conquistador
         m_MethodName: salirDelJuego
         m_Mode: 1
         m_Arguments:
@@ -2978,7 +2978,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1547509835}
-        m_TargetAssemblyTypeName: Reinicio, Assembly-CSharp
+        m_TargetAssemblyTypeName: Reinicio, Conquistador
         m_MethodName: ReiniciarEscena
         m_Mode: 1
         m_Arguments:

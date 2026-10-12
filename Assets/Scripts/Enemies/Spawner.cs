@@ -35,6 +35,7 @@ public class Spawner : MonoBehaviour
                 "Spawner: falta asignar Enemy Prefab."
             );
 
+            enabled = false;
             return;
         }
 
@@ -47,6 +48,7 @@ public class Spawner : MonoBehaviour
                 "Spawner: no hay puntos de spawn."
             );
 
+            enabled = false;
             return;
         }
 
@@ -59,6 +61,7 @@ public class Spawner : MonoBehaviour
                 "Spawner: no hay posiciones finales."
             );
 
+            enabled = false;
             return;
         }
 
@@ -73,6 +76,7 @@ public class Spawner : MonoBehaviour
                 "la misma cantidad de elementos."
             );
 
+            enabled = false;
             return;
         }
 

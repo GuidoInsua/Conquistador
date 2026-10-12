@@ -95,6 +95,7 @@ public class MovimientoJugador : MonoBehaviour
 					"No SpriteRenderer encontrado en este GameObject."
 				);
 
+				enabled = false;
 				return;
 			}
 		}
@@ -109,6 +110,7 @@ public class MovimientoJugador : MonoBehaviour
 					"No Rigidbody2D encontrado en este GameObject."
 				);
 
+				enabled = false;
 				return;
 			}
 		}
@@ -123,8 +125,6 @@ public class MovimientoJugador : MonoBehaviour
 		if (Time.time >= boostEndTime && speedMultiplier != 1f)
 		{
 			speedMultiplier = 1f;
-
-			Debug.Log("Boost de velocidad expirado.");
 		}
 
 		// Determinar estado según el input
@@ -160,66 +160,21 @@ public class MovimientoJugador : MonoBehaviour
 
 	private void UpdateState()
 	{
-		if (movementInput == Vector2.zero)
-		{
-			currentState = MovementState.Idle;
-			return;
-		}
-
 		bool isMovingLeft = movementInput.x < -0.5f;
 		bool isMovingRight = movementInput.x > 0.5f;
-		bool isMovingUp = movementInput.y > 0.5f;
-		bool isMovingDown = movementInput.y < -0.5f;
 
-		if (isMovingUp)
+		// Hacia abajo solo se ve la inclinación lateral: S solo es Idle, S+A es Left, S+D es Right.
+		if (movementInput.y > 0.5f)
 		{
-			if (isMovingLeft)
-			{
-				currentState = MovementState.UpLeft;
-			}
-			else if (isMovingRight)
-			{
-				currentState = MovementState.UpRight;
-			}
-			else
-			{
-				currentState = MovementState.Up;
-			}
-		}
-		else if (isMovingDown)
-		{
-			// S + A
-			if (isMovingLeft)
-			{
-				currentState = MovementState.Left;
-			}
-			// S + D
-			else if (isMovingRight)
-			{
-				currentState = MovementState.Right;
-			}
-			// Solo S
-			else
-			{
-				currentState = MovementState.Idle;
-			}
+			currentState = isMovingLeft ? MovementState.UpLeft
+				: isMovingRight ? MovementState.UpRight
+				: MovementState.Up;
 		}
 		else
 		{
-			// Solo A
-			if (isMovingLeft)
-			{
-				currentState = MovementState.Left;
-			}
-			// Solo D
-			else if (isMovingRight)
-			{
-				currentState = MovementState.Right;
-			}
-			else
-			{
-				currentState = MovementState.Idle;
-			}
+			currentState = isMovingLeft ? MovementState.Left
+				: isMovingRight ? MovementState.Right
+				: MovementState.Idle;
 		}
 	}
 
@@ -254,18 +209,8 @@ public class MovimientoJugador : MonoBehaviour
 		MovementState to
 	)
 	{
-		// Si estamos cambiando hacia/desde Idle y alguno
-		// de los estados tiene inclinación lateral
-		if (from == MovementState.Idle && IsLateralState(to))
-			return true;
-
-		if (to == MovementState.Idle && IsLateralState(from))
-			return true;
-
-		if (IsLateralState(from) || IsLateralState(to))
-			return true;
-
-		return false;
+		// Hay transición visual si alguno de los dos estados tiene inclinación lateral
+		return IsLateralState(from) || IsLateralState(to);
 	}
 
 
@@ -502,15 +447,5 @@ public class MovimientoJugador : MonoBehaviour
 
 		boostEndTime =
 			Time.time + duration;
-
-		Debug.Log(
-			$"Boost aplicado: velocidad x{speedMultiplier} durante {duration}s."
-		);
-	}
-
-
-	public float GetSpeedMultiplier()
-	{
-		return speedMultiplier;
 	}
 }

@@ -26,7 +26,7 @@ public class Bala : MonoBehaviour
 	void Update()
 	{
 		// Solo verificar si salió de pantalla
-		if (SalidoDePantalla())
+		if (Pantalla.EstaFuera(transform.position))
 		{
 			Destroy(gameObject);
 		}
@@ -51,20 +51,4 @@ public class Bala : MonoBehaviour
 		}
 	}
 
-	private bool SalidoDePantalla()
-	{
-		Camera mainCamera = Camera.main;
-		if (mainCamera == null)
-			return false;
-
-		Vector3 screenPos = mainCamera.WorldToScreenPoint(transform.position);
-
-		return screenPos.x < -50 || screenPos.x > Screen.width + 50 ||
-			   screenPos.y < -50 || screenPos.y > Screen.height + 50;
-	}
-
-	public float GetDano()
-	{
-		return dano;
-	}
 }

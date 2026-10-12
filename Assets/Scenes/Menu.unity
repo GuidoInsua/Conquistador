@@ -295,7 +295,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1320974182}
-        m_TargetAssemblyTypeName: MenuPrincipal, Assembly-CSharp
+        m_TargetAssemblyTypeName: MenuPrincipal, Conquistador
         m_MethodName: abrirJuego
         m_Mode: 1
         m_Arguments:
@@ -934,7 +934,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1320974182}
-        m_TargetAssemblyTypeName: MenuPrincipal, Assembly-CSharp
+        m_TargetAssemblyTypeName: MenuPrincipal, Conquistador
         m_MethodName: salirDelJuego
         m_Mode: 1
         m_Arguments:

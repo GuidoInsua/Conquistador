@@ -2,7 +2,7 @@ using UnityEngine;
 
 /// <summary>
 /// PowerUp que aumenta la velocidad del jugador cuando colisiona con él
-/// Aparece cuando un enemigo muere (50% de probabilidad)
+/// Aparece cuando un enemigo muere (la probabilidad la define EnemigoAlien)
 /// </summary>
 public class PowerUp : MonoBehaviour
 {
@@ -31,7 +31,7 @@ public class PowerUp : MonoBehaviour
     void Update()
     {
         // Destruir el PowerUp si sale de la pantalla
-        if (SalidoDePantalla())
+        if (Pantalla.EstaFuera(transform.position))
         {
             Destroy(gameObject);
         }
@@ -66,8 +66,6 @@ public class PowerUp : MonoBehaviour
         {
             // Aplicar el boost de velocidad
             playerMovement.ApplySpeedBoost(speedBoostPercentage, boostDuration);
-
-            Debug.Log($"¡PowerUp recogido! Velocidad incrementada en {speedBoostPercentage * 100}% durante {boostDuration} segundos.");
         }
         else
         {
@@ -105,21 +103,6 @@ public class PowerUp : MonoBehaviour
 
         // Instanciar el PowerUp en la posición
         Instantiate(powerUpPrefab, position, Quaternion.identity);
-
-        Debug.Log($"PowerUp spawneado en posición {position}");
     }
 
-    private bool SalidoDePantalla()
-    {
-        Camera mainCamera = Camera.main;
-        if (mainCamera == null)
-            return false;
-
-        // Convertir posición de mundo a posición de pantalla
-        Vector3 screenPos = mainCamera.WorldToScreenPoint(transform.position);
-
-        // Si está fuera del rango de pantalla (con pequeño buffer)
-        return screenPos.x < -50 || screenPos.x > Screen.width + 50 ||
-               screenPos.y < -50 || screenPos.y > Screen.height + 50;
-    }
 }

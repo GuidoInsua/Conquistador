@@ -13,8 +13,19 @@ public class DisparoEnemigo : MonoBehaviour
     {
         enemigoAlien = GetComponent<EnemigoAlien>();
     }
+
+    // El enemigo vuelve del pool: el temporizador empieza de nuevo.
+    void OnEnable()
+    {
+        tiempoDesdeUltimoDisparo = 1f;
+    }
+
     void Update()
     {
+        // Muriendo: no pisar la animación de muerte, o Morir() nunca se llama.
+        if (enemigoAlien.GetSalud() <= 0)
+            return;
+
         tiempoDesdeUltimoDisparo += Time.deltaTime;
 
         if (tiempoDesdeUltimoDisparo >= intervaloDisparo)

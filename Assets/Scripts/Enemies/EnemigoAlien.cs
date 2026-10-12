@@ -1,5 +1,3 @@
-using System;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -18,7 +16,7 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
     private Animator animator;
     private string animacionActual;
     private IObjectPool<EnemigoAlien> enemyPool;
-    private CancellationTokenSource movementCancellationSource;
+    private int movimientoId;
     private int positionIndex = -1;
 
     public float GetSalud()
@@ -41,14 +39,10 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
         enemyPool = pool;
     }
 
-    private void OnEnable()
-    {
-        CrearTokenMovimiento();
-    }
-
     public void ResetEnemy()
     {
-        CrearTokenMovimiento();
+        // Invalida cualquier movimiento anterior que siga en marcha.
+        movimientoId++;
 
         vidaActual = vidaMaxima;
 
@@ -64,55 +58,25 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
     {
         const float arrivalDistance = 0.1f;
 
+        // Si el enemigo vuelve al pool y se reusa, ResetEnemy cambia el id y este bucle termina.
+        int id = movimientoId;
 
-        if (movementCancellationSource == null)
+        while (Vector3.Distance(transform.position, target) > arrivalDistance)
         {
-            CrearTokenMovimiento();
-        }
-
-
-        CancellationToken token =
-            movementCancellationSource.Token;
-
-
-        try
-        {
-            while (
-                Vector3.Distance(
-                    transform.position,
-                    target
-                ) > arrivalDistance)
-            {
-                if (token.IsCancellationRequested)
-                    return;
-
-                if (!gameObject.activeInHierarchy)
-                    return;
-
-                Vector3 direction =
-                    (target - transform.position).normalized;
-
-
-                transform.position +=
-                    direction *
-                    speedMove *
-                    Time.deltaTime;
-
-
-                await Awaitable.NextFrameAsync(token);
-            }
-
-
-            if (token.IsCancellationRequested)
+            if (id != movimientoId || !gameObject.activeInHierarchy)
                 return;
 
+            Vector3 direction = (target - transform.position).normalized;
 
-            transform.position = target;
+            transform.position += direction * speedMove * Time.deltaTime;
+
+            await Awaitable.NextFrameAsync();
         }
-        catch (OperationCanceledException)
-        {
-            // Es normal cuando el enemigo vuelve al pool.
-        }
+
+        if (id != movimientoId || !gameObject.activeInHierarchy)
+            return;
+
+        transform.position = target;
     }
 
     public void TakeDamage(float cantidad)
@@ -153,15 +117,6 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
         }
     }
 
-    private void CrearTokenMovimiento()
-    {
-        if (movementCancellationSource != null)
-            return;
-
-        movementCancellationSource =
-            new CancellationTokenSource();
-    }
-
     // Este método se llama desde la animación de muerte
     private void Morir()
     {
@@ -173,12 +128,6 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
                 powerUpSpawnProbability
             );
         }
-
-        LiberarAlPool();
-    }
-
-    public void LiberarAlPool()
-    {
 
         if (enemyPool != null)
         {

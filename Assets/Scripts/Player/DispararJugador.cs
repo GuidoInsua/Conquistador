@@ -5,7 +5,9 @@ public class DispararJugador : MonoBehaviour
 {
 	[SerializeField] Transform posicionArma;
 	[SerializeField] Bala balaPrefab;
+	[SerializeField] float tiempoEntreDisparos = 0.15f;
 
+	private float proximoDisparo;
 	private PlayerInput playerInput;
 	private InputAction shootAction;
 
@@ -23,6 +25,12 @@ public class DispararJugador : MonoBehaviour
 		if (shootAction == null)
 		{
 			Debug.LogError("DispararJugador: falta el PlayerInput o la acción 'Shoot'.");
+		}
+
+		if (posicionArma == null || balaPrefab == null)
+		{
+			Debug.LogError("DispararJugador: falta asignar el hijo 'arma' o el prefab de la bala.");
+			shootAction = null;
 		}
 	}
 
@@ -49,7 +57,11 @@ public class DispararJugador : MonoBehaviour
 
 	private void Disparar()
 	{
-		Bala nuevaBala = Instantiate(balaPrefab, posicionArma.position, Quaternion.identity);
+		if (Time.time < proximoDisparo)
+			return;
+
+		proximoDisparo = Time.time + tiempoEntreDisparos;
+		Instantiate(balaPrefab, posicionArma.position, Quaternion.identity);
 	}
 }
 

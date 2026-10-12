@@ -5,7 +5,6 @@ public class Reinicio : MonoBehaviour
 {
 	public void ReiniciarEscena()
 	{
-		print("Reiniciando escena...");
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}
 
