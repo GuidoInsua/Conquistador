@@ -19,9 +19,21 @@ public class BalaEnemiga : MonoBehaviour
 	// Todo golpe enemigo le saca una ficha al jugador. Es const para que ningún valor viejo del Inspector lo cambie.
 	private const int danoAlJugador = 1;
 
+	[Header("Balanceo (copo de nieve)")]
+	[SerializeField] private float amplitudBalanceo = 0f; // Velocidad lateral máxima; 0 = cae derecho
+	[SerializeField] private float frecuenciaBalanceo = 3f;
+
+	private float faseBalanceo;
+
+	private void Start()
+	{
+		faseBalanceo = Random.value * Mathf.PI * 2f;
+	}
+
 	private void Update()
 	{
-		transform.Translate(Vector2.down * velocidad * Time.deltaTime);
+		float lateral = Mathf.Cos(Time.time * frecuenciaBalanceo + faseBalanceo) * amplitudBalanceo;
+		transform.Translate(new Vector2(lateral, -velocidad) * Time.deltaTime);
 
 		if (Pantalla.EstaFuera(transform.position))
 		{

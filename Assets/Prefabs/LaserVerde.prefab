@@ -180,6 +180,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bala
   velocidad: 10
-  dano: 10
+  dano: 1
   spritePotenciada: {fileID: -2025068883352671487, guid: 741530f62e30497db6db0da7fb01b889, type: 3}
   tiempoVidaMaximo: 5

@@ -16,7 +16,7 @@ using UnityEngine.Pool;
 
 public class EnemigoAlien : MonoBehaviour, IDamageable
 {
-    [SerializeField] float vidaMaxima = 10f;
+    [SerializeField] float vidaMaxima = 4f;
     [SerializeField] private OpcionPowerUp[] powerUps;
     [SerializeField] private GameObject particulasGolpePrefab;
 
@@ -24,6 +24,10 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
     private float powerUpSpawnProbability = 0.2f;
 
     //
+
+    public const string animIdle = "Alien_Idle";
+    public const string animDisparo = "Alien_Disparo";
+    public const string animMuerte = "Alien_Muerte";
 
     private float vidaActual;
     private Animator animator;
@@ -62,7 +66,7 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
         positionIndex = -1;
 
         animator = GetComponent<Animator>();
-        cambiarAnimacion("Alien01_Idle");
+        cambiarAnimacion(animIdle);
     }
 
     public async Awaitable MoveToPositionAsync(
@@ -95,7 +99,7 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
     {
         if (vidaActual > 0)
         {
-            vidaActual -= cantidad;
+            vidaActual = Mathf.Max(0f, vidaActual - cantidad);
         }
 
         if (vidaActual >= 1)
@@ -104,7 +108,7 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
         }
         else
         {
-            cambiarAnimacion("Alien01_Muerte");
+            cambiarAnimacion(animMuerte);
         }
     }
 
@@ -146,7 +150,7 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
 
     private void VolverIdle()
     {
-        cambiarAnimacion("Alien01_Idle");
+        cambiarAnimacion(animIdle);
     }
 
 }

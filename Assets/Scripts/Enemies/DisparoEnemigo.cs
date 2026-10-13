@@ -20,6 +20,10 @@ public class DisparoEnemigo : MonoBehaviour
     
     [SerializeField] float intervaloDisparo = 6f;
 
+    [Header("Disparo en cono")]
+    [SerializeField] int cantidadBalas = 1;
+    [SerializeField] float anguloCono = 0f; // Grados entre la primera y la última bala
+
     private float tiempoDesdeUltimoDisparo = 1f;
     private EnemigoAlien enemigoAlien;
 
@@ -51,7 +55,7 @@ public class DisparoEnemigo : MonoBehaviour
         if (tiempoDesdeUltimoDisparo >= intervaloDisparo)
         {
             tiempoDesdeUltimoDisparo = 0;
-            enemigoAlien.cambiarAnimacion("Alien01_Disparo");
+            enemigoAlien.cambiarAnimacion(EnemigoAlien.animDisparo);
         }
     }
 
@@ -63,12 +67,19 @@ public class DisparoEnemigo : MonoBehaviour
 
         if (balaPrefab != null && posicionArma != null)
         {
-            Instantiate(balaPrefab, posicionArma.position, posicionArma.rotation);
+            for (int i = 0; i < cantidadBalas; i++)
+            {
+                float angulo = cantidadBalas > 1
+                    ? Mathf.Lerp(-anguloCono / 2f, anguloCono / 2f, i / (float)(cantidadBalas - 1))
+                    : 0f;
+
+                Instantiate(balaPrefab, posicionArma.position, posicionArma.rotation * Quaternion.Euler(0f, 0f, angulo));
+            }
         }
         else
         {
             Debug.LogWarning("Falta asignar el prefab de la bala o la posición del arma.");
         }
-        enemigoAlien.cambiarAnimacion("Alien01_Idle");
+        enemigoAlien.cambiarAnimacion(EnemigoAlien.animIdle);
     }
 }

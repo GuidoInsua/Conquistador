@@ -193,6 +193,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpBalasPotenciadas
   multiplicadorAncho: 2
-  multiplicadorDano: 1.5
+  multiplicadorDano: 2
   duracion: 20
   collectEffect: {fileID: 0}

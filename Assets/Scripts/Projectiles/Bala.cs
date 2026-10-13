@@ -16,7 +16,7 @@ using UnityEngine;
 public class Bala : MonoBehaviour
 {
 	[SerializeField] float velocidad = 10f;
-	[SerializeField] float dano = 10f;
+	[SerializeField] float dano = 1f;
 	[SerializeField] Sprite spritePotenciada; // Se usa cuando la bala viene del power-up rojo
 
 	private new Rigidbody2D rigidbody2D;

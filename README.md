@@ -45,12 +45,17 @@ Trabajo práctico de **Programación 1** (segundo cuatrimestre 2026) de **Guido 
 | Moverte  | `W A S D` o flechas |
 | Disparar | `Espacio`           |
 
-- Tus disparos suben. Cada uno le saca **10** de vida a un alien, y los aliens tienen **10**: un tiro alcanza.
+- Tus disparos suben y hacen **1** de daño. El alien común tiene **4** de vida y el alien volador, **6**.
 - Los aliens salen desde arriba hasta quedarse en sus posiciones. Puede haber hasta **10** a la vez y aparece uno nuevo cada **2 segundos**.
-- Cada alien dispara cada **6 segundos**. Empezás con **5** puntos de vida, que se ven como fichas abajo a la izquierda. Cada disparo enemigo te quita **1**.
-- Al morir un alien hay un **20 %** de chances de que suelte un power-up.
-- El **power-up de velocidad** te da **+20 %** de velocidad durante **10 segundos**. Si pasa de largo y sale de la pantalla, se pierde.
-- Cuando te quedás sin vida aparece la pantalla de derrota, desde donde reiniciás, volvés al menú o salís.
+- Hay **2 oleadas**, **60 aliens** en total: primero **20** comunes y después **40** mezclados (60 % comunes, 40 % voladores). Si los matás a todos, ganás.
+- Cada alien dispara cada **6 segundos**. El común tira 1 bala; el volador tira **3 en abanico**, lentas, que caen balanceándose como un copo de nieve.
+- Empezás con **5** puntos de vida, que se ven como fichas abajo a la izquierda. Cada disparo enemigo te quita **1**.
+- Al morir un alien hay chances de que suelte un power-up, y se elige uno de los 4 al azar. Si pasa de largo y sale de la pantalla, se pierde:
+  - **Amarillo**: más velocidad durante un rato.
+  - **Verde**: +1 punto de vida.
+  - **Rojo**: balas más anchas y con **2** de daño durante **20 segundos**.
+  - **Azul**: disparo doble en paralelo durante **20 segundos**.
+- Cuando te quedás sin vida aparece la pantalla de derrota, y si matás a los 60 aliens, la de victoria. Desde ahí reiniciás, volvés al menú o salís.
 
 ## Cómo correrlo
 
@@ -88,9 +93,10 @@ Conquistador/
 │   │   ├── Enemies/      EnemigoAlien, DisparoEnemigo, Spawner
 │   │   ├── Interfaces/   IDamageable
 │   │   ├── Player/       Movimiento, disparo y vida del jugador
-│   │   ├── PowerUps/     Power-up de velocidad
+│   │   ├── PowerUps/     Los 4 power-ups
 │   │   ├── Projectiles/  Bala del jugador y bala enemiga
-│   │   ├── UI/           Menú principal y pantalla de derrota
+│   │   ├── UI/           Menú principal, barra de vida y pantallas de fin
+│   │   ├── Utilidades/   Sorteo con pesos
 │   │   └── World/        Bordes, fondo animado, utilidad de pantalla
 │   ├── Settings/     Input y render pipeline
 │   ├── Sprites/
@@ -107,9 +113,9 @@ Hoy cubren la vida del alien (muere a 0 y no baja de ahí) y la vida del jugador
 
 ```
  [ ] Puntaje y récord
- [ ] Oleadas con enemigos distintos
+ [x] Oleadas con enemigos distintos
  [ ] Jefe final
- [ ] Más power-ups (escudo, disparo doble)
+ [ ] Más power-ups (escudo)
  [ ] Efectos de sonido al disparar y al morir
  [ ] Pausa
 ```

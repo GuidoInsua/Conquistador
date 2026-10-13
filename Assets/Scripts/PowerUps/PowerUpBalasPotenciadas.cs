@@ -16,7 +16,7 @@ using UnityEngine;
 public class PowerUpBalasPotenciadas : PowerUp
 {
     [SerializeField] private float multiplicadorAncho = 2f;
-    [SerializeField] private float multiplicadorDano = 1.5f;
+    [SerializeField] private float multiplicadorDano = 2f;
     [SerializeField] private float duracion = 20f; // Duración en segundos
 
     protected override void Aplicar(GameObject jugador)

@@ -108,29 +108,14 @@ public abstract class PowerUp : MonoBehaviour
         if (opciones == null)
             return null;
 
-        float total = 0f;
-        foreach (OpcionPowerUp opcion in opciones)
+        float[] pesos = new float[opciones.Length];
+        for (int i = 0; i < opciones.Length; i++)
         {
-            if (opcion != null && opcion.Prefab != null && opcion.Peso > 0f)
-                total += opcion.Peso;
+            bool valida = opciones[i] != null && opciones[i].Prefab != null;
+            pesos[i] = valida ? opciones[i].Peso : 0f;
         }
 
-        float objetivo = Mathf.Clamp01(valor) * total;
-        float acumulado = 0f;
-        GameObject ultimo = null;
-
-        foreach (OpcionPowerUp opcion in opciones)
-        {
-            if (opcion == null || opcion.Prefab == null || opcion.Peso <= 0f)
-                continue;
-
-            acumulado += opcion.Peso;
-            ultimo = opcion.Prefab;
-
-            if (objetivo < acumulado)
-                return opcion.Prefab;
-        }
-
-        return ultimo; // valor = 1 cae acá
+        int indice = SorteoPonderado.ElegirIndice(pesos, valor);
+        return indice < 0 ? null : opciones[indice].Prefab;
     }
 }

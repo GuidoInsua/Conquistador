@@ -46,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -81,10 +81,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
+    maxTextureSize: 16384
+    resizeAlgorithm: 1
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -135,29 +135,29 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: VFX_Orb1_strip4_0
+      name: VFXOrb1Strip4_0
       rect:
         serializedVersion: 2
-        x: 1
-        y: 1
-        width: 8
-        height: 8
+        x: 0
+        y: 0
+        width: 10
+        height: 10
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: d801ccb059d9113d0800000000000000
-      internalID: -3237633393629065075
+      spriteID: 801a1439118b26c42b8173613081ba6e
+      internalID: 1749167016
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: VFX_Orb1_strip4_1
+      name: VFXOrb1Strip4_1
       rect:
         serializedVersion: 2
         x: 10
@@ -165,43 +165,43 @@ TextureImporter:
         width: 10
         height: 10
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: c40ed4ea549e62fd0800000000000000
-      internalID: -2366948068650262452
+      spriteID: 6fab4772713bd4e4ea0c1c11cf1f8c3f
+      internalID: -359529149
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: VFX_Orb1_strip4_2
+      name: VFXOrb1Strip4_2
       rect:
         serializedVersion: 2
-        x: 19
+        x: 20
         y: 0
-        width: 12
+        width: 10
         height: 10
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 9fb5190ac3053a500800000000000000
-      internalID: 406256612715617273
+      spriteID: 7ebc4a6e837175d40bac4e6f5f6a1887
+      internalID: 1172480350
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: VFX_Orb1_strip4_3
+      name: VFXOrb1Strip4_3
       rect:
         serializedVersion: 2
         x: 30
@@ -209,15 +209,15 @@ TextureImporter:
         width: 10
         height: 10
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 41de244c655082490800000000000000
-      internalID: -7770955286809744108
+      spriteID: 0dcfcbdf7c8c47545bde911687946205
+      internalID: -1541898306
       vertices: []
       indices: 
       edges: []
@@ -226,7 +226,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 373645fe03cfbfd4c9b1b8072d29187c
     internalID: 0
     vertices: []
     indices: 
@@ -234,12 +234,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":1.0},"gridSpriteSize":{"x":10.0,"y":10.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      VFX_Orb1_strip4_0: -3237633393629065075
-      VFX_Orb1_strip4_1: -2366948068650262452
-      VFX_Orb1_strip4_2: 406256612715617273
-      VFX_Orb1_strip4_3: -7770955286809744108
+      VFXOrb1Strip4_0: 1749167016
+      VFXOrb1Strip4_1: -359529149
+      VFXOrb1Strip4_2: 1172480350
+      VFXOrb1Strip4_3: -1541898306
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -17,8 +17,12 @@ using UnityEngine.Pool;
 
 public class Spawner : MonoBehaviour
 {
-    [Header("Enemigo")]
-    [SerializeField] private EnemigoAlien enemyPrefab;
+    [Header("Oleadas")]
+    [SerializeField] private Oleada[] oleadas;
+
+    [Header("Fin del juego")]
+    [SerializeField] private GameObject canvasVictoria;
+    [SerializeField] private GameObject canvasDerrota;
 
     [Header("Puntos de Spawn - Fuera de pantalla")]
     [SerializeField] private Transform[] puntosSpawn;
@@ -35,19 +39,23 @@ public class Spawner : MonoBehaviour
 
     [SerializeField] private float tiempoEntreSpawns = 2f;
 
-    private IObjectPool<EnemigoAlien> enemyPool;
+    private Dictionary<EnemigoAlien, IObjectPool<EnemigoAlien>> pools;
+    private int oleadaActual = 0;
+    private int spawneadosEnOleada = 0;
+    private int totalPlaneado = 0;
+    private int totalSpawneados = 0;
+    private int enemigosEliminados = 0;
     private bool[] posicionesOcupadas;
     private int enemigosActivos = 0;
     private float tiempoProximoSpawn;
 
+    public int TotalSpawneados => totalSpawneados;
+    public int EnemigosEliminados => enemigosEliminados;
+
     private void Awake()
     {
-        if (enemyPrefab == null)
+        if (!ValidarOleadas())
         {
-            Debug.LogError(
-                "Spawner: falta asignar Enemy Prefab."
-            );
-
             enabled = false;
             return;
         }
@@ -96,9 +104,53 @@ public class Spawner : MonoBehaviour
         posicionesOcupadas =
             new bool[posicionesEnemigos.Length];
 
-        enemyPool =
+        // Un pool por tipo de enemigo: cada alien vuelve al pool de su propio prefab.
+        pools = new Dictionary<EnemigoAlien, IObjectPool<EnemigoAlien>>();
+
+        foreach (Oleada oleada in oleadas)
+        {
+            foreach (OpcionEnemigo opcion in oleada.Enemigos)
+            {
+                if (opcion.Prefab != null && !pools.ContainsKey(opcion.Prefab))
+                    pools[opcion.Prefab] = CrearPool(opcion.Prefab);
+            }
+        }
+    }
+
+
+    private bool ValidarOleadas()
+    {
+        if (oleadas == null || oleadas.Length == 0)
+        {
+            Debug.LogError("Spawner: no hay oleadas.");
+            return false;
+        }
+
+        totalPlaneado = 0;
+
+        for (int i = 0; i < oleadas.Length; i++)
+        {
+            // Con valor 0 devuelve la primera opción válida; null solo si no hay ninguna.
+            if (oleadas[i] == null || oleadas[i].Cantidad <= 0 || oleadas[i].ElegirPrefab(0f) == null)
+            {
+                Debug.LogError("Spawner: la oleada " + i + " no tiene cantidad o enemigos válidos.");
+                return false;
+            }
+
+            totalPlaneado += oleadas[i].Cantidad;
+        }
+
+        return true;
+    }
+
+
+    private IObjectPool<EnemigoAlien> CrearPool(EnemigoAlien prefab)
+    {
+        ObjectPool<EnemigoAlien> pool = null;
+
+        pool =
             new ObjectPool<EnemigoAlien>(
-                CreateEnemy,
+                () => CreateEnemy(prefab, pool),
                 OnGetEnemy,
                 OnReleaseEnemy,
                 OnDestroyEnemy,
@@ -109,6 +161,8 @@ public class Spawner : MonoBehaviour
 
                 maxSize: capacidadMaxima
             );
+
+        return pool;
     }
 
 
@@ -142,13 +196,15 @@ public class Spawner : MonoBehaviour
     // CREAR ENEMIGO
     // =========================================================
 
-    private EnemigoAlien CreateEnemy()
+    private EnemigoAlien CreateEnemy(
+        EnemigoAlien prefab,
+        IObjectPool<EnemigoAlien> pool)
     {
         EnemigoAlien enemy =
-            Instantiate(enemyPrefab);
+            Instantiate(prefab);
 
 
-        enemy.SetPool(enemyPool);
+        enemy.SetPool(pool);
 
 
         enemy.gameObject.SetActive(false);
@@ -204,6 +260,22 @@ public class Spawner : MonoBehaviour
         }
 
         enemy.gameObject.SetActive(false);
+
+        enemigosEliminados++;
+
+        if (enemigosEliminados >= totalPlaneado)
+            MostrarVictoria();
+    }
+
+
+    private void MostrarVictoria()
+    {
+        // Si el jugador ya perdió, no se gana en el mismo momento.
+        if (canvasDerrota != null && canvasDerrota.activeSelf)
+            return;
+
+        if (canvasVictoria != null)
+            canvasVictoria.SetActive(true);
     }
 
 
@@ -225,6 +297,10 @@ public class Spawner : MonoBehaviour
     public bool SpawnEnemy()
     {
 
+        // Nunca salen más enemigos que la suma de todas las oleadas.
+        if (totalSpawneados >= totalPlaneado)
+            return false;
+
         if (
             enemigosActivos >=
             capacidadMaxima
@@ -243,12 +319,21 @@ public class Spawner : MonoBehaviour
             return false;
         }
 
+        EnemigoAlien prefabElegido =
+            oleadas[oleadaActual].ElegirPrefab(Random.value);
+
+        if (prefabElegido == null)
+        {
+            Debug.LogError("Spawner: la oleada no tiene enemigos válidos.");
+            return false;
+        }
+
         posicionesOcupadas[positionIndex] =
             true;
 
 
         EnemigoAlien enemy =
-            enemyPool.Get();
+            pools[prefabElegido].Get();
 
 
         if (enemy == null)
@@ -288,6 +373,8 @@ public class Spawner : MonoBehaviour
 
         enemigosActivos++;
 
+        ContarSpawn();
+
         _ = enemy.MoveToPositionAsync(
             posicionFinal.position,
             velocidadMovimiento
@@ -295,6 +382,23 @@ public class Spawner : MonoBehaviour
 
 
         return true;
+    }
+
+
+    // Cuenta el enemigo recién salido y pasa a la siguiente oleada cuando se completa la actual.
+    private void ContarSpawn()
+    {
+        totalSpawneados++;
+        spawneadosEnOleada++;
+
+        if (
+            spawneadosEnOleada >= oleadas[oleadaActual].Cantidad &&
+            oleadaActual < oleadas.Length - 1
+        )
+        {
+            oleadaActual++;
+            spawneadosEnOleada = 0;
+        }
     }
 
 
