@@ -16,7 +16,8 @@ using UnityEngine;
 public class BalaEnemiga : MonoBehaviour
 {
 	[SerializeField] private float velocidad = 5f;
-	[SerializeField] private int dano = 10;
+	// Todo golpe enemigo le saca una ficha al jugador. Es const para que ningún valor viejo del Inspector lo cambie.
+	private const int danoAlJugador = 1;
 
 	private void Update()
 	{
@@ -35,7 +36,7 @@ public class BalaEnemiga : MonoBehaviour
 			VidaJugador vidaJugador = collision.GetComponent<VidaJugador>();
 			if (vidaJugador != null)
 			{
-				vidaJugador.actualizarVida(-dano);
+				vidaJugador.actualizarVida(-danoAlJugador);
 			}
 
 			Destroy(gameObject);

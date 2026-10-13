@@ -15,7 +15,7 @@ using UnityEngine;
 
 public class PowerUpVida : PowerUp
 {
-    [SerializeField] private int vidaExtra = 10;
+    [SerializeField] private int vidaExtra = 1;
 
     protected override void Aplicar(GameObject jugador)
     {

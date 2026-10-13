@@ -11,10 +11,12 @@
 // ##########################################################################
 // Desc: Pruebas de la vida del enemigo y del jugador.
 
+using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
-using TMPro;
 using UnityEngine;
 using UnityEngine.TestTools;
+using UnityEngine.UI;
 
 public class VidaTests
 {
@@ -40,20 +42,36 @@ public class VidaTests
     }
 
     [Test]
-    public void Jugador_vida_queda_entre_cero_y_maxima()
+    public void Jugador_vida_queda_entre_cero_y_maxima_y_la_barra_la_refleja()
     {
-        // Inactivo para que Awake no corra hasta tener el texto asignado.
+        // Inactivo para que Awake no corra hasta tener la barra asignada.
         go = new GameObject("jugador");
         go.SetActive(false);
         var vida = go.AddComponent<VidaJugador>();
-        var texto = go.AddComponent<TextMeshProUGUI>();
-        typeof(VidaJugador).GetField("textoVida", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(vida, texto);
-        typeof(VidaJugador).GetMethod("Awake", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(vida, null);
+        var barra = go.AddComponent<BarraVida>();
+
+        var fichas = new Image[5];
+        for (int i = 0; i < fichas.Length; i++)
+        {
+            var ficha = new GameObject("ficha" + i, typeof(Image));
+            ficha.transform.SetParent(go.transform);
+            fichas[i] = ficha.GetComponent<Image>();
+        }
+
+        var privado = BindingFlags.NonPublic | BindingFlags.Instance;
+        typeof(BarraVida).GetField("fichas", privado).SetValue(barra, fichas);
+        typeof(VidaJugador).GetField("barraVida", privado).SetValue(vida, barra);
+        typeof(VidaJugador).GetMethod("Awake", privado).Invoke(vida, null);
+
+        Assert.AreEqual(5, vida.VidaActual);
+        Assert.AreEqual(5, fichas.Count(f => f.enabled));
 
         vida.actualizarVida(-3);
-        Assert.AreEqual("HP 7", texto.text);
+        Assert.AreEqual(2, vida.VidaActual);
+        Assert.AreEqual(2, fichas.Count(f => f.enabled));
 
         vida.actualizarVida(100);
-        Assert.AreEqual("HP 10", texto.text);
+        Assert.AreEqual(5, vida.VidaActual);
+        Assert.AreEqual(5, fichas.Count(f => f.enabled));
     }
 }

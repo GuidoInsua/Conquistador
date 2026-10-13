@@ -47,7 +47,7 @@ Trabajo práctico de **Programación 1** (segundo cuatrimestre 2026) de **Guido 
 
 - Tus disparos suben. Cada uno le saca **10** de vida a un alien, y los aliens tienen **10**: un tiro alcanza.
 - Los aliens salen desde arriba hasta quedarse en sus posiciones. Puede haber hasta **10** a la vez y aparece uno nuevo cada **2 segundos**.
-- Cada alien dispara cada **6 segundos**. Cada disparo enemigo te quita **10** de vida.
+- Cada alien dispara cada **6 segundos**. Empezás con **5** puntos de vida, que se ven como fichas abajo a la izquierda. Cada disparo enemigo te quita **1**.
 - Al morir un alien hay un **20 %** de chances de que suelte un power-up.
 - El **power-up de velocidad** te da **+20 %** de velocidad durante **10 segundos**. Si pasa de largo y sale de la pantalla, se pierde.
 - Cuando te quedás sin vida aparece la pantalla de derrota, desde donde reiniciás, volvés al menú o salís.

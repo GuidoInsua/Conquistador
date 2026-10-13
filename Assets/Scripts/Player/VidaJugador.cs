@@ -9,44 +9,45 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Maneja la vida del jugador, su texto de HP y la pantalla de muerte.
+// Desc: Maneja la vida del jugador, su barra de fichas y la pantalla de muerte.
 
-using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 public class VidaJugador : MonoBehaviour
 {
-	[SerializeField] private int vidaMaxima = 10;
-	[SerializeField] private TMP_Text textoVida;
+	[SerializeField] private int vidaMaxima = 5;
+	[SerializeField] private BarraVida barraVida;
 	[FormerlySerializedAs("cnavasMuerte")]
 	[SerializeField] private GameObject canvasMuerte;
 
 	private int vidaActual;
 
+	public int VidaActual => vidaActual;
+
 	void Awake()
 	{
-		if (textoVida == null)
+		if (barraVida == null)
 		{
-			Debug.LogError("VidaJugador: falta asignar textoVida.");
+			Debug.LogError("VidaJugador: falta asignar barraVida.");
 			enabled = false;
 			return;
 		}
 
 		vidaActual = vidaMaxima;
-		actualizarTextoVida();
+		ActualizarBarra();
 	}
 
-	private void actualizarTextoVida()
+	private void ActualizarBarra()
 	{
-		textoVida.text = "HP " + vidaActual.ToString();
+		barraVida.Mostrar(vidaActual);
 	}
 
 	public void actualizarVida(int cantidad)
 	{
 		vidaActual += cantidad;
 		vidaActual = Mathf.Clamp(vidaActual, 0, vidaMaxima);
-		actualizarTextoVida();
+		ActualizarBarra();
 
 		if (vidaActual <= 0)
 		{

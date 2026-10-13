@@ -192,5 +192,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3f0dcaeebe14129ab06ba14cfc84fa9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpVida
-  vidaExtra: 10
+  vidaExtra: 1
   collectEffect: {fileID: 0}
