@@ -88,12 +88,32 @@ public class SpawnerTests
     [Test]
     public void PowerUp_probabilidad_cero_no_aparece_y_uno_siempre_aparece()
     {
-        var powerUpPrefab = new GameObject("powerup", typeof(PowerUp));
+        var opciones = new[] { new OpcionPowerUp(new GameObject("powerup", typeof(PowerUpVida)), 1f) };
 
-        PowerUp.SpawnPowerUp(powerUpPrefab, Vector3.zero, 0f);
+        PowerUp.SpawnPowerUp(opciones, Vector3.zero, 0f);
         Assert.AreEqual(1, Object.FindObjectsByType<PowerUp>(FindObjectsSortMode.None).Length); // solo el prefab
 
-        PowerUp.SpawnPowerUp(powerUpPrefab, Vector3.zero, 1f);
+        PowerUp.SpawnPowerUp(opciones, Vector3.zero, 1f);
         Assert.AreEqual(2, Object.FindObjectsByType<PowerUp>(FindObjectsSortMode.None).Length);
+    }
+
+    [Test]
+    public void PowerUp_elige_segun_el_peso_e_ignora_opciones_invalidas()
+    {
+        var velocidad = new GameObject("velocidad", typeof(PowerUpVelocidad));
+        var vida = new GameObject("vida", typeof(PowerUpVida));
+        var opciones = new[]
+        {
+            new OpcionPowerUp(velocidad, 50f),
+            new OpcionPowerUp(null, 50f), // sin prefab: se ignora
+            new OpcionPowerUp(vida, 50f),
+        };
+
+        Assert.AreSame(velocidad, PowerUp.ElegirPrefab(opciones, 0f));
+        Assert.AreSame(velocidad, PowerUp.ElegirPrefab(opciones, 0.49f));
+        Assert.AreSame(vida, PowerUp.ElegirPrefab(opciones, 0.5f));
+        Assert.AreSame(vida, PowerUp.ElegirPrefab(opciones, 1f));
+        Assert.IsNull(PowerUp.ElegirPrefab(new OpcionPowerUp[0], 0.5f));
+        Assert.IsNull(PowerUp.ElegirPrefab(null, 0.5f));
     }
 }

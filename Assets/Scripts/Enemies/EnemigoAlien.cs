@@ -17,7 +17,7 @@ using UnityEngine.Pool;
 public class EnemigoAlien : MonoBehaviour, IDamageable
 {
     [SerializeField] float vidaMaxima = 10f;
-    [SerializeField] private GameObject powerUpPrefab;
+    [SerializeField] private OpcionPowerUp[] powerUps;
     [SerializeField] private GameObject particulasGolpePrefab;
 
     [SerializeField, Range(0f, 1f)]
@@ -132,14 +132,11 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
     // Este método se llama desde la animación de muerte
     private void Morir()
     {
-        if (powerUpPrefab != null)
-        {
-            PowerUp.SpawnPowerUp(
-                powerUpPrefab,
-                transform.position,
-                powerUpSpawnProbability
-            );
-        }
+        PowerUp.SpawnPowerUp(
+            powerUps,
+            transform.position,
+            powerUpSpawnProbability
+        );
 
         if (enemyPool != null)
         {

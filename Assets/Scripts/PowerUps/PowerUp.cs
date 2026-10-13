@@ -9,18 +9,16 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Power-up que da un boost de velocidad al jugador cuando lo recoge.
+// Desc: Base de los power-ups: se recoge al tocar al jugador y cada tipo define su efecto.
 
 using UnityEngine;
 
 /// <summary>
-/// PowerUp que aumenta la velocidad del jugador cuando colisiona con él
-/// Aparece cuando un enemigo muere (la probabilidad la define EnemigoAlien)
+/// Base de todos los power-ups. Cada tipo hereda y define qué le hace al jugador en Aplicar.
+/// Aparecen cuando un enemigo muere (la probabilidad y las opciones las define EnemigoAlien).
 /// </summary>
-public class PowerUp : MonoBehaviour
+public abstract class PowerUp : MonoBehaviour
 {
-    [SerializeField] private float speedBoostPercentage = 0.2f; // 20% de aumento
-    [SerializeField] private float boostDuration = 10f; // Duración en segundos
     [SerializeField] private ParticleSystem collectEffect; // Partículas opcionales al ser recogido
 
     private bool isCollected = false;
@@ -47,40 +45,27 @@ public class PowerUp : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Detecta colisión con el jugador
-    /// </summary>
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (isCollected)
             return;
 
-        // Verificar si el objeto que colisiona es el jugador
         if (collision.CompareTag("Player"))
         {
-            ApplyBoost(collision.gameObject);
+            Recoger(collision.gameObject);
         }
     }
 
     /// <summary>
-    /// Aplica el boost de velocidad al jugador
+    /// Efecto del power-up sobre el jugador que lo recogió.
     /// </summary>
-    private void ApplyBoost(GameObject player)
+    protected abstract void Aplicar(GameObject jugador);
+
+    private void Recoger(GameObject jugador)
     {
         isCollected = true;
 
-        // Obtener el script de movimiento del jugador
-        MovimientoJugador playerMovement = player.GetComponent<MovimientoJugador>();
-
-        if (playerMovement != null)
-        {
-            // Aplicar el boost de velocidad
-            playerMovement.ApplySpeedBoost(speedBoostPercentage, boostDuration);
-        }
-        else
-        {
-            Debug.LogWarning("No se encontró MovimientoJugador en el jugador.");
-        }
+        Aplicar(jugador);
 
         // Reproducir efecto de partículas si existe
         if (collectEffect != null)
@@ -89,30 +74,63 @@ public class PowerUp : MonoBehaviour
             Destroy(effect.gameObject, 2f); // Destruir después de 2 segundos
         }
 
-        // Destruir el PowerUp
         Destroy(gameObject);
     }
 
     /// <summary>
-    /// Spawea un PowerUp en la posición especificada con probabilidad
+    /// Con cierta probabilidad spawnea uno de los power-ups posibles, elegido según su peso.
     /// </summary>
-    /// <param name="powerUpPrefab">Prefab del PowerUp a spawnear</param>
+    /// <param name="opciones">Power-ups posibles y el peso de cada uno</param>
     /// <param name="position">Posición donde spawnear</param>
-    /// <param name="probability">Probabilidad (0-1) de que aparezca. Default 0.5 = 50%</param>
-    public static void SpawnPowerUp(GameObject powerUpPrefab, Vector3 position, float probability = 0.5f)
+    /// <param name="probability">Probabilidad (0-1) de que aparezca alguno</param>
+    public static void SpawnPowerUp(OpcionPowerUp[] opciones, Vector3 position, float probability = 0.5f)
     {
-        // Verificar probabilidad
         if (Random.value > probability)
-            return; // No spawnear
+            return;
+
+        GameObject powerUpPrefab = ElegirPrefab(opciones, Random.value);
 
         if (powerUpPrefab == null)
         {
-            Debug.LogWarning("PowerUp prefab es null. No se puede spawnear PowerUp.");
+            Debug.LogWarning("No hay power-ups válidos para spawnear. Revisá las opciones del enemigo.");
             return;
         }
 
-        // Instanciar el PowerUp en la posición
         Instantiate(powerUpPrefab, position, Quaternion.identity);
     }
 
+    /// <summary>
+    /// Elige un prefab según el peso de cada opción. valor va de 0 a 1 (0 = primera opción, 1 = última).
+    /// Ignora las opciones sin prefab o con peso 0. Devuelve null si no queda ninguna.
+    /// </summary>
+    public static GameObject ElegirPrefab(OpcionPowerUp[] opciones, float valor)
+    {
+        if (opciones == null)
+            return null;
+
+        float total = 0f;
+        foreach (OpcionPowerUp opcion in opciones)
+        {
+            if (opcion != null && opcion.Prefab != null && opcion.Peso > 0f)
+                total += opcion.Peso;
+        }
+
+        float objetivo = Mathf.Clamp01(valor) * total;
+        float acumulado = 0f;
+        GameObject ultimo = null;
+
+        foreach (OpcionPowerUp opcion in opciones)
+        {
+            if (opcion == null || opcion.Prefab == null || opcion.Peso <= 0f)
+                continue;
+
+            acumulado += opcion.Peso;
+            ultimo = opcion.Prefab;
+
+            if (objetivo < acumulado)
+                return opcion.Prefab;
+        }
+
+        return ultimo; // valor = 1 cae acá
+    }
 }

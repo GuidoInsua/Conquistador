@@ -20,7 +20,16 @@ public class DispararJugador : MonoBehaviour
 	[SerializeField] Bala balaPrefab;
 	[SerializeField] float tiempoEntreDisparos = 0.15f;
 
+	[Header("Disparo doble (power-up)")]
+	[SerializeField] float separacionDisparoDoble = 0.4f;
+
 	private float proximoDisparo;
+
+	// Mejoras temporales que dan los power-ups
+	private float finBalasPotenciadas;
+	private float multiplicadorAncho = 1f;
+	private float multiplicadorDano = 1f;
+	private float finDisparoDoble;
 	private PlayerInput playerInput;
 	private InputAction shootAction;
 
@@ -74,7 +83,37 @@ public class DispararJugador : MonoBehaviour
 			return;
 
 		proximoDisparo = Time.time + tiempoEntreDisparos;
-		Instantiate(balaPrefab, posicionArma.position, Quaternion.identity);
+
+		if (Time.time < finDisparoDoble)
+		{
+			Vector3 mitadSeparacion = Vector3.right * (separacionDisparoDoble / 2f);
+			CrearBala(posicionArma.position - mitadSeparacion);
+			CrearBala(posicionArma.position + mitadSeparacion);
+		}
+		else
+		{
+			CrearBala(posicionArma.position);
+		}
+	}
+
+	private void CrearBala(Vector3 posicion)
+	{
+		Bala bala = Instantiate(balaPrefab, posicion, Quaternion.identity);
+
+		if (Time.time < finBalasPotenciadas)
+			bala.Potenciar(multiplicadorDano, multiplicadorAncho);
+	}
+
+	public void ActivarBalasPotenciadas(float multAncho, float multDano, float duracion)
+	{
+		multiplicadorAncho = multAncho;
+		multiplicadorDano = multDano;
+		finBalasPotenciadas = Time.time + duracion;
+	}
+
+	public void ActivarDisparoDoble(float duracion)
+	{
+		finDisparoDoble = Time.time + duracion;
 	}
 }
 

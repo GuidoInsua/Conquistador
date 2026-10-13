@@ -226,9 +226,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemigoAlien
   vidaMaxima: 30
-  powerUpPrefab: {fileID: 2045122667956163684, guid: 9e064bbf9ee1936499e8d3034c555811, type: 3}
+  powerUps:
+  - prefab: {fileID: 2045122667956163684, guid: 9e064bbf9ee1936499e8d3034c555811, type: 3}
+    peso: 25
+  - prefab: {fileID: 2045122667956163684, guid: d33bc10d730e44d39d781c60eab02b69, type: 3}
+    peso: 25
+  - prefab: {fileID: 2045122667956163684, guid: aa2fcee62c234a30b2b229442c258cf0, type: 3}
+    peso: 25
+  - prefab: {fileID: 2045122667956163684, guid: fb8846b41dce4490a65052c7311c8f98, type: 3}
+    peso: 25
   particulasGolpePrefab: {fileID: 6740004537896051600, guid: 72ff69de2002f7048b87ff5b0703ca0c, type: 3}
-  powerUpSpawnProbability: 0.2
+  powerUpSpawnProbability: 0.8
 --- !u!114 &-690365026414050843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -243,3 +251,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DisparoEnemigo
   posicionArma: {fileID: 3164548805030568712}
   balaPrefab: {fileID: 6912544722809568519, guid: 5277f4363855930408600db7901dd634, type: 3}
+  intervaloDisparo: 6

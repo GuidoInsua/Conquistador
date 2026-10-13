@@ -17,9 +17,23 @@ public class Bala : MonoBehaviour
 {
 	[SerializeField] float velocidad = 10f;
 	[SerializeField] float dano = 10f;
+	[SerializeField] Sprite spritePotenciada; // Se usa cuando la bala viene del power-up rojo
 
 	private new Rigidbody2D rigidbody2D;
 	private bool colisiono = false;
+
+	// Lo llama DispararJugador justo después de crear la bala, antes del primer frame.
+	public void Potenciar(float multiplicadorDano, float multiplicadorAncho)
+	{
+		dano *= multiplicadorDano;
+
+		Vector3 escala = transform.localScale;
+		escala.x *= multiplicadorAncho;
+		transform.localScale = escala;
+
+		if (spritePotenciada != null && TryGetComponent(out SpriteRenderer sr))
+			sr.sprite = spritePotenciada;
+	}
 
 	void Start()
 	{

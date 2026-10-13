@@ -189,9 +189,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2045122667956163684}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a58b38223af81734d9ea8833e1f491f3, type: 3}
+  m_Script: {fileID: 11500000, guid: 429bcb08f9da4b06aebc46ebe4f46e98, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PowerUp
+  m_EditorClassIdentifier: Assembly-CSharp::PowerUpVelocidad
   speedBoostPercentage: 1
   boostDuration: 10
   collectEffect: {fileID: 0}
