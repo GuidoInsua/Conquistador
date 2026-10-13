@@ -89,7 +89,8 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
             vidaActual = Mathf.Max(0f, vidaActual - cantidad);
         }
 
-        if (vidaActual >= 1)
+        // Vivo es vida > 0, igual que en DisparoEnemigo: si no, el disparo pisa la animación de muerte.
+        if (vidaActual > 0)
         {
             MostrarFeedbackGolpe();
         }

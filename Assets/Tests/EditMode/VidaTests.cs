@@ -42,6 +42,20 @@ public class VidaTests
     }
 
     [Test]
+    public void Enemigo_con_vida_fraccionaria_sigue_vivo()
+    {
+        go = new GameObject("alien", typeof(Animator), typeof(EnemigoAlien));
+        var alien = go.GetComponent<EnemigoAlien>();
+        alien.ResetEnemy(); // vida 4
+
+        alien.TakeDamage(3.5f);
+
+        var animacion = typeof(EnemigoAlien).GetField("animacionActual", BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.AreEqual(0.5f, alien.GetSalud());
+        Assert.AreNotEqual(EnemigoAlien.animMuerte, animacion.GetValue(alien));
+    }
+
+    [Test]
     public void Jugador_vida_queda_entre_cero_y_maxima_y_la_barra_la_refleja()
     {
         // Inactivo para que Awake no corra hasta tener la barra asignada.
