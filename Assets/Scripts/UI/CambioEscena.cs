@@ -9,20 +9,25 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Botones del menú: abrir el juego y salir.
+// Desc: Botones que cambian de escena: jugar, reiniciar, volver al menú y salir.
 
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MenuPrincipal : MonoBehaviour
+public class CambioEscena : MonoBehaviour
 {
-	public void salirDelJuego()
+	public void CargarEscena(string nombre)
 	{
-		Application.Quit();
+		SceneManager.LoadScene(nombre);
 	}
 
-	public void abrirJuego()
+	public void Reiniciar()
 	{
-		SceneManager.LoadScene("Juego");
+		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+	}
+
+	public void Salir()
+	{
+		Application.Quit();
 	}
 }

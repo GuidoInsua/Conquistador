@@ -1464,15 +1464,15 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1547509835}
-        m_TargetAssemblyTypeName: Reinicio, Conquistador
-        m_MethodName: abrirMenu
-        m_Mode: 1
+        m_TargetAssemblyTypeName: CambioEscena, Conquistador
+        m_MethodName: CargarEscena
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: Menu
           m_BoolArgument: 0
         m_CallState: 1
 --- !u!114 &878749269
@@ -1628,8 +1628,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1547509835}
-        m_TargetAssemblyTypeName: Reinicio, Conquistador
-        m_MethodName: salirDelJuego
+        m_TargetAssemblyTypeName: CambioEscena, Conquistador
+        m_MethodName: Salir
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2867,8 +2867,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1547509835}
-        m_TargetAssemblyTypeName: Reinicio, Conquistador
-        m_MethodName: ReiniciarEscena
+        m_TargetAssemblyTypeName: CambioEscena, Conquistador
+        m_MethodName: Reiniciar
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4006,15 +4006,15 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1547509835}
-        m_TargetAssemblyTypeName: Reinicio, Conquistador
-        m_MethodName: abrirMenu
-        m_Mode: 1
+        m_TargetAssemblyTypeName: CambioEscena, Conquistador
+        m_MethodName: CargarEscena
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: Menu
           m_BoolArgument: 0
         m_CallState: 1
 --- !u!114 &7878749269
@@ -4139,8 +4139,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1547509835}
-        m_TargetAssemblyTypeName: Reinicio, Conquistador
-        m_MethodName: salirDelJuego
+        m_TargetAssemblyTypeName: CambioEscena, Conquistador
+        m_MethodName: Salir
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4548,8 +4548,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1547509835}
-        m_TargetAssemblyTypeName: Reinicio, Conquistador
-        m_MethodName: ReiniciarEscena
+        m_TargetAssemblyTypeName: CambioEscena, Conquistador
+        m_MethodName: Reiniciar
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
