@@ -16,16 +16,6 @@ using UnityEngine;
 
 public class AnimacionJugador : MonoBehaviour
 {
-	private enum EstadoMovimiento
-	{
-		Idle,
-		Izquierda,
-		Derecha,
-		Arriba,
-		ArribaIzquierda,
-		ArribaDerecha
-	}
-
 	private enum LadoHorizontal
 	{
 		Ninguno,
@@ -47,7 +37,7 @@ public class AnimacionJugador : MonoBehaviour
 	private static readonly int AnimIzquierdaIntermedio = Animator.StringToHash("Jugador_IzquierdaIntermedio");
 	private static readonly int AnimDerechaIntermedio = Animator.StringToHash("Jugador_DerechaIntermedio");
 
-	private EstadoMovimiento estadoActual = EstadoMovimiento.Idle;
+	private LadoHorizontal ladoActual = LadoHorizontal.Ninguno;
 	private int animacionActual;
 	private Coroutine transicion;
 
@@ -67,117 +57,51 @@ public class AnimacionJugador : MonoBehaviour
 	}
 
 	// Se llama en cada tick de física con el input de movimiento.
+	// Solo cuenta el lado: subir o bajar no cambia el sprite, así que no reinicia la inclinación.
 	public void ActualizarDireccion(Vector2 direccion)
 	{
-		EstadoMovimiento nuevo = CalcularEstado(direccion);
+		LadoHorizontal nuevo = direccion.x < -0.5f ? LadoHorizontal.Izquierda
+			: direccion.x > 0.5f ? LadoHorizontal.Derecha
+			: LadoHorizontal.Ninguno;
 
-		if (nuevo == estadoActual)
+		if (nuevo == ladoActual)
 			return;
 
-		EstadoMovimiento anterior = estadoActual;
-		estadoActual = nuevo;
+		LadoHorizontal anterior = ladoActual;
+		ladoActual = nuevo;
 
 		if (transicion != null)
-		{
 			StopCoroutine(transicion);
-			transicion = null;
-		}
-
-		EstaInclinando = false;
-
-		// Solo hay transición si alguno de los dos estados tiene inclinación lateral.
-		if (ObtenerLado(anterior) == LadoHorizontal.Ninguno && ObtenerLado(nuevo) == LadoHorizontal.Ninguno)
-		{
-			MostrarNormal(nuevo);
-			return;
-		}
 
 		transicion = StartCoroutine(ReproducirTransicion(anterior, nuevo));
 	}
 
-	private EstadoMovimiento CalcularEstado(Vector2 direccion)
-	{
-		bool izquierda = direccion.x < -0.5f;
-		bool derecha = direccion.x > 0.5f;
-
-		// Hacia abajo solo se ve la inclinación lateral: S solo es Idle, S+A es Izquierda, S+D es Derecha.
-		if (direccion.y > 0.5f)
-		{
-			return izquierda ? EstadoMovimiento.ArribaIzquierda
-				: derecha ? EstadoMovimiento.ArribaDerecha
-				: EstadoMovimiento.Arriba;
-		}
-
-		return izquierda ? EstadoMovimiento.Izquierda
-			: derecha ? EstadoMovimiento.Derecha
-			: EstadoMovimiento.Idle;
-	}
-
-	private IEnumerator ReproducirTransicion(EstadoMovimiento desde, EstadoMovimiento hasta)
+	private IEnumerator ReproducirTransicion(LadoHorizontal desde, LadoHorizontal hasta)
 	{
 		EstaInclinando = true;
 
-		LadoHorizontal ladoDesde = ObtenerLado(desde);
-		LadoHorizontal ladoHasta = ObtenerLado(hasta);
-
-		if (ladoDesde != LadoHorizontal.Ninguno)
+		if (desde != LadoHorizontal.Ninguno)
 		{
-			MostrarIntermedio(ladoDesde);
+			MostrarIntermedio(desde);
 			yield return new WaitForSeconds(duracionTransicion);
 
 			// Sale de un lado: pasa por Idle antes de seguir (Izquierda -> Idle, Izquierda -> Derecha).
-			if (ladoHasta != ladoDesde)
-			{
-				CambiarAnimacion(AnimIdle);
-				yield return new WaitForSeconds(duracionPausaIdle);
-			}
+			CambiarAnimacion(AnimIdle);
+			yield return new WaitForSeconds(duracionPausaIdle);
 		}
 
-		if (ladoHasta != LadoHorizontal.Ninguno)
+		if (hasta != LadoHorizontal.Ninguno)
 		{
-			MostrarIntermedio(ladoHasta);
+			MostrarIntermedio(hasta);
 			yield return new WaitForSeconds(duracionTransicion);
 		}
 
-		MostrarNormal(hasta);
+		CambiarAnimacion(hasta == LadoHorizontal.Izquierda ? AnimIzquierda
+			: hasta == LadoHorizontal.Derecha ? AnimDerecha
+			: AnimIdle);
 
 		EstaInclinando = false;
 		transicion = null;
-	}
-
-	private LadoHorizontal ObtenerLado(EstadoMovimiento estado)
-	{
-		switch (estado)
-		{
-			case EstadoMovimiento.Izquierda:
-			case EstadoMovimiento.ArribaIzquierda:
-				return LadoHorizontal.Izquierda;
-
-			case EstadoMovimiento.Derecha:
-			case EstadoMovimiento.ArribaDerecha:
-				return LadoHorizontal.Derecha;
-
-			default:
-				return LadoHorizontal.Ninguno;
-		}
-	}
-
-	private void MostrarNormal(EstadoMovimiento estado)
-	{
-		switch (ObtenerLado(estado))
-		{
-			case LadoHorizontal.Izquierda:
-				CambiarAnimacion(AnimIzquierda);
-				break;
-
-			case LadoHorizontal.Derecha:
-				CambiarAnimacion(AnimDerecha);
-				break;
-
-			default:
-				CambiarAnimacion(AnimIdle);
-				break;
-		}
 	}
 
 	private void MostrarIntermedio(LadoHorizontal lado)
