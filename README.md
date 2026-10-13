@@ -23,7 +23,7 @@ Trabajo práctico de **Programación 1** (segundo cuatrimestre 2026) de **Guido 
     +       .        .        *          .
           \  |  /                 ___
        -- (  o  ) --          .-'  _  `-.        <- los aliens entran
-          /  |  \            ( ( (_o_) ) )          desde arriba
+          /  |  \            ( ( (_o_) ) )          por los costados
     *           .             `-._===_.-'
                                   |
           .                       |  <- disparo enemigo
@@ -46,8 +46,8 @@ Trabajo práctico de **Programación 1** (segundo cuatrimestre 2026) de **Guido 
 | Disparar | `Espacio`           |
 
 - Tus disparos suben y hacen **1** de daño. El alien común tiene **4** de vida y el alien volador, **6**.
-- Los aliens salen desde arriba hasta quedarse en sus posiciones. Puede haber hasta **10** a la vez y aparece uno nuevo cada **2 segundos**.
-- Hay **2 oleadas**, **60 aliens** en total: primero **20** comunes y después **40** mezclados (60 % comunes, 40 % voladores). Si los matás a todos, ganás.
+- Los aliens entran por el costado más cercano a su lugar y se quedan en una de las **10** posiciones de la pantalla, así que puede haber hasta **10** a la vez. Aparece uno nuevo cada **2 segundos**.
+- Hay **2 oleadas**, **50 aliens** en total: primero **20** comunes y después **30** mezclados (60 % comunes, 40 % voladores). Si los matás a todos, ganás.
 - Cada alien dispara cada **6 segundos**. El común tira 1 bala; el volador tira **3 en abanico**, lentas, que caen balanceándose como un copo de nieve.
 - Empezás con **5** puntos de vida, que se ven como fichas abajo a la izquierda. Cada disparo enemigo te quita **1**.
 - Al morir un alien hay chances de que suelte un power-up, y se elige uno de los 4 al azar. Si pasa de largo y sale de la pantalla, se pierde:
@@ -55,7 +55,7 @@ Trabajo práctico de **Programación 1** (segundo cuatrimestre 2026) de **Guido 
   - **Verde**: +1 punto de vida.
   - **Rojo**: balas más anchas y con **2** de daño durante **20 segundos**.
   - **Azul**: disparo doble en paralelo durante **20 segundos**.
-- Cuando te quedás sin vida aparece la pantalla de derrota, y si matás a los 60 aliens, la de victoria. Desde ahí reiniciás, volvés al menú o salís.
+- Cuando te quedás sin vida aparece la pantalla de derrota, y si matás a los 50 aliens, la de victoria. Desde ahí reiniciás, volvés al menú o salís.
 
 ## Cómo correrlo
 
@@ -89,13 +89,12 @@ Conquistador/
 │   ├── Prefabs/      Alien, láser, disparo enemigo, power-up, partículas
 │   ├── Scenes/       Menu y Juego
 │   ├── Scripts/
-│   │   ├── Audio/        Música de fondo
-│   │   ├── Enemies/      EnemigoAlien, DisparoEnemigo, Spawner
+│   │   ├── Enemies/      EnemigoAlien, DisparoEnemigo, Spawner, Oleada
 │   │   ├── Interfaces/   IDamageable
 │   │   ├── Player/       Movimiento, disparo y vida del jugador
 │   │   ├── PowerUps/     Los 4 power-ups
 │   │   ├── Projectiles/  Bala del jugador y bala enemiga
-│   │   ├── UI/           Menú principal, barra de vida y pantallas de fin
+│   │   ├── UI/           Barra de vida y botones para cambiar de escena
 │   │   ├── Utilidades/   Sorteo con pesos
 │   │   └── World/        Bordes, fondo animado, utilidad de pantalla
 │   ├── Settings/     Input y render pipeline
@@ -107,7 +106,7 @@ Conquistador/
 ## Pruebas
 
 En Unity: **Window → General → Test Runner → EditMode → Run All**.
-Hoy cubren la vida del alien (muere a 0 y no baja de ahí) y la vida del jugador (siempre entre 0 y el máximo).
+Cubren la vida del alien y del jugador, el Spawner (posiciones, oleadas, punto de entrada y victoria), el sorteo con pesos, la elección de power-ups y la bala potenciada.
 
 ## Ideas para seguir
 
