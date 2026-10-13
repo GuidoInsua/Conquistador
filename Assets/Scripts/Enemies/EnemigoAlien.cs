@@ -135,10 +135,4 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
             enemyPool.Release(this);
         }
     }
-
-    private void VolverIdle()
-    {
-        cambiarAnimacion(animIdle);
-    }
-
 }
