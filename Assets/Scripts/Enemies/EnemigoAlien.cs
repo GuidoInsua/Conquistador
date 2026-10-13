@@ -34,21 +34,10 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
     private string animacionActual;
     private IObjectPool<EnemigoAlien> enemyPool;
     private int movimientoId;
-    private int positionIndex = -1;
 
     public float GetSalud()
     {
         return vidaActual;
-    }
-
-    public int GetPositionIndex()
-    {
-        return positionIndex;
-    }
-
-    public void SetPositionIndex(int index)
-    {
-        positionIndex = index;
     }
 
     public void SetPool(IObjectPool<EnemigoAlien> pool)
@@ -62,8 +51,6 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
         movimientoId++;
 
         vidaActual = vidaMaxima;
-
-        positionIndex = -1;
 
         animator = GetComponent<Animator>();
         cambiarAnimacion(animIdle);

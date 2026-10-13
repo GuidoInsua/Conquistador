@@ -23,7 +23,8 @@ public class SpawnerTests
 
     GameObject spawnerGo;
     GameObject canvasVictoria;
-    Transform[] puntos;
+    Transform spawns;
+    Transform posiciones;
     EnemigoAlien alienA;
     EnemigoAlien alienB;
     Spawner spawner;
@@ -37,11 +38,8 @@ public class SpawnerTests
         alienB = CrearAlien("alienB");
         canvasVictoria = new GameObject("victoria");
         canvasVictoria.SetActive(false);
-
-        // Spawn y posición final en el mismo lugar: el alien ya "llegó" y no hace falta esperar frames.
-        puntos = new Transform[3];
-        for (int i = 0; i < puntos.Length; i++)
-            puntos[i] = new GameObject("punto" + i).transform;
+        spawns = new GameObject("spawns").transform;
+        posiciones = new GameObject("posiciones").transform;
 
         spawnerGo = new GameObject("spawner");
         spawnerGo.SetActive(false);
@@ -55,8 +53,8 @@ public class SpawnerTests
             Object.DestroyImmediate(a.gameObject);
         foreach (var p in Object.FindObjectsByType<PowerUp>(FindObjectsSortMode.None))
             Object.DestroyImmediate(p.gameObject);
-        foreach (var punto in puntos)
-            Object.DestroyImmediate(punto.gameObject);
+        Object.DestroyImmediate(spawns.gameObject);
+        Object.DestroyImmediate(posiciones.gameObject);
         Object.DestroyImmediate(spawnerGo);
         Object.DestroyImmediate(canvasVictoria);
     }
@@ -66,12 +64,23 @@ public class SpawnerTests
 
     static OpcionEnemigo[] Solo(EnemigoAlien alien) => new[] { new OpcionEnemigo(alien, 1f) };
 
-    void Iniciar(Oleada[] oleadas, int capacidad)
+    static void AgregarHijo(Transform padre, Vector3 posicion)
     {
+        Transform hijo = new GameObject("hijo").transform;
+        hijo.SetParent(padre, false);
+        hijo.localPosition = posicion;
+    }
+
+    // Spawn y posiciones en el origen: el alien ya "llegó" y no hace falta esperar frames.
+    void Iniciar(Oleada[] oleadas, int cantidadPosiciones)
+    {
+        AgregarHijo(spawns, Vector3.zero);
+        for (int i = 0; i < cantidadPosiciones; i++)
+            AgregarHijo(posiciones, Vector3.zero);
+
         Asignar("oleadas", oleadas);
-        Asignar("puntosSpawn", puntos);
-        Asignar("posicionesEnemigos", puntos);
-        Asignar("capacidadMaxima", capacidad);
+        Asignar("contenedorSpawns", spawns);
+        Asignar("contenedorPosiciones", posiciones);
         Asignar("canvasVictoria", canvasVictoria);
         typeof(Spawner).GetMethod("Awake", privado).Invoke(spawner, null);
     }
@@ -88,7 +97,27 @@ public class SpawnerTests
         typeof(EnemigoAlien).GetMethod("Morir", privado).Invoke(alien, null);
 
     [Test]
-    public void Spawner_no_pasa_de_la_capacidad_maxima()
+    public void Spawner_entra_por_uno_de_los_dos_puntos_de_spawn_mas_cercanos()
+    {
+        AgregarHijo(spawns, new Vector3(-10f, 0f, 0f));
+        AgregarHijo(spawns, new Vector3(10f, 0f, 0f));
+        AgregarHijo(spawns, new Vector3(12f, 0f, 0f));
+        AgregarHijo(posiciones, new Vector3(9f, 0f, 0f));
+        Asignar("velocidadMovimiento", 0f); // que se quede donde aparece
+        Iniciar(new[] { new Oleada(50, Solo(alienA)) }, 0); // Iniciar suma otro spawn en el origen
+
+        for (int i = 0; i < 30; i++)
+        {
+            Assert.IsTrue(spawner.SpawnEnemy());
+            EnemigoAlien alien = Vivos().Single();
+            float x = alien.transform.position.x;
+            Assert.IsTrue(x == 10f || x == 12f, "entró por x = " + x);
+            Matar(alien);
+        }
+    }
+
+    [Test]
+    public void Spawner_no_pasa_de_la_cantidad_de_posiciones()
     {
         Iniciar(new[] { new Oleada(10, Solo(alienA)) }, 2);
 

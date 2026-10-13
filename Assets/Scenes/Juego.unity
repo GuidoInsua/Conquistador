@@ -1377,11 +1377,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Spawner
   oleadas:
-  - cantidad: 10
+  - cantidad: 20
     enemigos:
-    - prefab: {fileID: 4930170169193344296, guid: d5a3670f8f814182ac7fe8d2f1713b48, type: 3}
+    - prefab: {fileID: 4930170169193344296, guid: 1843e24e95a3fd94896d4a062f65268d, type: 3}
       peso: 100
-  - cantidad: 10
+  - cantidad: 30
     enemigos:
     - prefab: {fileID: 4930170169193344296, guid: 1843e24e95a3fd94896d4a062f65268d, type: 3}
       peso: 60
@@ -1389,27 +1389,9 @@ MonoBehaviour:
       peso: 40
   canvasVictoria: {fileID: 7372225865}
   canvasDerrota: {fileID: 372225865}
-  puntosSpawn:
-  - {fileID: 300491185}
-  - {fileID: 1050849543}
-  - {fileID: 1836761549}
-  - {fileID: 1413284935}
-  - {fileID: 1413284935}
-  - {fileID: 1413284935}
-  - {fileID: 1413284935}
-  - {fileID: 1413284935}
-  - {fileID: 1413284935}
-  posicionesEnemigos:
-  - {fileID: 249923105}
-  - {fileID: 18018734}
-  - {fileID: 1079777481}
-  - {fileID: 117514033}
-  - {fileID: 622565881}
-  - {fileID: 963747171}
-  - {fileID: 1360865474}
-  - {fileID: 1454519558}
-  - {fileID: 1286819638}
-  capacidadMaxima: 10
+  contenedorSpawns: {fileID: 786388333}
+  contenedorPosiciones: {fileID: 294432734}
+  puntosSpawnCercanos: 2
   velocidadMovimiento: 3
   spawnAutomatico: 1
   tiempoEntreSpawns: 2.03

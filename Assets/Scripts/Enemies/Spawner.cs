@@ -24,29 +24,28 @@ public class Spawner : MonoBehaviour
     [SerializeField] private GameObject canvasVictoria;
     [SerializeField] private GameObject canvasDerrota;
 
-    [Header("Puntos de Spawn - Fuera de pantalla")]
-    [SerializeField] private Transform[] puntosSpawn;
-
-    [Header("Posiciones finales - Dentro de pantalla")]
-    [SerializeField] private Transform[] posicionesEnemigos;
+    [Header("Escena")]
+    [Tooltip("Sus hijos son los puntos fuera de pantalla por donde entran los aliens.")]
+    [SerializeField] private Transform contenedorSpawns;
+    [Tooltip("Sus hijos son las posiciones donde se quedan los aliens. Hay un alien como máximo por posición.")]
+    [SerializeField] private Transform contenedorPosiciones;
 
     [Header("Configuración")]
-    [SerializeField] private int capacidadMaxima = 10;
-
+    [Tooltip("Cada alien entra por uno de estos N puntos de spawn más cercanos a su posición, elegido al azar.")]
+    [SerializeField, Min(1)] private int puntosSpawnCercanos = 2;
     [SerializeField] private float velocidadMovimiento = 3f;
-
     [SerializeField] private bool spawnAutomatico = true;
-
     [SerializeField] private float tiempoEntreSpawns = 2f;
 
+    private Transform[] puntosSpawn;
+    private Transform[] posiciones;
+    private EnemigoAlien[] ocupantes; // ocupantes[i] es el alien que está en posiciones[i], o null si está libre
     private Dictionary<EnemigoAlien, IObjectPool<EnemigoAlien>> pools;
-    private int oleadaActual = 0;
-    private int spawneadosEnOleada = 0;
-    private int totalPlaneado = 0;
-    private int totalSpawneados = 0;
-    private int enemigosEliminados = 0;
-    private bool[] posicionesOcupadas;
-    private int enemigosActivos = 0;
+    private int oleadaActual;
+    private int spawneadosEnOleada;
+    private int totalPlaneado;
+    private int totalSpawneados;
+    private int enemigosEliminados;
     private float tiempoProximoSpawn;
 
     public int TotalSpawneados => totalSpawneados;
@@ -60,53 +59,20 @@ public class Spawner : MonoBehaviour
             return;
         }
 
-        if (
-            puntosSpawn == null ||
-            puntosSpawn.Length == 0
-        )
-        {
-            Debug.LogError(
-                "Spawner: no hay puntos de spawn."
-            );
+        puntosSpawn = Hijos(contenedorSpawns);
+        posiciones = Hijos(contenedorPosiciones);
 
+        if (puntosSpawn.Length == 0 || posiciones.Length == 0)
+        {
+            Debug.LogError("Spawner: contenedorSpawns y contenedorPosiciones tienen que tener al menos un hijo cada uno.");
             enabled = false;
             return;
         }
 
-        if (
-            posicionesEnemigos == null ||
-            posicionesEnemigos.Length == 0
-        )
-        {
-            Debug.LogError(
-                "Spawner: no hay posiciones finales."
-            );
-
-            enabled = false;
-            return;
-        }
-
-        if (
-            puntosSpawn.Length !=
-            posicionesEnemigos.Length
-        )
-        {
-            Debug.LogError(
-                "Spawner: puntosSpawn y " +
-                "posicionesEnemigos deben tener " +
-                "la misma cantidad de elementos."
-            );
-
-            enabled = false;
-            return;
-        }
-
-        posicionesOcupadas =
-            new bool[posicionesEnemigos.Length];
+        ocupantes = new EnemigoAlien[posiciones.Length];
 
         // Un pool por tipo de enemigo: cada alien vuelve al pool de su propio prefab.
         pools = new Dictionary<EnemigoAlien, IObjectPool<EnemigoAlien>>();
-
         foreach (Oleada oleada in oleadas)
         {
             foreach (OpcionEnemigo opcion in oleada.Enemigos)
@@ -116,7 +82,6 @@ public class Spawner : MonoBehaviour
             }
         }
     }
-
 
     private bool ValidarOleadas()
     {
@@ -143,247 +108,107 @@ public class Spawner : MonoBehaviour
         return true;
     }
 
+    private static Transform[] Hijos(Transform contenedor)
+    {
+        if (contenedor == null)
+            return new Transform[0];
+
+        Transform[] hijos = new Transform[contenedor.childCount];
+        for (int i = 0; i < hijos.Length; i++)
+            hijos[i] = contenedor.GetChild(i);
+
+        return hijos;
+    }
 
     private IObjectPool<EnemigoAlien> CrearPool(EnemigoAlien prefab)
     {
         ObjectPool<EnemigoAlien> pool = null;
 
-        pool =
-            new ObjectPool<EnemigoAlien>(
-                () => CreateEnemy(prefab, pool),
-                OnGetEnemy,
-                OnReleaseEnemy,
-                OnDestroyEnemy,
-
-                collectionCheck: true,
-
-                defaultCapacity: capacidadMaxima,
-
-                maxSize: capacidadMaxima
-            );
+        pool = new ObjectPool<EnemigoAlien>(
+            () => CrearEnemigo(prefab, pool),
+            enemy =>
+            {
+                enemy.gameObject.SetActive(true);
+                enemy.ResetEnemy();
+            },
+            OnReleaseEnemy,
+            enemy =>
+            {
+                if (enemy != null)
+                    Destroy(enemy.gameObject);
+            },
+            collectionCheck: true,
+            defaultCapacity: posiciones.Length,
+            maxSize: posiciones.Length);
 
         return pool;
     }
 
-
-    private void Start()
+    private EnemigoAlien CrearEnemigo(EnemigoAlien prefab, IObjectPool<EnemigoAlien> pool)
     {
-        tiempoProximoSpawn =
-            Time.time +
-            tiempoEntreSpawns;
-    }
-
-
-    private void Update()
-    {
-        if (!spawnAutomatico)
-            return;
-
-
-        if (Time.time >= tiempoProximoSpawn)
-        {
-            tiempoProximoSpawn =
-                Time.time +
-                tiempoEntreSpawns;
-
-
-            SpawnEnemy();
-        }
-    }
-
-
-    // =========================================================
-    // CREAR ENEMIGO
-    // =========================================================
-
-    private EnemigoAlien CreateEnemy(
-        EnemigoAlien prefab,
-        IObjectPool<EnemigoAlien> pool)
-    {
-        EnemigoAlien enemy =
-            Instantiate(prefab);
-
-
+        EnemigoAlien enemy = Instantiate(prefab);
         enemy.SetPool(pool);
-
-
         enemy.gameObject.SetActive(false);
-
-
         return enemy;
     }
 
-
-    // =========================================================
-    // GET DEL POOL
-    // =========================================================
-
-    private void OnGetEnemy(
-        EnemigoAlien enemy)
+    private void Start()
     {
-        enemy.gameObject.SetActive(true);
-
-        enemy.ResetEnemy();
+        tiempoProximoSpawn = Time.time + tiempoEntreSpawns;
     }
 
-
-    // =========================================================
-    // RELEASE DEL POOL
-    // =========================================================
-
-    private void OnReleaseEnemy(
-        EnemigoAlien enemy)
+    private void Update()
     {
-        int index =
-            enemy.GetPositionIndex();
-
-        if (
-            index >= 0 &&
-            index < posicionesOcupadas.Length
-        )
-        {
-            posicionesOcupadas[index] = false;
-        }
-
-        enemigosActivos--;
-
-
-        if (enemigosActivos < 0)
-        {
-            enemigosActivos = 0;
-
-
-            Debug.LogError(
-                "Spawner: enemigosActivos < 0. " +
-                "Posible doble Release."
-            );
-        }
-
-        enemy.gameObject.SetActive(false);
-
-        enemigosEliminados++;
-
-        if (enemigosEliminados >= totalPlaneado)
-            MostrarVictoria();
-    }
-
-
-    private void MostrarVictoria()
-    {
-        // Si el jugador ya perdió, no se gana en el mismo momento.
-        if (canvasDerrota != null && canvasDerrota.activeSelf)
+        if (!spawnAutomatico || Time.time < tiempoProximoSpawn)
             return;
 
-        if (canvasVictoria != null)
-            canvasVictoria.SetActive(true);
+        tiempoProximoSpawn = Time.time + tiempoEntreSpawns;
+        SpawnEnemy();
     }
-
-
-
-    private void OnDestroyEnemy(
-        EnemigoAlien enemy)
-    {
-        if (enemy != null)
-        {
-            Destroy(enemy.gameObject);
-        }
-    }
-
-
-    // =========================================================
-    // SPAWN
-    // =========================================================
 
     public bool SpawnEnemy()
     {
-
         // Nunca salen más enemigos que la suma de todas las oleadas.
         if (totalSpawneados >= totalPlaneado)
             return false;
 
-        if (
-            enemigosActivos >=
-            capacidadMaxima
-        )
-        {
+        int indice = ElegirPosicionLibre();
+        if (indice < 0)
             return false;
-        }
 
-        int positionIndex =
-            BuscarPuntoLibre();
+        // ValidarOleadas ya comprobó que cada oleada tiene al menos una opción válida.
+        EnemigoAlien enemy = pools[oleadas[oleadaActual].ElegirPrefab(Random.value)].Get();
+        Vector3 destino = posiciones[indice].position;
 
-
-        if (positionIndex == -1)
-        {
-
-            return false;
-        }
-
-        EnemigoAlien prefabElegido =
-            oleadas[oleadaActual].ElegirPrefab(Random.value);
-
-        if (prefabElegido == null)
-        {
-            Debug.LogError("Spawner: la oleada no tiene enemigos válidos.");
-            return false;
-        }
-
-        posicionesOcupadas[positionIndex] =
-            true;
-
-
-        EnemigoAlien enemy =
-            pools[prefabElegido].Get();
-
-
-        if (enemy == null)
-        {
-            // Rollback de seguridad.
-            posicionesOcupadas[positionIndex] =
-                false;
-
-
-            Debug.LogError(
-                "Spawner: el pool devolvió null."
-            );
-
-
-            return false;
-        }
-
-
-        Transform puntoSpawn =
-            puntosSpawn[positionIndex];
-
-
-
-        Transform posicionFinal =
-            posicionesEnemigos[positionIndex];
-
-
-
-        enemy.transform.position =
-            puntoSpawn.position;
-
-
-        enemy.SetPositionIndex(
-            positionIndex
-        );
-
-
-        enemigosActivos++;
-
+        enemy.transform.position = ElegirPuntoSpawn(destino);
+        ocupantes[indice] = enemy;
         ContarSpawn();
 
-        _ = enemy.MoveToPositionAsync(
-            posicionFinal.position,
-            velocidadMovimiento
-        );
-
-
+        _ = enemy.MoveToPositionAsync(destino, velocidadMovimiento);
         return true;
     }
 
+    private int ElegirPosicionLibre()
+    {
+        List<int> libres = new List<int>();
+        for (int i = 0; i < ocupantes.Length; i++)
+        {
+            if (ocupantes[i] == null)
+                libres.Add(i);
+        }
+
+        return libres.Count == 0 ? -1 : libres[Random.Range(0, libres.Count)];
+    }
+
+    // Entra por uno de los puntos más cercanos a su posición: la entrada varía, pero ninguno cruza toda la pantalla.
+    private Vector3 ElegirPuntoSpawn(Vector3 destino)
+    {
+        Transform[] cercanos = (Transform[])puntosSpawn.Clone();
+        System.Array.Sort(cercanos, (a, b) =>
+            Vector3.Distance(a.position, destino).CompareTo(Vector3.Distance(b.position, destino)));
+
+        return cercanos[Random.Range(0, Mathf.Min(puntosSpawnCercanos, cercanos.Length))].position;
+    }
 
     // Cuenta el enemigo recién salido y pasa a la siguiente oleada cuando se completa la actual.
     private void ContarSpawn()
@@ -391,112 +216,53 @@ public class Spawner : MonoBehaviour
         totalSpawneados++;
         spawneadosEnOleada++;
 
-        if (
-            spawneadosEnOleada >= oleadas[oleadaActual].Cantidad &&
-            oleadaActual < oleadas.Length - 1
-        )
+        if (spawneadosEnOleada >= oleadas[oleadaActual].Cantidad && oleadaActual < oleadas.Length - 1)
         {
             oleadaActual++;
             spawneadosEnOleada = 0;
         }
     }
 
-
-    private int BuscarPuntoLibre()
+    private void OnReleaseEnemy(EnemigoAlien enemy)
     {
-        List<int> posicionesLibres =
-            new List<int>();
+        int indice = System.Array.IndexOf(ocupantes, enemy);
+        if (indice >= 0)
+            ocupantes[indice] = null;
 
+        enemy.gameObject.SetActive(false);
 
-        for (
-            int i = 0;
-            i < posicionesOcupadas.Length;
-            i++
-        )
-        {
-            if (!posicionesOcupadas[i])
-            {
-                posicionesLibres.Add(i);
-            }
-        }
-
-
-        if (posicionesLibres.Count == 0)
-            return -1;
-
-
-        int randomIndex =
-            Random.Range(
-                0,
-                posicionesLibres.Count
-            );
-
-
-        return posicionesLibres[randomIndex];
+        enemigosEliminados++;
+        if (enemigosEliminados >= totalPlaneado)
+            MostrarVictoria();
     }
 
+    private void MostrarVictoria()
+    {
+        // Si el jugador ya perdió, no se gana en el mismo momento.
+        if (canvasDerrota != null && canvasDerrota.activeSelf)
+            return;
+
+        // Las balas que quedaron en el aire no pueden matar al jugador después de ganar.
+        foreach (BalaEnemiga bala in FindObjectsByType<BalaEnemiga>(FindObjectsSortMode.None))
+            Destroy(bala.gameObject);
+
+        if (canvasVictoria != null)
+            canvasVictoria.SetActive(true);
+    }
 
     private void OnDrawGizmosSelected()
     {
-        // -----------------------------------------------------
-        // Puntos de entrada
-        // -----------------------------------------------------
+        DibujarHijos(contenedorSpawns, Color.red);
+        DibujarHijos(contenedorPosiciones, Color.green);
+    }
 
-        if (puntosSpawn != null)
-        {
-            Gizmos.color = Color.red;
+    private static void DibujarHijos(Transform contenedor, Color color)
+    {
+        if (contenedor == null)
+            return;
 
-
-            foreach (
-                Transform punto in puntosSpawn)
-            {
-                if (punto == null)
-                    continue;
-
-
-                Gizmos.DrawWireSphere(
-                    punto.position,
-                    0.3f
-                );
-
-
-                Gizmos.DrawLine(
-                    punto.position,
-                    punto.position +
-                    Vector3.down * 0.5f
-                );
-            }
-        }
-
-
-        // -----------------------------------------------------
-        // Posiciones finales
-        // -----------------------------------------------------
-
-        if (posicionesEnemigos != null)
-        {
-            Gizmos.color = Color.green;
-
-
-            foreach (
-                Transform posicion in posicionesEnemigos)
-            {
-                if (posicion == null)
-                    continue;
-
-
-                Gizmos.DrawWireSphere(
-                    posicion.position,
-                    0.3f
-                );
-
-
-                Gizmos.DrawLine(
-                    posicion.position,
-                    posicion.position +
-                    Vector3.up * 0.5f
-                );
-            }
-        }
+        Gizmos.color = color;
+        foreach (Transform hijo in contenedor)
+            Gizmos.DrawWireSphere(hijo.position, 0.3f);
     }
 }
