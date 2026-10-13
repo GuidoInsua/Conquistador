@@ -32,19 +32,6 @@ public class Oleada
     /// Elige el prefab de un enemigo según el peso de cada opción. valor va de 0 a 1.
     /// Devuelve null si ninguna opción es válida.
     /// </summary>
-    public EnemigoAlien ElegirPrefab(float valor)
-    {
-        if (enemigos == null)
-            return null;
-
-        float[] pesos = new float[enemigos.Length];
-        for (int i = 0; i < enemigos.Length; i++)
-        {
-            bool valida = enemigos[i] != null && enemigos[i].Prefab != null;
-            pesos[i] = valida ? enemigos[i].Peso : 0f;
-        }
-
-        int indice = SorteoPonderado.ElegirIndice(pesos, valor);
-        return indice < 0 ? null : enemigos[indice].Prefab;
-    }
+    public EnemigoAlien ElegirPrefab(float valor) =>
+        SorteoPonderado.Elegir(enemigos, o => o.Prefab != null, o => o.Peso, valor)?.Prefab;
 }

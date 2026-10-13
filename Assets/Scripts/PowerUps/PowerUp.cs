@@ -103,19 +103,6 @@ public abstract class PowerUp : MonoBehaviour
     /// Elige un prefab según el peso de cada opción. valor va de 0 a 1 (0 = primera opción, 1 = última).
     /// Ignora las opciones sin prefab o con peso 0. Devuelve null si no queda ninguna.
     /// </summary>
-    public static GameObject ElegirPrefab(OpcionPowerUp[] opciones, float valor)
-    {
-        if (opciones == null)
-            return null;
-
-        float[] pesos = new float[opciones.Length];
-        for (int i = 0; i < opciones.Length; i++)
-        {
-            bool valida = opciones[i] != null && opciones[i].Prefab != null;
-            pesos[i] = valida ? opciones[i].Peso : 0f;
-        }
-
-        int indice = SorteoPonderado.ElegirIndice(pesos, valor);
-        return indice < 0 ? null : opciones[indice].Prefab;
-    }
+    public static GameObject ElegirPrefab(OpcionPowerUp[] opciones, float valor) =>
+        SorteoPonderado.Elegir(opciones, o => o.Prefab != null, o => o.Peso, valor)?.Prefab;
 }

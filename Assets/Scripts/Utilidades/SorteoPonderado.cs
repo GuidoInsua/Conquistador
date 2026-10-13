@@ -11,8 +11,27 @@
 // ##########################################################################
 // Desc: Elige un índice al azar según el peso de cada opción (power-ups, tipos de enemigo).
 
+using System;
+
 public static class SorteoPonderado
 {
+    /// <summary>
+    /// Elige una opción según su peso. Las opciones null o no válidas cuentan como peso 0.
+    /// Devuelve null si no queda ninguna.
+    /// </summary>
+    public static T Elegir<T>(T[] opciones, Func<T, bool> esValida, Func<T, float> peso, float valor) where T : class
+    {
+        if (opciones == null)
+            return null;
+
+        float[] pesos = new float[opciones.Length];
+        for (int i = 0; i < opciones.Length; i++)
+            pesos[i] = opciones[i] != null && esValida(opciones[i]) ? peso(opciones[i]) : 0f;
+
+        int indice = ElegirIndice(pesos, valor);
+        return indice < 0 ? null : opciones[indice];
+    }
+
     /// <summary>
     /// Devuelve el índice elegido según los pesos. valor va de 0 a 1 (0 = primera opción, 1 = última).
     /// Ignora los pesos 0 o negativos. Devuelve -1 si no queda ninguno.
