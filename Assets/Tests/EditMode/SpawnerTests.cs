@@ -190,6 +190,25 @@ public class SpawnerTests
     }
 
     [Test]
+    public void Spawner_con_boss_inicia_la_fase_en_vez_de_la_victoria()
+    {
+        var camara = new GameObject("camara", typeof(Camera)).GetComponent<Camera>();
+        var faseBoss = new GameObject("faseBoss").AddComponent<FaseBoss>();
+        typeof(FaseBoss).GetField("camara", privado).SetValue(faseBoss, camara);
+        Asignar("faseBoss", faseBoss);
+        Iniciar(new[] { new Oleada(1, Solo(alienA)) }, 1);
+
+        spawner.SpawnEnemy();
+        Matar(Vivos().Single());
+
+        Assert.IsFalse(canvasVictoria.activeSelf);
+        Assert.IsTrue((bool)typeof(FaseBoss).GetField("isIniciada", privado).GetValue(faseBoss));
+
+        Object.DestroyImmediate(faseBoss.gameObject);
+        Object.DestroyImmediate(camara.gameObject);
+    }
+
+    [Test]
     public void Oleada_elige_el_tipo_segun_el_peso()
     {
         var oleada = new Oleada(10, new[] { new OpcionEnemigo(alienA, 60f), new OpcionEnemigo(alienB, 40f) });

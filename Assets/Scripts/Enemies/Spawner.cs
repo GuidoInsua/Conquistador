@@ -23,6 +23,8 @@ public class Spawner : MonoBehaviour
     [Header("Fin del juego")]
     [SerializeField] private GameObject canvasVictoria;
     [SerializeField] private GameObject canvasDerrota;
+    [Tooltip("Si está asignada, al terminar las oleadas empieza el boss y la victoria llega al vencerlo.")]
+    [SerializeField] private FaseBoss faseBoss;
 
     [Header("Escena")]
     [Tooltip("Sus hijos son los puntos fuera de pantalla por donde entran los aliens.")]
@@ -226,7 +228,10 @@ public class Spawner : MonoBehaviour
             return;
         }
 
-        MostrarVictoria();
+        if (faseBoss != null)
+            faseBoss.Iniciar(MostrarVictoria);
+        else
+            MostrarVictoria();
     }
 
     private void MostrarVictoria()

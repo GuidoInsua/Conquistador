@@ -33,6 +33,15 @@ public class BordesMundo : MonoBehaviour
 			return;
 		}
 
+		Recalcular();
+	}
+
+	// Rehace las paredes con el tamaño actual de la cámara (por ejemplo, después de alejarla).
+	public void Recalcular()
+	{
+		foreach (Transform pared in transform)
+			Destroy(pared.gameObject);
+
 		screenBounds = mainCamera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, mainCamera.transform.position.z));
 
 		containerWidth = screenBounds.x;
