@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Pruebas de la vida de las partes del boss, de cuándo muere y del daño del rayo.
+// Desc: Pruebas de la vida y el daño visible de las partes del boss, de cuándo muere y del daño del rayo.
 
 using System.Reflection;
 using NUnit.Framework;
@@ -47,7 +47,7 @@ public class JefeTests
 
     ParteBoss CrearParte(string nombre, float vida)
     {
-        var go = new GameObject(nombre, typeof(SpriteRenderer));
+        var go = new GameObject(nombre, typeof(SpriteRenderer), typeof(Animator), typeof(BoxCollider2D));
         go.transform.SetParent(jefeGo.transform);
         var parte = go.AddComponent<ParteBoss>();
         typeof(ParteBoss).GetField("vidaMaxima", privado).SetValue(parte, vida);
@@ -66,6 +66,31 @@ public class JefeTests
         Assert.AreEqual(0f, pinza.GetSalud());
         Assert.IsFalse(pinza.EstaViva);
         Assert.IsFalse(pinza.gameObject.activeSelf);
+    }
+
+    [Test]
+    public void Parte_con_estados_de_dano_los_recorre_y_queda_a_la_vista_al_destruirse()
+    {
+        var parteGo = new GameObject("pinzaConDano", typeof(SpriteRenderer), typeof(Animator), typeof(BoxCollider2D));
+        parteGo.transform.SetParent(jefeGo.transform);
+        var parte = parteGo.AddComponent<ParteBoss>();
+        typeof(ParteBoss).GetField("vidaMaxima", privado).SetValue(parte, 9f);
+        typeof(ParteBoss).GetField("estadosDano", privado).SetValue(parte, new[] { "Idle", "Dano1", "Dano2", "Destruida" });
+        typeof(ParteBoss).GetMethod("Awake", privado).Invoke(parte, null);
+        int Estado() => (int)typeof(ParteBoss).GetField("estadoActual", privado).GetValue(parte);
+
+        parte.TakeDamage(2f);
+        Assert.AreEqual(0, Estado(), "con 7 de 9 sigue sana");
+        parte.TakeDamage(2f);
+        Assert.AreEqual(1, Estado(), "con 5 de 9 pasa al primer daño");
+        parte.TakeDamage(4f);
+        Assert.AreEqual(2, Estado(), "con 1 de 9 pasa al segundo daño");
+
+        parte.TakeDamage(1f);
+        Assert.AreEqual(3, Estado());
+        Assert.IsFalse(parte.EstaViva);
+        Assert.IsTrue(parteGo.activeSelf, "queda el sprite de destruida");
+        Assert.IsFalse(parteGo.GetComponent<Collider2D>().enabled, "las balas ya no le pegan");
     }
 
     [Test]

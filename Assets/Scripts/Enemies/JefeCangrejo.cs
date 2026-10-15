@@ -41,6 +41,10 @@ public class JefeCangrejo : MonoBehaviour
     [SerializeField] private RayoBoss rayo;
     [SerializeField] private float tiempoEntreRayos = 4f;
 
+    private const string animCuerpoIdle = "Idle";
+    private const string animCuerpoEnojado = "Enojado";
+
+    private Animator animatorCuerpo;
     private System.Action alMorir;
     private bool isEnPosicion;
     private bool isAtacando;
@@ -51,9 +55,9 @@ public class JefeCangrejo : MonoBehaviour
 
     private void Awake()
     {
-        if (cuerpo == null)
+        if (cuerpo == null || !cuerpo.TryGetComponent(out animatorCuerpo))
         {
-            Debug.LogError("JefeCangrejo: falta asignar el cuerpo.");
+            Debug.LogError("JefeCangrejo: falta asignar el cuerpo o su Animator.");
             enabled = false;
             return;
         }
@@ -95,7 +99,9 @@ public class JefeCangrejo : MonoBehaviour
 
             // Quieto mientras dispara: si se mueve, el rayo se desfasa de la boca.
             isAtacando = true;
+            animatorCuerpo.Play(animCuerpoEnojado);
             yield return rayo.Disparar();
+            animatorCuerpo.Play(animCuerpoIdle);
             isAtacando = false;
         }
     }
