@@ -9,11 +9,12 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Pruebas de la vida de las partes del boss y de cuándo muere.
+// Desc: Pruebas de la vida de las partes del boss, de cuándo muere y del daño del rayo.
 
 using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class JefeTests
 {
@@ -91,5 +92,48 @@ public class JefeTests
         cuerpo.TakeDamage(5f);
         Assert.IsFalse(jefeGo.activeSelf);
         Assert.AreEqual(1, avisos);
+    }
+
+    VidaJugador CrearJugador()
+    {
+        // Inactivo para que Awake no corra hasta tener la barra asignada.
+        var go = new GameObject("jugador", typeof(BoxCollider2D));
+        go.tag = "Player";
+        go.SetActive(false);
+        go.transform.SetParent(jefeGo.transform);
+        var vida = go.AddComponent<VidaJugador>();
+        var barra = go.AddComponent<BarraVida>();
+        typeof(BarraVida).GetField("fichas", privado).SetValue(barra, new Image[0]);
+        typeof(VidaJugador).GetField("barraVida", privado).SetValue(vida, barra);
+        typeof(VidaJugador).GetMethod("Awake", privado).Invoke(vida, null);
+        return vida;
+    }
+
+    [Test]
+    public void Rayo_saca_una_ficha_por_intervalo_solo_con_el_jugador_dentro()
+    {
+        var jugador = CrearJugador();
+        var rayoGo = new GameObject("rayo", typeof(Animator), typeof(BoxCollider2D));
+        rayoGo.transform.SetParent(jefeGo.transform);
+        var rayo = rayoGo.AddComponent<RayoBoss>();
+        typeof(RayoBoss).GetMethod("Awake", privado).Invoke(rayo, null);
+        void Llamar(string metodo, params object[] args) => typeof(RayoBoss).GetMethod(metodo, privado).Invoke(rayo, args);
+        var colliderJugador = jugador.GetComponent<Collider2D>();
+
+        Llamar("Update");
+        Assert.AreEqual(5, jugador.VidaActual, "fuera del rayo no hay daño");
+
+        Llamar("OnTriggerEnter2D", colliderJugador);
+        Llamar("Update");
+        Llamar("Update");
+        Assert.AreEqual(4, jugador.VidaActual, "una ficha por intervalo, no una por frame");
+
+        typeof(RayoBoss).GetField("proximoDano", privado).SetValue(rayo, float.MinValue); // como si ya hubiera pasado el intervalo
+        Llamar("Update");
+        Assert.AreEqual(3, jugador.VidaActual);
+
+        Llamar("OnTriggerExit2D", colliderJugador);
+        Llamar("Update");
+        Assert.AreEqual(3, jugador.VidaActual);
     }
 }

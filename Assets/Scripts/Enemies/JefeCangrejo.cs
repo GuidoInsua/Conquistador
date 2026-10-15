@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: El boss cangrejo: entra desde arriba, sigue al jugador despacio y muere cuando se destruye el cuerpo.
+// Desc: El boss cangrejo: entra desde arriba, sigue al jugador despacio, ataca y muere cuando se destruye el cuerpo.
 
 using System.Collections;
 using UnityEngine;
@@ -36,8 +36,14 @@ public class JefeCangrejo : MonoBehaviour
     [SerializeField] private Vector2 amplitudDesvio = new Vector2(2.5f, 1.2f);
     [SerializeField] private float frecuenciaDesvio = 0.35f;
 
+    [Header("Ataques")]
+    [Tooltip("Si queda vacío, el boss no lanza el rayo.")]
+    [SerializeField] private RayoBoss rayo;
+    [SerializeField] private float tiempoEntreRayos = 4f;
+
     private System.Action alMorir;
     private bool isEnPosicion;
+    private bool isAtacando;
     private float xSeguida;
     private float velocidadX;
     private float tiempoDesvio;
@@ -76,17 +82,34 @@ public class JefeCangrejo : MonoBehaviour
         xSeguida = posicionPelea.x;
         semillaDesvio = Random.value * 100f;
         isEnPosicion = true;
+
+        if (rayo != null)
+            StartCoroutine(Atacar());
+    }
+
+    private IEnumerator Atacar()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(tiempoEntreRayos);
+
+            // Quieto mientras dispara: si se mueve, el rayo se desfasa de la boca.
+            isAtacando = true;
+            yield return rayo.Disparar();
+            isAtacando = false;
+        }
     }
 
     private void Update()
     {
-        if (!isEnPosicion)
+        if (!isEnPosicion || isAtacando)
             return;
 
         float objetivoX = jugador != null ? Mathf.Clamp(jugador.position.x, -limiteX, limiteX) : posicionPelea.x;
         xSeguida = Mathf.SmoothDamp(xSeguida, objetivoX, ref velocidadX, tiempoSeguimiento, velocidadMaxima);
 
         // Perlin da un desvío al azar pero suave. Se le resta el valor inicial para que arranque en 0 y no salte al llegar.
+        // El tiempo propio no avanza mientras ataca, así retoma el desvío donde lo dejó.
         tiempoDesvio += Time.deltaTime;
         float t = tiempoDesvio * frecuenciaDesvio;
         float desvioX = Mathf.PerlinNoise(semillaDesvio, t) - Mathf.PerlinNoise(semillaDesvio, 0f);
