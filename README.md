@@ -47,7 +47,8 @@ Trabajo práctico de **Programación 1** (segundo cuatrimestre 2026) de **Guido 
 
 - Tus disparos suben y hacen **1** de daño. El alien común tiene **4** de vida y el alien volador, **6**.
 - Los aliens entran por el costado más cercano a su lugar y se quedan en una de las **10** posiciones de la pantalla, así que puede haber hasta **10** a la vez. Aparece uno nuevo cada **2 segundos**.
-- Hay **2 oleadas**, **50 aliens** en total: primero **20** comunes y después **30** mezclados (60 % comunes, 40 % voladores). Si los matás a todos, ganás.
+- Hay **2 oleadas**, **50 aliens** en total: primero **20** comunes y después **30** mezclados (60 % comunes, 40 % voladores). La segunda no arranca hasta que mueren todos los de la primera.
+- Al terminar las oleadas la cámara se aleja, tiembla y baja el **jefe cangrejo**. Te sigue despacio y cada **4 segundos** se frena, avisa con un rayo fino y lanza desde la boca un rayo continuo que te saca **1** punto de vida cada medio segundo mientras estés adentro. Tiene **60** de vida en el cuerpo y **25** en cada pinza; las pinzas se pueden romper por separado y se ponen rojas a medida que se gastan.
 - Cada alien dispara cada **6 segundos**. El común tira 1 bala; el volador tira **3 en abanico**, lentas, que caen balanceándose como un copo de nieve.
 - Empezás con **5** puntos de vida, que se ven como fichas abajo a la izquierda. Cada disparo enemigo te quita **1**.
 - Al morir un alien hay chances de que suelte un power-up, y se elige uno de los 4 al azar. Si pasa de largo y sale de la pantalla, se pierde:
@@ -55,7 +56,7 @@ Trabajo práctico de **Programación 1** (segundo cuatrimestre 2026) de **Guido 
   - **Verde**: +1 punto de vida.
   - **Rojo**: balas más anchas y con **2** de daño durante **20 segundos**.
   - **Azul**: disparo doble en paralelo durante **20 segundos**.
-- Cuando te quedás sin vida aparece la pantalla de derrota, y si matás a los 50 aliens, la de victoria. Desde ahí reiniciás, volvés al menú o salís.
+- Cuando te quedás sin vida aparece la pantalla de derrota, y si matás al jefe, la de victoria. Desde ahí reiniciás, volvés al menú o salís.
 
 ## Cómo correrlo
 
@@ -82,14 +83,14 @@ Las escenas del build son `Menu` y `Juego`.
 ```
 Conquistador/
 ├── Assets/
-│   ├── Animations/   Animaciones de aliens, disparos y power-ups
+│   ├── Animations/   Animaciones de aliens, jefe, disparos y power-ups
 │   ├── Animators/    Controladores de animación
 │   ├── Audio/        Música y efectos
 │   ├── Materials/
 │   ├── Prefabs/      Alien, láser, disparo enemigo, power-up, partículas
 │   ├── Scenes/       Menu y Juego
 │   ├── Scripts/
-│   │   ├── Enemies/      EnemigoAlien, DisparoEnemigo, Spawner, Oleada
+│   │   ├── Enemies/      Aliens, Spawner, Oleada y el jefe (FaseBoss, JefeCangrejo, ParteBoss, RayoBoss)
 │   │   ├── Interfaces/   IDamageable
 │   │   ├── Player/       Movimiento, disparo y vida del jugador
 │   │   ├── PowerUps/     Los 4 power-ups
@@ -106,14 +107,14 @@ Conquistador/
 ## Pruebas
 
 En Unity: **Window → General → Test Runner → EditMode → Run All**.
-Cubren la vida del alien y del jugador, el Spawner (posiciones, oleadas, punto de entrada y victoria), el sorteo con pesos, la elección de power-ups y la bala potenciada.
+Cubren la vida del alien y del jugador, el Spawner (posiciones, oleadas, punto de entrada, victoria y paso al jefe), las partes del jefe y el daño del rayo, el sorteo con pesos, la elección de power-ups y la bala potenciada.
 
 ## Ideas para seguir
 
 ```
  [ ] Puntaje y récord
  [x] Oleadas con enemigos distintos
- [ ] Jefe final
+ [ ] Jefe final (falta el ataque de las pinzas)
  [ ] Más power-ups (escudo)
  [ ] Efectos de sonido al disparar y al morir
  [ ] Pausa
