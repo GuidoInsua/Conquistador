@@ -154,17 +154,21 @@ public class SpawnerTests
     }
 
     [Test]
-    public void Spawner_pasa_de_oleada_al_completar_la_cantidad()
+    public void Spawner_espera_que_muera_toda_la_oleada_para_pasar_a_la_siguiente()
     {
         Iniciar(new[] { new Oleada(2, Solo(alienA)), new Oleada(2, Solo(alienB)) }, 10);
 
-        // 3 lugares: la primera oleada son 2 de A y después salen de B.
-        spawner.SpawnEnemy();
-        spawner.SpawnEnemy();
-        spawner.SpawnEnemy();
+        Assert.IsTrue(spawner.SpawnEnemy());
+        Assert.IsTrue(spawner.SpawnEnemy());
+        Assert.IsFalse(spawner.SpawnEnemy(), "la oleada 2 no sale con aliens de la 1 vivos");
 
-        var nombres = Vivos().Select(a => a.name).OrderBy(n => n).ToArray();
-        CollectionAssert.AreEqual(new[] { "alienA(Clone)", "alienA(Clone)", "alienB(Clone)" }, nombres);
+        var vivos = Vivos();
+        Matar(vivos[0]);
+        Assert.IsFalse(spawner.SpawnEnemy(), "todavía queda uno de la oleada 1");
+
+        Matar(vivos[1]);
+        Assert.IsTrue(spawner.SpawnEnemy());
+        Assert.AreEqual("alienB(Clone)", Vivos().Single().name);
     }
 
     [Test]
@@ -172,15 +176,15 @@ public class SpawnerTests
     {
         Iniciar(new[] { new Oleada(2, Solo(alienA)), new Oleada(1, Solo(alienB)) }, 10);
 
-        for (int i = 0; i < 3; i++)
-            spawner.SpawnEnemy();
-
+        spawner.SpawnEnemy();
+        spawner.SpawnEnemy();
         var vivos = Vivos();
         Matar(vivos[0]);
         Matar(vivos[1]);
         Assert.IsFalse(canvasVictoria.activeSelf);
 
-        Matar(vivos[2]);
+        spawner.SpawnEnemy();
+        Matar(Vivos().Single());
         Assert.IsTrue(canvasVictoria.activeSelf);
         Assert.AreEqual(3, spawner.EnemigosEliminados);
     }

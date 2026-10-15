@@ -43,7 +43,6 @@ public class Spawner : MonoBehaviour
     private Dictionary<EnemigoAlien, IObjectPool<EnemigoAlien>> pools;
     private int oleadaActual;
     private int spawneadosEnOleada;
-    private int totalPlaneado;
     private int totalSpawneados;
     private int enemigosEliminados;
     private float tiempoProximoSpawn;
@@ -91,8 +90,6 @@ public class Spawner : MonoBehaviour
             return false;
         }
 
-        totalPlaneado = 0;
-
         for (int i = 0; i < oleadas.Length; i++)
         {
             // Con valor 0 devuelve la primera opción válida; null solo si no hay ninguna.
@@ -101,8 +98,6 @@ public class Spawner : MonoBehaviour
                 Debug.LogError("Spawner: la oleada " + i + " no tiene cantidad o enemigos válidos.");
                 return false;
             }
-
-            totalPlaneado += oleadas[i].Cantidad;
         }
 
         return true;
@@ -168,8 +163,8 @@ public class Spawner : MonoBehaviour
 
     public bool SpawnEnemy()
     {
-        // Nunca salen más enemigos que la suma de todas las oleadas.
-        if (totalSpawneados >= totalPlaneado)
+        // La oleada ya salió completa: la siguiente espera a que mueran todos sus enemigos.
+        if (spawneadosEnOleada >= oleadas[oleadaActual].Cantidad)
             return false;
 
         int indice = ElegirPosicionLibre();
@@ -182,7 +177,8 @@ public class Spawner : MonoBehaviour
 
         enemy.transform.position = ElegirPuntoSpawn(destino);
         ocupantes[indice] = enemy;
-        ContarSpawn();
+        totalSpawneados++;
+        spawneadosEnOleada++;
 
         _ = enemy.MoveToPositionAsync(destino, velocidadMovimiento);
         return true;
@@ -210,19 +206,6 @@ public class Spawner : MonoBehaviour
         return cercanos[Random.Range(0, Mathf.Min(puntosSpawnCercanos, cercanos.Length))].position;
     }
 
-    // Cuenta el enemigo recién salido y pasa a la siguiente oleada cuando se completa la actual.
-    private void ContarSpawn()
-    {
-        totalSpawneados++;
-        spawneadosEnOleada++;
-
-        if (spawneadosEnOleada >= oleadas[oleadaActual].Cantidad && oleadaActual < oleadas.Length - 1)
-        {
-            oleadaActual++;
-            spawneadosEnOleada = 0;
-        }
-    }
-
     private void OnReleaseEnemy(EnemigoAlien enemy)
     {
         int indice = System.Array.IndexOf(ocupantes, enemy);
@@ -232,8 +215,18 @@ public class Spawner : MonoBehaviour
         enemy.gameObject.SetActive(false);
 
         enemigosEliminados++;
-        if (enemigosEliminados >= totalPlaneado)
-            MostrarVictoria();
+        // Quedan vivos o falta que salgan enemigos de esta oleada.
+        if (enemigosEliminados < totalSpawneados || spawneadosEnOleada < oleadas[oleadaActual].Cantidad)
+            return;
+
+        if (oleadaActual < oleadas.Length - 1)
+        {
+            oleadaActual++;
+            spawneadosEnOleada = 0;
+            return;
+        }
+
+        MostrarVictoria();
     }
 
     private void MostrarVictoria()
