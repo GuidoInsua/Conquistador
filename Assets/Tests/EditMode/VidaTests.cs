@@ -55,16 +55,15 @@ public class VidaTests
         Assert.AreNotEqual(EnemigoAlien.animMuerte, animacion.GetValue(alien));
     }
 
-    [Test]
-    public void Jugador_vida_queda_entre_cero_y_maxima_y_la_barra_la_refleja()
+    VidaJugador CrearJugador(out Image[] fichas)
     {
         // Inactivo para que Awake no corra hasta tener la barra asignada.
-        go = new GameObject("jugador");
+        go = new GameObject("jugador", typeof(SpriteRenderer));
         go.SetActive(false);
         var vida = go.AddComponent<VidaJugador>();
         var barra = go.AddComponent<BarraVida>();
 
-        var fichas = new Image[5];
+        fichas = new Image[5];
         for (int i = 0; i < fichas.Length; i++)
         {
             var ficha = new GameObject("ficha" + i, typeof(Image));
@@ -75,7 +74,18 @@ public class VidaTests
         var privado = BindingFlags.NonPublic | BindingFlags.Instance;
         typeof(BarraVida).GetField("fichas", privado).SetValue(barra, fichas);
         typeof(VidaJugador).GetField("barraVida", privado).SetValue(vida, barra);
+        typeof(VidaJugador).GetField("materialDestello", privado).SetValue(vida, new Material(Shader.Find("GUI/Text Shader")));
         typeof(VidaJugador).GetMethod("Awake", privado).Invoke(vida, null);
+        return vida;
+    }
+
+    void TerminarInvulnerabilidad(VidaJugador vida) =>
+        typeof(VidaJugador).GetField("finInvulnerable", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(vida, float.MinValue);
+
+    [Test]
+    public void Jugador_vida_queda_entre_cero_y_maxima_y_la_barra_la_refleja()
+    {
+        var vida = CrearJugador(out var fichas);
 
         Assert.AreEqual(5, vida.VidaActual);
         Assert.AreEqual(5, fichas.Count(f => f.enabled));
@@ -87,5 +97,24 @@ public class VidaTests
         vida.actualizarVida(100);
         Assert.AreEqual(5, vida.VidaActual);
         Assert.AreEqual(5, fichas.Count(f => f.enabled));
+    }
+
+    [Test]
+    public void Jugador_no_recibe_dano_mientras_titila_pero_si_se_cura()
+    {
+        var vida = CrearJugador(out _);
+
+        vida.actualizarVida(-1);
+        Assert.IsTrue(vida.EstaInvulnerable);
+
+        vida.actualizarVida(-1);
+        Assert.AreEqual(4, vida.VidaActual, "el segundo golpe no cuenta");
+
+        vida.actualizarVida(1);
+        Assert.AreEqual(5, vida.VidaActual, "curarse sí funciona");
+
+        TerminarInvulnerabilidad(vida);
+        vida.actualizarVida(-1);
+        Assert.AreEqual(4, vida.VidaActual);
     }
 }

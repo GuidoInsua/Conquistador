@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Maneja la vida del jugador, su barra de fichas y la pantalla de muerte.
+// Desc: Maneja la vida del jugador, su barra de fichas, el titileo de invulnerable tras un golpe y la pantalla de muerte.
 
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -21,21 +21,43 @@ public class VidaJugador : MonoBehaviour
 	[FormerlySerializedAs("cnavasMuerte")]
 	[SerializeField] private GameObject canvasMuerte;
 
+	[Header("Golpe")]
+	[Tooltip("Tiempo sin recibir daño después de un golpe.")]
+	[SerializeField] private float duracionInvulnerable = 1f;
+	[Tooltip("Cada cuánto alterna entre normal y blanco mientras es invulnerable.")]
+	[SerializeField] private float intervaloTitileo = 0.08f;
+	[Tooltip("Pinta el sprite entero de blanco (shader GUI/Text Shader).")]
+	[SerializeField] private Material materialDestello;
+
 	private int vidaActual;
+	private float finInvulnerable;
+	private SpriteRenderer spriteRenderer;
+	private Material materialNormal;
 
 	public int VidaActual => vidaActual;
+	public bool EstaInvulnerable => Time.time < finInvulnerable;
 
 	void Awake()
 	{
-		if (barraVida == null)
+		spriteRenderer = GetComponent<SpriteRenderer>();
+
+		if (barraVida == null || spriteRenderer == null || materialDestello == null)
 		{
-			Debug.LogError("VidaJugador: falta asignar barraVida.");
+			Debug.LogError("VidaJugador: falta asignar barraVida, materialDestello o el SpriteRenderer.");
 			enabled = false;
 			return;
 		}
 
+		materialNormal = spriteRenderer.sharedMaterial;
 		vidaActual = vidaMaxima;
 		ActualizarBarra();
+	}
+
+	private void Update()
+	{
+		// Arranca en blanco y alterna cada intervalo hasta que se termina la invulnerabilidad.
+		bool isBlanco = EstaInvulnerable && (int)((finInvulnerable - Time.time) / intervaloTitileo) % 2 == 0;
+		spriteRenderer.sharedMaterial = isBlanco ? materialDestello : materialNormal;
 	}
 
 	private void ActualizarBarra()
@@ -45,6 +67,14 @@ public class VidaJugador : MonoBehaviour
 
 	public void actualizarVida(int cantidad)
 	{
+		if (cantidad < 0)
+		{
+			if (EstaInvulnerable)
+				return;
+
+			finInvulnerable = Time.time + duracionInvulnerable;
+		}
+
 		vidaActual += cantidad;
 		vidaActual = Mathf.Clamp(vidaActual, 0, vidaMaxima);
 		ActualizarBarra();

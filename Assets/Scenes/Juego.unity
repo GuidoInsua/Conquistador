@@ -1999,8 +1999,6 @@ MonoBehaviour:
   tamanoCamaraBoss: 7
   duracionZoom: 2
   bordes: {fileID: 1643800409}
-  duracionTemblor: 1.5
-  intensidadTemblor: 0.15
   musica: {fileID: 1406606075}
   musicaBoss: {fileID: 0}
 --- !u!4 &1247414242
@@ -2801,6 +2799,9 @@ MonoBehaviour:
   vidaMaxima: 5
   barraVida: {fileID: 4100000001}
   canvasMuerte: {fileID: 372225865}
+  duracionInvulnerable: 1
+  intervaloTitileo: 0.08
+  materialDestello: {fileID: 2100000, guid: 1aa81973edb63fb4e930d3a590f012a6, type: 2}
 --- !u!95 &1886397571
 Animator:
   serializedVersion: 7

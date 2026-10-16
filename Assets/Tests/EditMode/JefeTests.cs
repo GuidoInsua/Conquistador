@@ -129,7 +129,7 @@ public class JefeTests
     VidaJugador CrearJugador()
     {
         // Inactivo para que Awake no corra hasta tener la barra asignada.
-        var go = new GameObject("jugador", typeof(BoxCollider2D));
+        var go = new GameObject("jugador", typeof(BoxCollider2D), typeof(SpriteRenderer));
         go.tag = "Player";
         go.SetActive(false);
         go.transform.SetParent(jefeGo.transform);
@@ -137,6 +137,7 @@ public class JefeTests
         var barra = go.AddComponent<BarraVida>();
         typeof(BarraVida).GetField("fichas", privado).SetValue(barra, new Image[0]);
         typeof(VidaJugador).GetField("barraVida", privado).SetValue(vida, barra);
+        typeof(VidaJugador).GetField("materialDestello", privado).SetValue(vida, new Material(Shader.Find("GUI/Text Shader")));
         typeof(VidaJugador).GetMethod("Awake", privado).Invoke(vida, null);
         return vida;
     }
@@ -161,6 +162,7 @@ public class JefeTests
         Assert.AreEqual(4, jugador.VidaActual, "una ficha por intervalo, no una por frame");
 
         typeof(RayoBoss).GetField("proximoDano", privado).SetValue(rayo, float.MinValue); // como si ya hubiera pasado el intervalo
+        typeof(VidaJugador).GetField("finInvulnerable", privado).SetValue(jugador, float.MinValue); // y el titileo del golpe anterior
         Llamar("Update");
         Assert.AreEqual(3, jugador.VidaActual);
 
