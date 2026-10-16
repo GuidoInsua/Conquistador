@@ -211,8 +211,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 005022aeb00c375458dcc0b5b576bd1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Conquistador::Esbirro
-  distanciaSalida: 3
-  velocidadSalida: 4
+  distanciaSalida: 6
+  velocidadSalida: 5
   velocidadPersecucion: 1.2
   amplitudOscilacion: {x: 0.6, y: 0.4}
   frecuenciaOscilacion: 0.8

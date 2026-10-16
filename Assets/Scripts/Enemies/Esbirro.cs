@@ -17,8 +17,8 @@ public class Esbirro : MonoBehaviour
 {
     [Header("Salida")]
     [Tooltip("Cuánto se corre hacia el costado del boss antes de ir por el jugador.")]
-    [SerializeField] private float distanciaSalida = 3f;
-    [SerializeField] private float velocidadSalida = 4f;
+    [SerializeField] private float distanciaSalida = 6f;
+    [SerializeField] private float velocidadSalida = 5f;
 
     [Header("Persecución")]
     [SerializeField] private float velocidadPersecucion = 1.2f;
@@ -32,6 +32,8 @@ public class Esbirro : MonoBehaviour
 
     // Igual que BalaEnemiga: cada golpe saca una ficha.
     private const int danoAlJugador = 1;
+    // Distancia mínima al borde de la cámara al terminar la salida.
+    private const float margenBorde = 1f;
 
     private EnemigoAlien alien;
     private Transform jugador;
@@ -60,6 +62,14 @@ public class Esbirro : MonoBehaviour
         this.jugador = jugador;
         transform.position = posicionBase = origen;
         destinoSalida = origen + Vector3.right * lado * distanciaSalida;
+
+        // Si el boss está cerca de un borde, la salida no lo cruza.
+        Camera camara = Camera.main;
+        if (camara != null)
+        {
+            float mitadAncho = camara.orthographicSize * camara.aspect - margenBorde;
+            destinoSalida.x = Mathf.Clamp(destinoSalida.x, camara.transform.position.x - mitadAncho, camara.transform.position.x + mitadAncho);
+        }
         isSaliendo = true;
         finRetroceso = 0f;
         tiempoOscilacion = 0f;
