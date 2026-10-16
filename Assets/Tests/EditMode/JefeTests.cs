@@ -11,6 +11,7 @@
 // ##########################################################################
 // Desc: Pruebas de la vida y el daño visible de las partes del boss, de cuándo muere y del daño del rayo.
 
+using System.Collections;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
@@ -104,17 +105,23 @@ public class JefeTests
     }
 
     [Test]
-    public void Jefe_muere_y_avisa_una_sola_vez_al_destruir_el_cuerpo()
+    public void Jefe_explota_y_avisa_una_sola_vez_al_destruir_el_cuerpo()
     {
         int avisos = 0;
         System.Action alMorir = () => avisos++;
         typeof(JefeCangrejo).GetField("alMorir", privado).SetValue(jefe, alMorir);
 
         cuerpo.TakeDamage(9f);
-        Assert.IsTrue(jefeGo.activeSelf);
+        cuerpo.TakeDamage(5f);
+        cuerpo.TakeDamage(5f);
+        Assert.IsTrue(jefeGo.activeSelf, "primero se hincha y explota");
+        Assert.AreEqual(0, avisos);
+        Assert.IsFalse(pinza.GetComponent<Collider2D>().enabled, "ya no recibe golpes");
 
-        cuerpo.TakeDamage(5f);
-        cuerpo.TakeDamage(5f);
+        // En EditMode las corrutinas no avanzan: se recorre a mano, sin las esperas.
+        var explotar = (IEnumerator)typeof(JefeCangrejo).GetMethod("Explotar", privado).Invoke(jefe, null);
+        while (explotar.MoveNext()) { }
+
         Assert.IsFalse(jefeGo.activeSelf);
         Assert.AreEqual(1, avisos);
     }

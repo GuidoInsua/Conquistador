@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: El boss cangrejo: entra desde arriba, sigue al jugador despacio, ataca y muere cuando se destruye el cuerpo.
+// Desc: El boss cangrejo: entra desde arriba, sigue al jugador despacio, ataca, y al destruirse el cuerpo se hincha y explota.
 
 using System.Collections;
 using UnityEngine;
@@ -40,6 +40,13 @@ public class JefeCangrejo : MonoBehaviour
     [Tooltip("Si queda vacío, el boss no lanza el rayo.")]
     [SerializeField] private RayoBoss rayo;
     [SerializeField] private float tiempoEntreRayos = 4f;
+
+    [Header("Muerte")]
+    [Tooltip("Lo que dura la animación Muerte del cuerpo (se hincha) antes de explotar.")]
+    [SerializeField] private float duracionHinchado = 0.8f;
+    [SerializeField] private GameObject explosionPrefab;
+    [Tooltip("Tiempo entre la explosión y la pantalla de victoria.")]
+    [SerializeField] private float esperaVictoria = 2.5f;
 
     private System.Action alMorir;
     private bool isEnPosicion;
@@ -125,6 +132,31 @@ public class JefeCangrejo : MonoBehaviour
 
     private void Morir()
     {
+        StopAllCoroutines();
+        isEnPosicion = false;
+        StartCoroutine(Explotar());
+    }
+
+    private IEnumerator Explotar()
+    {
+        if (rayo != null)
+            rayo.gameObject.SetActive(false);
+
+        // Mientras se hincha ya no recibe golpes.
+        foreach (var zona in GetComponentsInChildren<Collider2D>())
+            zona.enabled = false;
+
+        yield return new WaitForSeconds(duracionHinchado);
+
+        foreach (var sprite in GetComponentsInChildren<SpriteRenderer>())
+            sprite.enabled = false;
+
+        if (explosionPrefab != null)
+            Instantiate(explosionPrefab, cuerpo.transform.position, Quaternion.identity);
+
+        // Sigue activo (sin verse) para que esta corrutina termine la espera.
+        yield return new WaitForSeconds(esperaVictoria);
+
         gameObject.SetActive(false);
         alMorir?.Invoke();
     }

@@ -59,6 +59,9 @@ MonoBehaviour:
   frecuenciaDesvio: 0.35
   rayo: {fileID: 7539612504408428391}
   tiempoEntreRayos: 4
+  duracionHinchado: 0.8
+  explosionPrefab: {fileID: 2837184648525319985, guid: 8adf025c51da7d440974242b0d241f55, type: 3}
+  esperaVictoria: 2.5
 --- !u!1 &3767081377961630563
 GameObject:
   m_ObjectHideFlags: 0
@@ -502,7 +505,7 @@ MonoBehaviour:
   - Dano1
   - Dano2
   - Dano3
-  estadoDestruida: 
+  estadoDestruida: Muerte
   colorGolpe: {r: 1, g: 1, b: 1, a: 0.4}
   duracionGolpe: 0.08
 --- !u!1 &7749163590289685191
