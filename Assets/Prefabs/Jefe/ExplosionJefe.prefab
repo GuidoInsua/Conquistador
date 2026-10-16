@@ -223,6 +223,14 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8355637399001620028, guid: 72ff69de2002f7048b87ff5b0703ca0c, type: 3}
+      propertyPath: InitialModule.startSizeY.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8355637399001620028, guid: 72ff69de2002f7048b87ff5b0703ca0c, type: 3}
+      propertyPath: InitialModule.startSizeZ.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8355637399001620028, guid: 72ff69de2002f7048b87ff5b0703ca0c, type: 3}
       propertyPath: InitialModule.startSpeed.minMaxState
       value: 3
       objectReference: {fileID: 0}
