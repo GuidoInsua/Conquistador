@@ -40,6 +40,9 @@ public class JefeCangrejo : MonoBehaviour
     [Tooltip("Si queda vacío, el boss no lanza el rayo.")]
     [SerializeField] private RayoBoss rayo;
     [SerializeField] private float tiempoEntreRayos = 4f;
+    [Tooltip("Disparan por turnos; una pinza destruida pierde su turno.")]
+    [SerializeField] private DisparoPinza[] pinzas = new DisparoPinza[0];
+    [SerializeField] private float tiempoEntreDisparosPinzas = 2f;
 
     [Header("Muerte")]
     [Tooltip("Lo que dura la animación Muerte del cuerpo (se hincha) antes de explotar.")]
@@ -92,6 +95,21 @@ public class JefeCangrejo : MonoBehaviour
 
         if (rayo != null)
             StartCoroutine(Atacar());
+
+        if (pinzas.Length > 0)
+            StartCoroutine(AtacarConPinzas());
+    }
+
+    private IEnumerator AtacarConPinzas()
+    {
+        for (int turno = 0; ; turno++)
+        {
+            yield return new WaitForSeconds(tiempoEntreDisparosPinzas);
+
+            // Durante el rayo no dispara: ya es bastante para esquivar.
+            if (!isAtacando)
+                pinzas[turno % pinzas.Length].Disparar();
+        }
     }
 
     private IEnumerator Atacar()

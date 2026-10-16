@@ -67,14 +67,7 @@ public class DisparoEnemigo : MonoBehaviour
 
         if (balaPrefab != null && posicionArma != null)
         {
-            for (int i = 0; i < cantidadBalas; i++)
-            {
-                float angulo = cantidadBalas > 1
-                    ? Mathf.Lerp(-anguloCono / 2f, anguloCono / 2f, i / (float)(cantidadBalas - 1))
-                    : 0f;
-
-                Instantiate(balaPrefab, posicionArma.position, posicionArma.rotation * Quaternion.Euler(0f, 0f, angulo));
-            }
+            BalaEnemiga.DispararAbanico(balaPrefab, posicionArma.position, posicionArma.rotation, cantidadBalas, anguloCono);
         }
         else
         {

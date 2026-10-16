@@ -95,6 +95,28 @@ public class JefeTests
     }
 
     [Test]
+    public void Pinza_dispara_su_abanico_solo_mientras_esta_viva()
+    {
+        var balaPrefab = new GameObject("bala", typeof(BalaEnemiga));
+        var disparo = pinza.gameObject.AddComponent<DisparoPinza>();
+        typeof(DisparoPinza).GetField("balaPrefab", privado).SetValue(disparo, balaPrefab);
+        typeof(DisparoPinza).GetField("puntaDisparo", privado).SetValue(disparo, pinza.transform);
+        typeof(DisparoPinza).GetMethod("Awake", privado).Invoke(disparo, null);
+        int Balas() => Object.FindObjectsByType<BalaEnemiga>(FindObjectsSortMode.None).Length;
+        int antes = Balas();
+
+        disparo.Disparar();
+        Assert.AreEqual(antes + 5, Balas());
+
+        pinza.TakeDamage(99f);
+        disparo.Disparar();
+        Assert.AreEqual(antes + 5, Balas(), "la pinza destruida no dispara");
+
+        foreach (var bala in Object.FindObjectsByType<BalaEnemiga>(FindObjectsSortMode.None))
+            Object.DestroyImmediate(bala.gameObject);
+    }
+
+    [Test]
     public void Jefe_sigue_vivo_si_se_destruye_una_pinza()
     {
         pinza.TakeDamage(3f);

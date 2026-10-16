@@ -25,6 +25,19 @@ public class BalaEnemiga : MonoBehaviour
 
 	private float faseBalanceo;
 
+	// Reparte las balas en abanico, de -anguloCono/2 a +anguloCono/2 alrededor de la rotación dada.
+	public static void DispararAbanico(GameObject prefab, Vector3 posicion, Quaternion rotacion, int cantidad, float anguloCono)
+	{
+		for (int i = 0; i < cantidad; i++)
+		{
+			float angulo = cantidad > 1
+				? Mathf.Lerp(-anguloCono / 2f, anguloCono / 2f, i / (float)(cantidad - 1))
+				: 0f;
+
+			Instantiate(prefab, posicion, rotacion * Quaternion.Euler(0f, 0f, angulo));
+		}
+	}
+
 	private void Start()
 	{
 		faseBalanceo = Random.value * Mathf.PI * 2f;
