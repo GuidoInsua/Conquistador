@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Transición a la pelea con el boss: aleja la cámara, la sacude, cambia la música y lo hace aparecer.
+// Desc: Transición a la pelea con el boss: aleja la cámara, cambia la música y lo hace aparecer.
 
 using System.Collections;
 using UnityEngine;
@@ -19,7 +19,7 @@ public class FaseBoss : MonoBehaviour
 {
     [Tooltip("Desactivado en la escena, arriba de la pantalla. Aparece al terminar la transición.")]
     [SerializeField] private JefeCangrejo jefe;
-    [Tooltip("Pausa después de matar al último alien, para que su power-up no quede metido en el temblor.")]
+    [Tooltip("Pausa después de matar al último alien, antes de que empiece el zoom.")]
     [SerializeField] private float esperaInicial = 1.5f;
 
     [Header("Cámara")]
@@ -29,10 +29,6 @@ public class FaseBoss : MonoBehaviour
     [SerializeField] private float duracionZoom = 2f;
     [Tooltip("Se recalculan al terminar el zoom para que el jugador use el espacio nuevo.")]
     [SerializeField] private BordesMundo bordes;
-
-    [Header("Temblor")]
-    [SerializeField] private float duracionTemblor = 1.5f;
-    [SerializeField] private float intensidadTemblor = 0.15f;
 
     [Header("Música")]
     [SerializeField] private AudioSource musica;
@@ -78,22 +74,14 @@ public class FaseBoss : MonoBehaviour
         if (camara.TryGetComponent(out PixelPerfectCamera pixelPerfect))
             pixelPerfect.enabled = false;
 
-        Vector3 posicionInicial = camara.transform.position;
         float tamanoInicial = camara.orthographicSize;
-        float duracion = Mathf.Max(duracionZoom, duracionTemblor);
-
-        for (float t = 0f; t < duracion; t += Time.deltaTime)
+        for (float t = 0f; t < duracionZoom; t += Time.deltaTime)
         {
             camara.orthographicSize = Mathf.Lerp(tamanoInicial, tamanoCamaraBoss, Mathf.SmoothStep(0f, 1f, t / duracionZoom));
-
-            // El temblor se apaga de a poco en vez de cortar de golpe.
-            float fuerza = t < duracionTemblor ? intensidadTemblor * (1f - t / duracionTemblor) : 0f;
-            camara.transform.position = posicionInicial + (Vector3)(Random.insideUnitCircle * fuerza);
             yield return null;
         }
 
         camara.orthographicSize = tamanoCamaraBoss;
-        camara.transform.position = posicionInicial;
         bordes.Recalcular();
         jefe.Aparecer(alVencerJefe);
     }
