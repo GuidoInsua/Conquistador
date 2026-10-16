@@ -117,17 +117,11 @@ public class JefeCangrejo : MonoBehaviour
         float objetivoX = jugador != null ? Mathf.Clamp(jugador.position.x, -limiteX, limiteX) : posicionPelea.x;
         xSeguida = Mathf.SmoothDamp(xSeguida, objetivoX, ref velocidadX, tiempoSeguimiento, velocidadMaxima);
 
-        // Perlin da un desvío al azar pero suave. Se le resta el valor inicial para que arranque en 0 y no salte al llegar.
         // El tiempo propio no avanza mientras ataca, así retoma el desvío donde lo dejó.
         tiempoDesvio += Time.deltaTime;
-        float t = tiempoDesvio * frecuenciaDesvio;
-        float desvioX = Mathf.PerlinNoise(semillaDesvio, t) - Mathf.PerlinNoise(semillaDesvio, 0f);
-        float desvioY = Mathf.PerlinNoise(t, semillaDesvio) - Mathf.PerlinNoise(0f, semillaDesvio);
+        Vector2 desvio = Oscilacion.Desvio(semillaDesvio, tiempoDesvio * frecuenciaDesvio) * amplitudDesvio;
 
-        transform.position = new Vector3(
-            xSeguida + desvioX * amplitudDesvio.x,
-            posicionPelea.y + desvioY * amplitudDesvio.y,
-            posicionPelea.z);
+        transform.position = new Vector3(xSeguida + desvio.x, posicionPelea.y + desvio.y, posicionPelea.z);
     }
 
     private void Morir()

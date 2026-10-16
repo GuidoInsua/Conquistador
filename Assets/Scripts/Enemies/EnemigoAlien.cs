@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Vida, movimiento, daño y muerte del alien; vuelve al pool al morir.
+// Desc: Vida, movimiento, oscilación en su lugar, daño y muerte del alien; vuelve al pool al morir.
 
 using UnityEngine;
 using UnityEngine.Pool;
@@ -23,6 +23,11 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
     [SerializeField, Range(0f, 1f)]
     private float powerUpSpawnProbability = 0.2f;
 
+    [Header("Oscilación")]
+    [Tooltip("Cuánto se aleja de su posición en x e y mientras espera en ella.")]
+    [SerializeField] private Vector2 amplitudOscilacion = new Vector2(0.4f, 0.25f);
+    [SerializeField] private float frecuenciaOscilacion = 0.5f;
+
     //
 
     public const string animIdle = "Alien_Idle";
@@ -34,6 +39,10 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
     private string animacionActual;
     private IObjectPool<EnemigoAlien> enemyPool;
     private int movimientoId;
+    private bool isEnPosicion;
+    private Vector3 posicionBase;
+    private float tiempoOscilacion;
+    private float semillaOscilacion;
 
     public float GetSalud()
     {
@@ -49,6 +58,7 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
     {
         // Invalida cualquier movimiento anterior que siga en marcha.
         movimientoId++;
+        isEnPosicion = false;
 
         vidaActual = vidaMaxima;
 
@@ -80,6 +90,19 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
             return;
 
         transform.position = target;
+        posicionBase = target;
+        tiempoOscilacion = 0f;
+        semillaOscilacion = Random.value * 100f;
+        isEnPosicion = true;
+    }
+
+    private void Update()
+    {
+        if (!isEnPosicion)
+            return;
+
+        tiempoOscilacion += Time.deltaTime;
+        transform.position = posicionBase + (Vector3)(Oscilacion.Desvio(semillaOscilacion, tiempoOscilacion * frecuenciaOscilacion) * amplitudOscilacion);
     }
 
     public void TakeDamage(float cantidad)
