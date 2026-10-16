@@ -9,8 +9,9 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Abanico de balas que lanza una pinza del boss mientras sigue viva.
+// Desc: Abanico de balas que lanza una pinza del boss de a una, con una bola en la punta que marca de dónde salen.
 
+using System.Collections;
 using UnityEngine;
 
 public class DisparoPinza : MonoBehaviour
@@ -21,6 +22,14 @@ public class DisparoPinza : MonoBehaviour
     [SerializeField] private int cantidadBalas = 5;
     [Tooltip("Grados entre la primera y la última bala.")]
     [SerializeField] private float anguloCono = 70f;
+    [Tooltip("Tiempo entre bala y bala.")]
+    [SerializeField] private float intervaloBalas = 0.15f;
+
+    [Header("Aviso")]
+    [Tooltip("Se prende en la punta mientras dispara. Si queda vacío, no se muestra nada.")]
+    [SerializeField] private GameObject bola;
+    [Tooltip("Cuánto se ve la bola antes de la primera bala.")]
+    [SerializeField] private float duracionAviso = 0.3f;
 
     private ParteBoss pinza;
 
@@ -35,12 +44,25 @@ public class DisparoPinza : MonoBehaviour
         }
     }
 
-    // La llama el boss. Una pinza destruida ya no dispara.
-    public void Disparar()
+    // La corre el boss. Una pinza destruida ya no dispara, ni aunque se rompa a mitad del abanico.
+    public IEnumerator Disparar()
     {
         if (!enabled || !pinza.EstaViva)
-            return;
+            yield break;
 
-        BalaEnemiga.DispararAbanico(balaPrefab, puntaDisparo.position, puntaDisparo.rotation, cantidadBalas, anguloCono);
+        if (bola != null)
+            bola.SetActive(true);
+
+        yield return new WaitForSeconds(duracionAviso);
+
+        for (int i = 0; i < cantidadBalas && pinza.EstaViva; i++)
+        {
+            float angulo = BalaEnemiga.AnguloAbanico(i, cantidadBalas, anguloCono);
+            Instantiate(balaPrefab, puntaDisparo.position, puntaDisparo.rotation * Quaternion.Euler(0f, 0f, angulo));
+            yield return new WaitForSeconds(intervaloBalas);
+        }
+
+        if (bola != null)
+            bola.SetActive(false);
     }
 }

@@ -29,14 +29,11 @@ public class BalaEnemiga : MonoBehaviour
 	public static void DispararAbanico(GameObject prefab, Vector3 posicion, Quaternion rotacion, int cantidad, float anguloCono)
 	{
 		for (int i = 0; i < cantidad; i++)
-		{
-			float angulo = cantidad > 1
-				? Mathf.Lerp(-anguloCono / 2f, anguloCono / 2f, i / (float)(cantidad - 1))
-				: 0f;
-
-			Instantiate(prefab, posicion, rotacion * Quaternion.Euler(0f, 0f, angulo));
-		}
+			Instantiate(prefab, posicion, rotacion * Quaternion.Euler(0f, 0f, AnguloAbanico(i, cantidad, anguloCono)));
 	}
+
+	public static float AnguloAbanico(int indice, int cantidad, float anguloCono) =>
+		cantidad > 1 ? Mathf.Lerp(-anguloCono / 2f, anguloCono / 2f, indice / (float)(cantidad - 1)) : 0f;
 
 	private void Start()
 	{

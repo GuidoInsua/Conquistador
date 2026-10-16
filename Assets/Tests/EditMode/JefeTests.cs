@@ -95,21 +95,34 @@ public class JefeTests
     }
 
     [Test]
-    public void Pinza_dispara_su_abanico_solo_mientras_esta_viva()
+    public void Pinza_dispara_su_abanico_de_a_una_solo_mientras_esta_viva()
     {
         var balaPrefab = new GameObject("bala", typeof(BalaEnemiga));
         var disparo = pinza.gameObject.AddComponent<DisparoPinza>();
         typeof(DisparoPinza).GetField("balaPrefab", privado).SetValue(disparo, balaPrefab);
         typeof(DisparoPinza).GetField("puntaDisparo", privado).SetValue(disparo, pinza.transform);
         typeof(DisparoPinza).GetMethod("Awake", privado).Invoke(disparo, null);
+        var bola = new GameObject("bola");
+        bola.transform.SetParent(pinza.transform);
+        bola.SetActive(false);
+        typeof(DisparoPinza).GetField("bola", privado).SetValue(disparo, bola);
         int Balas() => Object.FindObjectsByType<BalaEnemiga>(FindObjectsSortMode.None).Length;
         int antes = Balas();
 
-        disparo.Disparar();
+        // En EditMode las corrutinas no avanzan: se recorre a mano, sin las esperas.
+        var abanico = disparo.Disparar();
+        abanico.MoveNext();
+        Assert.IsTrue(bola.activeSelf, "primero avisa con la bola");
+        Assert.AreEqual(antes, Balas());
+        abanico.MoveNext();
+        Assert.AreEqual(antes + 1, Balas(), "salen de a una");
+        while (abanico.MoveNext()) { }
         Assert.AreEqual(antes + 5, Balas());
+        Assert.IsFalse(bola.activeSelf);
 
         pinza.TakeDamage(99f);
-        disparo.Disparar();
+        abanico = disparo.Disparar();
+        while (abanico.MoveNext()) { }
         Assert.AreEqual(antes + 5, Balas(), "la pinza destruida no dispara");
 
         foreach (var bala in Object.FindObjectsByType<BalaEnemiga>(FindObjectsSortMode.None))

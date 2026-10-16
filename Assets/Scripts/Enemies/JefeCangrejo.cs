@@ -110,7 +110,7 @@ public class JefeCangrejo : MonoBehaviour
 
             // Durante el rayo no dispara: ya es bastante para esquivar.
             if (!isAtacando)
-                pinzas[turno % pinzas.Length].Disparar();
+                yield return pinzas[turno % pinzas.Length].Disparar();
         }
     }
 
