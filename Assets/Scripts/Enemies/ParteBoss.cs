@@ -39,6 +39,8 @@ public class ParteBoss : MonoBehaviour, IDamageable
     private const string sufijoEnojado = "Enojado";
 
     public event System.Action Destruida;
+    // Pasó a otro estado de daño (el índice en estadosDano). No se llama al destruirse.
+    public event System.Action<int> CambioEstado;
 
     public bool EstaViva => vidaActual > 0f;
 
@@ -84,6 +86,7 @@ public class ParteBoss : MonoBehaviour, IDamageable
             {
                 estadoActual = estado;
                 ReproducirEstado();
+                CambioEstado?.Invoke(estado);
             }
             return;
         }

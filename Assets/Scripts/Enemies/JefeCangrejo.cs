@@ -51,6 +51,8 @@ public class JefeCangrejo : MonoBehaviour
     [Tooltip("Tiempo entre la explosión y la pantalla de victoria.")]
     [SerializeField] private float esperaVictoria = 2.5f;
 
+    public Transform Jugador => jugador;
+
     private System.Action alMorir;
     private bool isEnPosicion;
     private bool isAtacando;

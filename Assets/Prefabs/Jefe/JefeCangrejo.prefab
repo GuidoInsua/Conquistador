@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3985474095712741015}
   - component: {fileID: 5962024691779577369}
+  - component: {fileID: 1967944258392110610}
   m_Layer: 0
   m_Name: JefeCangrejo
   m_TagString: Untagged
@@ -66,6 +67,22 @@ MonoBehaviour:
   duracionHinchado: 0.8
   explosionPrefab: {fileID: 2837184648525319985, guid: 8adf025c51da7d440974242b0d241f55, type: 3}
   esperaVictoria: 2.5
+--- !u!114 &1967944258392110610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1254095607400470600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b0e7cf4a056e2441b0393ae9348f438, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Conquistador::InvocadorEsbirros
+  esbirroPrefab: {fileID: 209718855941137838, guid: 3efc20807ebc7344fa1a6c19454d3d7d, type: 3}
+  cuerpo: {fileID: 3409176086588504798}
+  cantidadPorFase: 6
+  intervalo: 0.5
 --- !u!1 &3767081377961630563
 GameObject:
   m_ObjectHideFlags: 0

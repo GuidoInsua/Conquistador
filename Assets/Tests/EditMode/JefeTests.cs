@@ -117,6 +117,52 @@ public class JefeTests
     }
 
     [Test]
+    public void Parte_avisa_cada_cambio_de_estado_pero_no_al_destruirse()
+    {
+        var parte = CrearParte("cuerpoConFases", 9f);
+        typeof(ParteBoss).GetField("estadosDano", privado).SetValue(parte, new[] { "Idle", "Dano1", "Dano2" });
+        var cambios = new System.Collections.Generic.List<int>();
+        parte.CambioEstado += cambios.Add;
+
+        parte.TakeDamage(1f);
+        parte.TakeDamage(3f);
+        parte.TakeDamage(3f);
+        parte.TakeDamage(5f);
+
+        CollectionAssert.AreEqual(new[] { 1, 2 }, cambios);
+    }
+
+    [Test]
+    public void Esbirro_rebota_alejandose_del_jugador_o_para_arriba_si_estan_encimados()
+    {
+        Assert.AreEqual(Vector2.left, Esbirro.DireccionRetroceso(new Vector2(-2f, 0f), Vector2.zero));
+        Assert.AreEqual(Vector2.up, Esbirro.DireccionRetroceso(new Vector2(1f, 1f), new Vector2(1f, 1f)));
+    }
+
+    [Test]
+    public void Esbirro_golpea_una_vez_y_no_vuelve_a_golpear_mientras_rebota()
+    {
+        var jugador = CrearJugador();
+        jugador.transform.position = Vector3.zero;
+        var esbirroGo = new GameObject("esbirro", typeof(Animator), typeof(EnemigoAlien));
+        esbirroGo.transform.SetParent(jefeGo.transform);
+        esbirroGo.transform.position = new Vector3(0f, 1f, 0f);
+        esbirroGo.GetComponent<EnemigoAlien>().ResetEnemy();
+        var esbirro = esbirroGo.AddComponent<Esbirro>();
+        typeof(Esbirro).GetMethod("Awake", privado).Invoke(esbirro, null);
+        var tocar = typeof(Esbirro).GetMethod("OnTriggerEnter2D", privado);
+        var colliderJugador = jugador.GetComponent<Collider2D>();
+
+        tocar.Invoke(esbirro, new object[] { colliderJugador });
+        Assert.AreEqual(4, jugador.VidaActual);
+        Assert.AreEqual(Vector2.up * 7f, (Vector2)typeof(Esbirro).GetField("velocidadEmpuje", privado).GetValue(esbirro));
+
+        typeof(VidaJugador).GetField("finInvulnerable", privado).SetValue(jugador, float.MinValue);
+        tocar.Invoke(esbirro, new object[] { colliderJugador });
+        Assert.AreEqual(4, jugador.VidaActual, "mientras rebota no golpea");
+    }
+
+    [Test]
     public void Jefe_sigue_vivo_si_se_destruye_una_pinza()
     {
         pinza.TakeDamage(3f);

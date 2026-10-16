@@ -46,9 +46,9 @@ Trabajo práctico de **Programación 1** (segundo cuatrimestre 2026) de **Guido 
 | Disparar | `Espacio`           |
 
 - Tus disparos suben y hacen **1** de daño. El alien común tiene **4** de vida y el alien volador, **6**.
-- Los aliens entran por el costado más cercano a su lugar y se quedan en una de las **10** posiciones de la pantalla, así que puede haber hasta **10** a la vez. Aparece uno nuevo cada **2 segundos**.
+- Los aliens entran por el costado más cercano a su lugar y se quedan oscilando en una de las **10** posiciones de la pantalla, así que puede haber hasta **10** a la vez. Aparece uno nuevo cada **2 segundos**.
 - Hay **2 oleadas**, **50 aliens** en total: primero **20** comunes y después **30** mezclados (60 % comunes, 40 % voladores). La segunda no arranca hasta que mueren todos los de la primera.
-- Al terminar las oleadas la cámara se aleja y baja el **jefe cangrejo**. Te sigue despacio y cada **4 segundos** se frena, avisa con un rayo fino y lanza desde la boca un rayo continuo que te saca **1** punto de vida por segundo mientras estés adentro. Mientras dispara pone cara de enojado. Entre rayo y rayo las pinzas, por turnos, largan un abanico de **5** orbes que bajan balanceándose; una pinza rota ya no dispara. Tiene **100** de vida en el cuerpo, que muestra el daño en tres pasos, y **40** en cada pinza; las pinzas se rompen por separado, muestran el daño en dos pasos y al romperse quedan destruidas a la vista. Cuando le rompés el cuerpo se hincha, explota en una lluvia de partículas y unos segundos después aparece la victoria.
+- Al terminar las oleadas la cámara se aleja y baja el **jefe cangrejo**. Te sigue despacio y cada **4 segundos** se frena, avisa con un rayo fino y lanza desde la boca un rayo continuo que te saca **1** punto de vida por segundo mientras estés adentro. Mientras dispara pone cara de enojado. Entre rayo y rayo las pinzas, por turnos, largan un abanico de **5** orbes que bajan balanceándose; una pinza rota ya no dispara. Cada vez que el cuerpo pasa a otro paso de daño salen **6 esbirros** de adentro del boss, uno por costado cada medio segundo: tienen **2** de vida, no disparan ni sueltan power-ups, bajan oscilando hacia vos y te quitan **1** al tocarte, rebotando para no seguir pegándote. Al morir el boss mueren todos. Tiene **100** de vida en el cuerpo, que muestra el daño en tres pasos, y **40** en cada pinza; las pinzas se rompen por separado, muestran el daño en dos pasos y al romperse quedan destruidas a la vista. Cuando le rompés el cuerpo se hincha, explota en una lluvia de partículas y unos segundos después aparece la victoria.
 - Cada alien dispara cada **6 segundos**. El común tira 1 bala; el volador tira **3 en abanico**, lentas, que caen balanceándose como un copo de nieve.
 - Empezás con **5** puntos de vida, que se ven como fichas abajo a la izquierda. Cada disparo enemigo te quita **1**. Después de un golpe titilás en blanco y durante **1 segundo** no recibís daño.
 - Al morir un alien hay chances de que suelte un power-up, y se elige uno de los 4 al azar. Si pasa de largo y sale de la pantalla, se pierde:
@@ -90,13 +90,13 @@ Conquistador/
 │   ├── Prefabs/      Alien, láser, disparo enemigo, power-up, partículas; el jefe y sus disparos en Jefe/
 │   ├── Scenes/       Menu y Juego
 │   ├── Scripts/
-│   │   ├── Enemies/      Aliens, Spawner, Oleada y el jefe (FaseBoss, JefeCangrejo, ParteBoss, RayoBoss, DisparoPinza)
+│   │   ├── Enemies/      Aliens, Spawner, Oleada y el jefe (FaseBoss, JefeCangrejo, ParteBoss, RayoBoss, DisparoPinza, Esbirro, InvocadorEsbirros)
 │   │   ├── Interfaces/   IDamageable
 │   │   ├── Player/       Movimiento, disparo y vida del jugador
 │   │   ├── PowerUps/     Los 4 power-ups
 │   │   ├── Projectiles/  Bala del jugador y bala enemiga
 │   │   ├── UI/           Barra de vida y botones para cambiar de escena
-│   │   ├── Utilidades/   Sorteo con pesos
+│   │   ├── Utilidades/   Sorteo con pesos y oscilación
 │   │   └── World/        Bordes, fondo animado, utilidad de pantalla
 │   ├── Settings/     Input y render pipeline
 │   ├── Sprites/
@@ -107,14 +107,14 @@ Conquistador/
 ## Pruebas
 
 En Unity: **Window → General → Test Runner → EditMode → Run All**.
-Cubren la vida del alien y del jugador, el Spawner (posiciones, oleadas, punto de entrada, victoria y paso al jefe), las partes del jefe y el daño del rayo, el sorteo con pesos, la elección de power-ups y la bala potenciada.
+Cubren la vida del alien y del jugador, el Spawner (posiciones, oleadas, punto de entrada, victoria y paso al jefe), las partes del jefe, el daño del rayo, el abanico de las pinzas, el golpe y rebote de los esbirros, la oscilación, el sorteo con pesos, la elección de power-ups y la bala potenciada.
 
 ## Ideas para seguir
 
 ```
  [ ] Puntaje y récord
  [x] Oleadas con enemigos distintos
- [ ] Jefe final (falta el ataque de las pinzas)
+ [x] Jefe final
  [ ] Más power-ups (escudo)
  [ ] Efectos de sonido al disparar y al morir
  [ ] Pausa
