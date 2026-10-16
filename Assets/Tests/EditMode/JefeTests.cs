@@ -75,7 +75,8 @@ public class JefeTests
         parteGo.transform.SetParent(jefeGo.transform);
         var parte = parteGo.AddComponent<ParteBoss>();
         typeof(ParteBoss).GetField("vidaMaxima", privado).SetValue(parte, 9f);
-        typeof(ParteBoss).GetField("estadosDano", privado).SetValue(parte, new[] { "Idle", "Dano1", "Dano2", "Destruida" });
+        typeof(ParteBoss).GetField("estadosDano", privado).SetValue(parte, new[] { "Idle", "Dano1", "Dano2" });
+        typeof(ParteBoss).GetField("estadoDestruida", privado).SetValue(parte, "Destruida");
         typeof(ParteBoss).GetMethod("Awake", privado).Invoke(parte, null);
         int Estado() => (int)typeof(ParteBoss).GetField("estadoActual", privado).GetValue(parte);
 
@@ -87,7 +88,6 @@ public class JefeTests
         Assert.AreEqual(2, Estado(), "con 1 de 9 pasa al segundo daño");
 
         parte.TakeDamage(1f);
-        Assert.AreEqual(3, Estado());
         Assert.IsFalse(parte.EstaViva);
         Assert.IsTrue(parteGo.activeSelf, "queda el sprite de destruida");
         Assert.IsFalse(parteGo.GetComponent<Collider2D>().enabled, "las balas ya no le pegan");

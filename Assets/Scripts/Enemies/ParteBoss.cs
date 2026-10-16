@@ -17,12 +17,12 @@ public class ParteBoss : MonoBehaviour, IDamageable
 {
     [SerializeField] private float vidaMaxima = 40f;
     [SerializeField] private GameObject particulasGolpePrefab;
-    [Tooltip("Estados del Animator de menos a más daño. El último es el de destruida y la parte queda a la vista. Vacío: la parte desaparece al destruirse.")]
-    [SerializeField] private string[] estadosDano = new string[0];
 
-    [Header("Desgaste")]
-    [Tooltip("Color que toma la parte cuando le queda poca vida. Con vida llena se ve normal.")]
-    [SerializeField] private Color colorGastado = new Color(1f, 0.3f, 0.3f);
+    [Header("Animación")]
+    [Tooltip("Estados del Animator de menos a más daño mientras la parte está viva. La vida se reparte en tramos iguales entre ellos.")]
+    [SerializeField] private string[] estadosDano = new string[0];
+    [Tooltip("Estado al quedar en 0. Vacío: la parte desaparece.")]
+    [SerializeField] private string estadoDestruida;
     [Tooltip("Color durante el parpadeo de cada golpe.")]
     [SerializeField] private Color colorGolpe = new Color(1f, 1f, 1f, 0.4f);
     [SerializeField] private float duracionGolpe = 0.08f;
@@ -33,6 +33,10 @@ public class ParteBoss : MonoBehaviour, IDamageable
     private Animator animator;
     private Collider2D zonaGolpe;
     private int estadoActual;
+    private bool isEnojada;
+
+    // Cada estado de daño tiene su versión enojada con este sufijo (Dano1 -> Dano1Enojado).
+    private const string sufijoEnojado = "Enojado";
 
     public event System.Action Destruida;
 
@@ -44,10 +48,10 @@ public class ParteBoss : MonoBehaviour, IDamageable
         animator = GetComponent<Animator>();
         zonaGolpe = GetComponent<Collider2D>();
 
-        // Con un solo estado no queda ninguno para la parte viva.
-        if (spriteRenderer == null || vidaMaxima <= 0f || estadosDano.Length == 1 || (estadosDano.Length > 1 && animator == null))
+        bool usaAnimator = estadosDano.Length > 0 || !string.IsNullOrEmpty(estadoDestruida);
+        if (spriteRenderer == null || vidaMaxima <= 0f || (usaAnimator && animator == null))
         {
-            Debug.LogError("ParteBoss: falta el SpriteRenderer, la vida máxima es 0, o los estados de daño necesitan un Animator y al menos dos estados.");
+            Debug.LogError("ParteBoss: falta el SpriteRenderer, la vida máxima es 0 o los estados de animación no tienen Animator.");
             enabled = false;
             return;
         }
@@ -57,8 +61,7 @@ public class ParteBoss : MonoBehaviour, IDamageable
 
     private void Update()
     {
-        Color gastado = Color.Lerp(Color.white, colorGastado, 1f - vidaActual / vidaMaxima);
-        spriteRenderer.color = Time.time < finGolpe ? colorGolpe : gastado;
+        spriteRenderer.color = Time.time < finGolpe ? colorGolpe : Color.white;
     }
 
     public float GetSalud() => vidaActual;
@@ -74,30 +77,50 @@ public class ParteBoss : MonoBehaviour, IDamageable
         if (particulasGolpePrefab != null)
             Instantiate(particulasGolpePrefab, transform.position, Quaternion.identity);
 
-        if (estadosDano.Length > 0)
-            CambiarEstado(EstaViva ? EstadoSegunVida(vidaActual / vidaMaxima, estadosDano.Length - 1) : estadosDano.Length - 1);
-
-        if (!EstaViva)
+        if (EstaViva)
         {
-            if (estadosDano.Length == 0)
-                gameObject.SetActive(false);
-            else if (zonaGolpe != null)
-                zonaGolpe.enabled = false; // Queda el sprite de destruida, pero las balas la atraviesan.
-
-            Destruida?.Invoke();
+            int estado = EstadoSegunVida(vidaActual / vidaMaxima, estadosDano.Length);
+            if (estado != estadoActual)
+            {
+                estadoActual = estado;
+                ReproducirEstado();
+            }
+            return;
         }
+
+        if (string.IsNullOrEmpty(estadoDestruida))
+        {
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            animator.Play(estadoDestruida);
+            if (zonaGolpe != null)
+                zonaGolpe.enabled = false; // Queda el sprite de destruida, pero las balas la atraviesan.
+        }
+
+        Destruida?.Invoke();
+    }
+
+    // La usa el boss mientras dispara el rayo.
+    public void SetEnojada(bool enojada)
+    {
+        isEnojada = enojada;
+        if (EstaViva)
+            ReproducirEstado();
     }
 
     // Reparte la vida en tramos iguales, uno por cada estado de la parte viva.
     private static int EstadoSegunVida(float fraccionVida, int estadosVivos) =>
-        Mathf.Min(estadosVivos - 1, (int)((1f - fraccionVida) * estadosVivos));
+        Mathf.Clamp((int)((1f - fraccionVida) * estadosVivos), 0, Mathf.Max(0, estadosVivos - 1));
 
-    private void CambiarEstado(int estado)
+    private void ReproducirEstado()
     {
-        if (estado == estadoActual)
+        if (estadosDano.Length == 0)
             return;
 
-        estadoActual = estado;
-        animator.Play(estadosDano[estado]);
+        // Sigue desde el mismo punto del ciclo para que el cambio no salte de frame.
+        float tiempo = animator.GetCurrentAnimatorStateInfo(0).normalizedTime % 1f;
+        animator.Play(estadosDano[estadoActual] + (isEnojada ? sufijoEnojado : ""), 0, tiempo);
     }
 }
