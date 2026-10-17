@@ -68,15 +68,15 @@ Al terminar las oleadas cambia la música, la cámara se aleja un poco y baja el
 - **Rayo:** cada **4 segundos** se frena, pone cara de enojado, avisa con un rayo fino y lanza desde la boca un rayo continuo que te saca **1** punto de vida por segundo mientras estés adentro.
 - **Pinzas:** entre rayo y rayo, por turnos, cada pinza larga un abanico de **5** orbes de a uno, con una bola en la punta que avisa de dónde salen. Los orbes bajan balanceándose.
 - **Esbirros:** cada **5 segundos** salen **4** de adentro del jefe, hacia los costados. Tienen **1** de vida, no disparan, bajan oscilando hacia vos y te quitan **1** al tocarte, rebotando para no seguir pegándote. Se empujan entre ellos para no encimarse. Si los matás pueden soltar un power-up (**25 %**); a los **16 segundos** se desarman solos, sin premio.
-- **Vida:** **100** en el cuerpo, que muestra el daño en tres pasos, y **40** en cada pinza. Las pinzas se rompen por separado, muestran el daño en dos pasos, quedan destruidas a la vista, sueltan **2** power-ups al azar y dejan de disparar.
+- **Vida:** **120** en el cuerpo, que muestra el daño en tres pasos, y **50** en cada pinza. Las pinzas se rompen por separado, muestran el daño en dos pasos, quedan destruidas a la vista, sueltan **2** power-ups al azar y dejan de disparar.
 - **Muerte:** cuando le rompés el cuerpo se hincha, explota en una lluvia de partículas, mueren todos los esbirros y unos segundos después aparece la victoria.
 
 ### Vida, pantallas y sonido
 
 - Empezás con **5** puntos de vida, que se ven como fichas abajo a la izquierda. Cada golpe te quita **1**. Después de un golpe titilás en blanco y durante **1 segundo** no recibís daño.
 - **Menú principal:** Jugar, Opciones, Créditos y Salir. En Opciones hay un volumen para la música y otro para los efectos, que se guardan entre partidas. Créditos tiene una sinopsis corta y los datos del autor.
-- **Pausa** (`Escape`): Continuar, Opciones, Menú principal y Salir. El juego queda congelado.
-- **Victoria y derrota:** Reiniciar, Menú principal y Salir, cada una con su banner y su música.
+- **Pausa** (`Escape`): Continuar, Opciones, Menu y Salir. El juego queda congelado.
+- **Victoria y derrota:** Reiniciar, Menu y Salir, cada una con su banner y su música.
 - Hay música para el menú, el juego, el jefe, la victoria y la derrota, y efectos para tu disparo, cuando te pegan, cuando muere un enemigo o una parte del jefe, y para el rayo.
 
 ## Cómo correrlo
@@ -89,7 +89,7 @@ Al terminar las oleadas cambia la música, la cámara se aleja un poco y baja el
 3. Abrí la carpeta con Unity Hub (Add → Add project from disk).
 4. Abrí la escena `Assets/Scenes/Menu.unity` y dale a **Play**.
 
-Las escenas del build son `Menu` y `Juego`.
+Las escenas del build son `Menu` y `Juego`. El juego está pensado para pantallas 16:9; en otras proporciones la cámara y los menús se adaptan para que no quede nada cortado ni fuera de la vista.
 
 ## Tecnología
 
@@ -132,7 +132,7 @@ Conquistador/
 ## Pruebas
 
 En Unity: **Window → General → Test Runner → EditMode → Run All**.
-Son **35** y cubren la vida y el sonido de muerte del alien, la vida e invulnerabilidad del jugador, el Spawner (posiciones, oleadas, punto de entrada, victoria y paso al jefe), las partes del jefe y sus power-ups, el rayo, el abanico de las pinzas, los esbirros (golpe, rebote, choque entre ellos y vida limitada), la oscilación y la onda de entrada, el volumen, la pausa, el límite de efectos de sonido, el sorteo con pesos, la elección de power-ups y la bala potenciada.
+Son **38** y cubren la vida y el sonido de muerte del alien, la vida e invulnerabilidad del jugador, el Spawner (posiciones, oleadas, punto de entrada, victoria y paso al jefe), las partes del jefe y sus power-ups, el rayo, el abanico de las pinzas, los esbirros (golpe, rebote, choque entre ellos y vida limitada), la oscilación y la onda de entrada, el ajuste de la cámara y de los puntos de entrada a la pantalla, el volumen, la pausa, el límite de efectos de sonido, el sorteo con pesos, la elección de power-ups y la bala potenciada.
 
 ## Ideas para seguir
 
