@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Rayo continuo que el boss lanza desde la boca: primero avisa y después saca fichas mientras el jugador esté dentro.
+// Desc: Rayo continuo que el boss lanza desde la boca: primero avisa, después suena y saca fichas mientras el jugador esté dentro.
 
 using System.Collections;
 using UnityEngine;

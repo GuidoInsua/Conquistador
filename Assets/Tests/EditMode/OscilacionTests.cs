@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Pruebas del desvío suave que usan los enemigos para oscilar.
+// Desc: Pruebas del movimiento: desvío al azar, onda de entrada de los aliens, ajuste de la cámara y puntos de entrada fuera de la vista.
 
 using NUnit.Framework;
 using UnityEngine;

@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Pruebas de la vida y el daño visible de las partes del boss, de cuándo muere y del daño del rayo.
+// Desc: Pruebas del jefe: vida y estados de sus partes, power-ups de las pinzas, muerte, rayo, abanico de las pinzas y esbirros.
 
 using System.Collections;
 using System.Linq;

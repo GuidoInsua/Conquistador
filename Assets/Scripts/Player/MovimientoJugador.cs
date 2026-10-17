@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Mueve la nave según el input y aplica el boost de velocidad.
+// Desc: Mueve la nave según el input, más lento mientras se inclina, y aplica el boost de velocidad.
 
 using UnityEngine;
 using UnityEngine.InputSystem;

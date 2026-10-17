@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Transición a la pelea con el boss: aleja la cámara, cambia la música y lo hace aparecer.
+// Desc: Transición a la pelea con el boss: espera, cambia la música, aleja la cámara y crea al boss desde su prefab.
 
 using System.Collections;
 using UnityEngine;

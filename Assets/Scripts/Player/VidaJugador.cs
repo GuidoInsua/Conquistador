@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Maneja la vida del jugador, su barra de fichas, el titileo de invulnerable tras un golpe y la pantalla de muerte.
+// Desc: Maneja la vida del jugador: barra de fichas, sonido y titileo invulnerable tras un golpe, y la pantalla de derrota al llegar a 0.
 
 using UnityEngine;
 using UnityEngine.Serialization;

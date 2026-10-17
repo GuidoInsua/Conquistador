@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Botones que cambian de escena: jugar, reiniciar, volver al menú y salir.
+// Desc: Botones que cambian de escena (jugar, reiniciar, volver al menú y salir); devuelve el tiempo a la normalidad si venía de la pausa.
 
 using UnityEngine;
 using UnityEngine.SceneManagement;

@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Bala del jugador: sube y daña al enemigo que toca.
+// Desc: Bala del jugador: sube, daña al enemigo que toca y puede venir potenciada.
 
 using UnityEngine;
 

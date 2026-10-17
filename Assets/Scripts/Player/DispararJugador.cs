@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Dispara las balas del jugador con la acción Shoot, con un tiempo mínimo entre disparos.
+// Desc: Dispara las balas del jugador con la acción Shoot: tiempo mínimo entre disparos, sonido y los power-ups de disparo doble y balas potenciadas.
 
 using UnityEngine;
 using UnityEngine.InputSystem;

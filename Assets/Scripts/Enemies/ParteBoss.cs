@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Una parte del boss (cuerpo o pinza) con vida propia que se va gastando con los golpes y cambia de animación según el daño.
+// Desc: Una parte del boss (cuerpo o pinza) con vida propia: cambia de animación según el daño (y su versión enojada) y al romperse suena, puede soltar power-ups y avisa al boss.
 
 using UnityEngine;
 using UnityEngine.Serialization;

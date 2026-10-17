@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Saca esbirros del boss en tandas cada cierto tiempo, mientras pelea.
+// Desc: Saca esbirros del boss en tandas cada cierto tiempo desde un pool, y los mata a todos cuando el boss muere.
 
 using System.Collections;
 using System.Collections.Generic;

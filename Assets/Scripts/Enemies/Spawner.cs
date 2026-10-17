@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Crea aliens con un pool y los lleva a sus posiciones en pantalla.
+// Desc: Saca los aliens de cada oleada desde un pool y los manda a una posición libre; al terminar las oleadas arranca la pelea con el jefe o la victoria.
 
 using System.Collections.Generic;
 using UnityEngine;

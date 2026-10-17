@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: El boss cangrejo: entra desde arriba, sigue al jugador despacio, ataca, y al destruirse el cuerpo se hincha y explota.
+// Desc: El boss cangrejo: entra desde arriba, sigue al jugador oscilando, alterna el rayo con los disparos de las pinzas, saca esbirros y, al destruirse el cuerpo, se hincha y explota.
 
 using System.Collections;
 using UnityEngine;

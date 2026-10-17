@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Desvío suave al azar para que los enemigos no se queden quietos.
+// Desc: Desvío suave al azar (ruido Perlin) para que el jefe, los aliens y los esbirros no se queden quietos.
 
 using UnityEngine;
 

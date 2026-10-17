@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Hace que el alien dispare cada cierto tiempo con su animación.
+// Desc: Hace que el alien dispare cada cierto tiempo: arranca su animación de disparo y esta lanza una bala o un abanico.
 
 using UnityEngine;
 

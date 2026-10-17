@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Vida, movimiento, oscilación en su lugar, daño y muerte del alien; vuelve al pool al morir.
+// Desc: Vida, entrada en ondas hasta su lugar, oscilación, daño, sonido y muerte del alien (también de los esbirros); al morir puede soltar un power-up y vuelve al pool.
 
 using UnityEngine;
 using UnityEngine.Pool;

@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Base de los power-ups: se recoge al tocar al jugador y cada tipo define su efecto.
+// Desc: Base de los power-ups: se recoge al tocar al jugador (cada tipo define su efecto) y tiene el sorteo que elige cuál soltar.
 
 using UnityEngine;
 

@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Pruebas de la vida del enemigo y del jugador.
+// Desc: Pruebas de la vida y el sonido de muerte del enemigo, y de la vida e invulnerabilidad del jugador.
 
 using System.Linq;
 using System.Reflection;

@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Pruebas del Spawner (capacidad, oleadas, victoria), del sorteo ponderado y de los power-ups.
+// Desc: Pruebas del Spawner (capacidad, oleadas, puntos de entrada, victoria y paso al jefe), del sorteo ponderado y de los power-ups.
 
 using System.Linq;
 using System.Reflection;

@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Crea paredes invisibles en los bordes de la pantalla.
+// Desc: Crea paredes invisibles en los bordes de la pantalla y las rehace si cambia la cámara o el tamaño de la ventana.
 
 using UnityEngine;
 

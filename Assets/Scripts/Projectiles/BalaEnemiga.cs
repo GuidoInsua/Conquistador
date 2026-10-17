@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Bala del alien: baja y le quita vida al jugador cuando lo toca.
+// Desc: Bala enemiga: baja, con balanceo opcional, y le quita una ficha al jugador al tocarlo; también reparte balas en abanico.
 
 using UnityEngine;
 

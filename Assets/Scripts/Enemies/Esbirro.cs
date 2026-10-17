@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Esbirro del boss: sale por un costado, baja oscilando hacia el jugador, lo golpea al tocarlo y rebota; entre esbirros se empujan para no encimarse.
+// Desc: Esbirro del boss: sale por un costado, baja oscilando hacia el jugador, lo golpea al tocarlo y rebota; entre esbirros se empujan y al rato se desarman solos.
 
 using UnityEngine;
 
