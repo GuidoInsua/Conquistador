@@ -281,7 +281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9750742fb5a4cfe4e9547088dda8d9fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Conquistador::ParteBoss
-  vidaMaxima: 40
+  vidaMaxima: 50
   particulasGolpePrefab: {fileID: 6740004537896051600, guid: 72ff69de2002f7048b87ff5b0703ca0c, type: 3}
   sonidoMuerte: {fileID: 8300000, guid: d3b87a62a1bcb1c4b8738f6dd64ad26d, type: 3}
   powerUps:
@@ -553,7 +553,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9750742fb5a4cfe4e9547088dda8d9fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Conquistador::ParteBoss
-  vidaMaxima: 100
+  vidaMaxima: 120
   particulasGolpePrefab: {fileID: 6740004537896051600, guid: 72ff69de2002f7048b87ff5b0703ca0c, type: 3}
   sonidoMuerte: {fileID: 8300000, guid: d3b87a62a1bcb1c4b8738f6dd64ad26d, type: 3}
   powerUps: []
@@ -823,7 +823,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9750742fb5a4cfe4e9547088dda8d9fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Conquistador::ParteBoss
-  vidaMaxima: 40
+  vidaMaxima: 50
   particulasGolpePrefab: {fileID: 6740004537896051600, guid: 72ff69de2002f7048b87ff5b0703ca0c, type: 3}
   sonidoMuerte: {fileID: 8300000, guid: d3b87a62a1bcb1c4b8738f6dd64ad26d, type: 3}
   powerUps:
