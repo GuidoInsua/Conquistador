@@ -14,7 +14,7 @@
 
 # Conquistador
 
-Shooter espacial 2D de pantalla fija. Manejás una nave, esquivás los disparos de los aliens, los destruís y juntás power-ups para ir más rápido. Si te alcanza un disparo enemigo, perdés.
+Shooter espacial 2D de pantalla fija. Manejás una nave, esquivás los disparos de los aliens, los destruís, juntás power-ups y al final enfrentás al jefe cangrejo. Si te quedás sin vida, perdés.
 
 Trabajo práctico de **Programación 1** (segundo cuatrimestre 2026) de **Guido Insua**.
 
@@ -44,19 +44,40 @@ Trabajo práctico de **Programación 1** (segundo cuatrimestre 2026) de **Guido 
 | -------- | ------------------- |
 | Moverte  | `W A S D` o flechas |
 | Disparar | `Espacio`           |
+| Pausa    | `Escape`            |
+| Menús    | Flechas y `Enter`   |
+
+Todo se juega con teclado: cada menú abre con su primera opción marcada.
+
+### Aliens
 
 - Tus disparos suben y hacen **1** de daño. El alien común tiene **4** de vida y el alien volador, **6**.
-- Los aliens entran por el costado más cercano a su lugar y se quedan oscilando en una de las **10** posiciones de la pantalla, así que puede haber hasta **10** a la vez. Aparece uno nuevo cada **2 segundos**.
+- Los aliens entran por el costado más cercano a su lugar haciendo ondas, y se quedan dando vueltas al azar alrededor de una de las **13** posiciones de la pantalla, así que puede haber hasta **13** a la vez. Aparece uno nuevo cada **2 segundos**.
 - Hay **2 oleadas**, **50 aliens** en total: primero **20** comunes y después **30** mezclados (60 % comunes, 40 % voladores). La segunda no arranca hasta que mueren todos los de la primera.
-- Al terminar las oleadas la cámara se aleja y baja el **jefe cangrejo**. Te sigue despacio y cada **4 segundos** se frena, avisa con un rayo fino y lanza desde la boca un rayo continuo que te saca **1** punto de vida por segundo mientras estés adentro. Mientras dispara pone cara de enojado. Entre rayo y rayo las pinzas, por turnos, largan un abanico de **5** orbes, de a uno y con una bola en la punta que avisa de dónde salen, que bajan balanceándose; una pinza rota ya no dispara. Cada vez que el cuerpo pasa a otro paso de daño salen **6 esbirros** de adentro del boss, uno por costado cada medio segundo: tienen **2** de vida, no disparan ni sueltan power-ups, bajan oscilando hacia vos y te quitan **1** al tocarte, rebotando para no seguir pegándote. Al morir el boss mueren todos. Tiene **100** de vida en el cuerpo, que muestra el daño en tres pasos, y **40** en cada pinza; las pinzas se rompen por separado, muestran el daño en dos pasos y al romperse quedan destruidas a la vista. Cuando le rompés el cuerpo se hincha, explota en una lluvia de partículas y unos segundos después aparece la victoria.
-- Cada alien dispara cada **6 segundos**. El común tira 1 bala; el volador tira **3 en abanico**, lentas, que caen balanceándose como un copo de nieve.
-- Empezás con **5** puntos de vida, que se ven como fichas abajo a la izquierda. Cada disparo enemigo te quita **1**. Después de un golpe titilás en blanco y durante **1 segundo** no recibís daño.
-- Al morir un alien hay chances de que suelte un power-up, y se elige uno de los 4 al azar. Si pasa de largo y sale de la pantalla, se pierde:
-  - **Amarillo**: más velocidad durante un rato.
+- Cada alien dispara cada **6 segundos**. El común tira 1 disparo rápido; el volador tira **3 en abanico**, lentos, que caen balanceándose como un copo de nieve.
+- Al morir, un alien tiene **80 %** de chances de soltar un power-up, elegido al azar entre los 4. Si pasa de largo y sale de la pantalla, se pierde:
+  - **Amarillo**: **50 %** más de velocidad durante **10 segundos**.
   - **Verde**: +1 punto de vida.
   - **Rojo**: balas más anchas y con **2** de daño durante **20 segundos**.
   - **Azul**: disparo doble en paralelo durante **20 segundos**.
-- Cuando te quedás sin vida aparece la pantalla de derrota, y si matás al jefe, la de victoria. Desde ahí reiniciás, volvés al menú o salís.
+
+### Jefe cangrejo
+
+Al terminar las oleadas cambia la música, la cámara se aleja un poco y baja el jefe. Te sigue despacio, moviéndose al azar.
+
+- **Rayo:** cada **4 segundos** se frena, pone cara de enojado, avisa con un rayo fino y lanza desde la boca un rayo continuo que te saca **1** punto de vida por segundo mientras estés adentro.
+- **Pinzas:** entre rayo y rayo, por turnos, cada pinza larga un abanico de **5** orbes de a uno, con una bola en la punta que avisa de dónde salen. Los orbes bajan balanceándose.
+- **Esbirros:** cada **5 segundos** salen **4** de adentro del jefe, hacia los costados. Tienen **1** de vida, no disparan, bajan oscilando hacia vos y te quitan **1** al tocarte, rebotando para no seguir pegándote. Se empujan entre ellos para no encimarse. Si los matás pueden soltar un power-up (**25 %**); a los **16 segundos** se desarman solos, sin premio.
+- **Vida:** **100** en el cuerpo, que muestra el daño en tres pasos, y **40** en cada pinza. Las pinzas se rompen por separado, muestran el daño en dos pasos, quedan destruidas a la vista, sueltan **2** power-ups al azar y dejan de disparar.
+- **Muerte:** cuando le rompés el cuerpo se hincha, explota en una lluvia de partículas, mueren todos los esbirros y unos segundos después aparece la victoria.
+
+### Vida, pantallas y sonido
+
+- Empezás con **5** puntos de vida, que se ven como fichas abajo a la izquierda. Cada golpe te quita **1**. Después de un golpe titilás en blanco y durante **1 segundo** no recibís daño.
+- **Menú principal:** Jugar, Opciones, Créditos y Salir. En Opciones hay un volumen para la música y otro para los efectos, que se guardan entre partidas. Créditos tiene una sinopsis corta y los datos del autor.
+- **Pausa** (`Escape`): Continuar, Opciones, Menú principal y Salir. El juego queda congelado.
+- **Victoria y derrota:** Reiniciar, Menú principal y Salir, cada una con su banner y su música.
+- Hay música para el menú, el juego, el jefe, la victoria y la derrota, y efectos para tu disparo, cuando te pegan, cuando muere un enemigo o una parte del jefe, y para el rayo.
 
 ## Cómo correrlo
 
@@ -73,10 +94,11 @@ Las escenas del build son `Menu` y `Juego`.
 ## Tecnología
 
 - Unity 6 con **URP 2D**
-- **Input System** (acciones en `Assets/Settings/InputActions.inputactions`)
+- **Input System** (acciones en `Assets/Settings/InputActions.inputactions`; los menús usan las acciones de UI por defecto)
 - **TextMeshPro** para el texto de la interfaz
-- `ObjectPool` de Unity para los aliens
-- `Awaitable` de Unity para el movimiento de entrada de los aliens
+- `ObjectPool` de Unity para los aliens y los esbirros
+- `Awaitable` de Unity para el movimiento de entrada de los aliens; corrutinas para las secuencias del jefe
+- `PlayerPrefs` para guardar el volumen
 
 ## Estructura del proyecto
 
@@ -85,21 +107,24 @@ Conquistador/
 ├── Assets/
 │   ├── Animations/   Animaciones de aliens, disparos y power-ups; las del jefe en Jefe/
 │   ├── Animators/    Controladores de animación; los del jefe en Jefe/
-│   ├── Audio/        Música y efectos
-│   ├── Materials/
-│   ├── Prefabs/      Alien, láser, disparo enemigo, power-up, partículas; el jefe y sus disparos en Jefe/
+│   ├── Audio/        Musica/ y SFX/
+│   ├── Materials/    Partículas y el destello blanco del jugador
+│   ├── Prefabs/      Aliens, disparos, power-ups, partículas
+│   │   ├── Jefe/         Jefe, rayo, bola, bala de las pinzas, esbirro y explosión
+│   │   └── UI/           Botón de menú y panel de opciones (se reusan en las dos escenas)
 │   ├── Scenes/       Menu y Juego
 │   ├── Scripts/
+│   │   ├── Audio/        Efectos de sonido, cambio de música y volumen
 │   │   ├── Enemies/      Aliens, Spawner, Oleada y el jefe (FaseBoss, JefeCangrejo, ParteBoss, RayoBoss, DisparoPinza, Esbirro, InvocadorEsbirros)
 │   │   ├── Interfaces/   IDamageable
 │   │   ├── Player/       Movimiento, disparo y vida del jugador
 │   │   ├── PowerUps/     Los 4 power-ups
 │   │   ├── Projectiles/  Bala del jugador y bala enemiga
-│   │   ├── UI/           Barra de vida y botones para cambiar de escena
+│   │   ├── UI/           Barra de vida, cambio de escena, pausa, opciones y selección con teclado
 │   │   ├── Utilidades/   Sorteo con pesos y oscilación
 │   │   └── World/        Bordes, fondo animado, utilidad de pantalla
 │   ├── Settings/     Input y render pipeline
-│   ├── Sprites/
+│   ├── Sprites/      Background, Boss, Enemies, Player, PowerUps, UI, VFX
 │   └── Tests/EditMode/   Pruebas automáticas
 └── ProjectSettings/
 ```
@@ -107,7 +132,7 @@ Conquistador/
 ## Pruebas
 
 En Unity: **Window → General → Test Runner → EditMode → Run All**.
-Cubren la vida del alien y del jugador, el Spawner (posiciones, oleadas, punto de entrada, victoria y paso al jefe), las partes del jefe, el daño del rayo, el abanico de las pinzas, el golpe y rebote de los esbirros, la oscilación, el sorteo con pesos, la elección de power-ups y la bala potenciada.
+Son **35** y cubren la vida y el sonido de muerte del alien, la vida e invulnerabilidad del jugador, el Spawner (posiciones, oleadas, punto de entrada, victoria y paso al jefe), las partes del jefe y sus power-ups, el rayo, el abanico de las pinzas, los esbirros (golpe, rebote, choque entre ellos y vida limitada), la oscilación y la onda de entrada, el volumen, la pausa, el límite de efectos de sonido, el sorteo con pesos, la elección de power-ups y la bala potenciada.
 
 ## Ideas para seguir
 
@@ -116,8 +141,8 @@ Cubren la vida del alien y del jugador, el Spawner (posiciones, oleadas, punto d
  [x] Oleadas con enemigos distintos
  [x] Jefe final
  [ ] Más power-ups (escudo)
- [ ] Efectos de sonido al disparar y al morir
- [ ] Pausa
+ [x] Efectos de sonido y música
+ [x] Pausa
 ```
 
 ## Autor
