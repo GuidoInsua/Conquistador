@@ -542,6 +542,7 @@ GameObject:
   - component: {fileID: 372225868}
   - component: {fileID: 372225867}
   - component: {fileID: 372225866}
+  - component: {fileID: 372225870}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -636,6 +637,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &372225870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 372225865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6468ee71ed5ad7640974b76ec665c9b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Conquistador::CambioMusica
+  musica: {fileID: 1406606075}
+  clip: {fileID: 8300000, guid: 193330e7d0ab55643bad43fd76efaf02, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -648,7 +663,6 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
-  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -743,7 +757,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5.4
+  orthographic size: 6.3
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -774,30 +788,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &519420033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c88f5cead0c0b2a4eb05b5900433f8d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.2D.Runtime::UnityEngine.Rendering.Universal.PixelPerfectCamera
-  m_ComponentVersion: 1
-  m_AssetsPPU: 100
-  m_RefResolutionX: 1920
-  m_RefResolutionY: 1080
-  m_CropFrame: 0
-  m_GridSnapping: 0
-  m_FilterMode: 0
-  m_UpscaleRT: 0
-  m_PixelSnapping: 0
-  m_CropFrameX: 0
-  m_CropFrameY: 0
-  m_StretchFill: 0
 --- !u!1 &604216126
 GameObject:
   m_ObjectHideFlags: 0
@@ -1362,11 +1352,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Spawner
   oleadas:
-  - cantidad: 20
+  - cantidad: 1
     enemigos:
     - prefab: {fileID: 4930170169193344296, guid: 1843e24e95a3fd94896d4a062f65268d, type: 3}
       peso: 100
-  - cantidad: 30
+  - cantidad: 1
     enemigos:
     - prefab: {fileID: 4930170169193344296, guid: 1843e24e95a3fd94896d4a062f65268d, type: 3}
       peso: 60
@@ -1996,11 +1986,11 @@ MonoBehaviour:
   jefe: {fileID: 1237339977991728522}
   esperaInicial: 1.5
   camara: {fileID: 519420031}
-  tamanoCamaraBoss: 7
+  factorZoomBoss: 1.15
   duracionZoom: 2
   bordes: {fileID: 1643800409}
   musica: {fileID: 1406606075}
-  musicaBoss: {fileID: 0}
+  musicaBoss: {fileID: 8300000, guid: 6861782b38d292c46bb84c267e0876f1, type: 3}
 --- !u!4 &1247414242
 Transform:
   m_ObjectHideFlags: 0
@@ -2106,7 +2096,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: ad403fe5cb1141c4db962f01954ad170, type: 3}
+  m_Resource: {fileID: 8300000, guid: 7e87ea3518436f54397398ff503627db, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.108
   m_Pitch: 1
@@ -2207,6 +2197,149 @@ Transform:
   m_Children: []
   m_Father: {fileID: 58318363}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1406606080
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1406606082}
+  - component: {fileID: 1406606081}
+  - component: {fileID: 1406606083}
+  m_Layer: 0
+  m_Name: Sonidos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!82 &1406606081
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1406606080}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 0.5
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!4 &1406606082
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1406606080}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1406606083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1406606080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f6c106db09a4ef7bdb307ad1619aaa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Conquistador::EfectosSonido
+  separacionMinima: 0.05
 --- !u!1 &1413284934
 GameObject:
   m_ObjectHideFlags: 0
@@ -2747,6 +2880,7 @@ MonoBehaviour:
   posicionArma: {fileID: 1734266367}
   balaPrefab: {fileID: 2208934445783725552, guid: ff9f4653d0399e74ca3265fe1a0f33ec, type: 3}
   tiempoEntreDisparos: 0.15
+  sonidoDisparo: {fileID: 8300000, guid: 7c6af2ef96e803248a91a28463fbf861, type: 3}
   separacionDisparoDoble: 0.4
 --- !u!58 &1886397569
 CircleCollider2D:
@@ -2802,6 +2936,7 @@ MonoBehaviour:
   duracionInvulnerable: 1
   intervaloTitileo: 0.08
   materialDestello: {fileID: 2100000, guid: 1aa81973edb63fb4e930d3a590f012a6, type: 2}
+  sonidoGolpe: {fileID: 8300000, guid: 77090ec93a2167f49b8e1b3dbc316d26, type: 3}
 --- !u!95 &1886397571
 Animator:
   serializedVersion: 7
@@ -3747,6 +3882,7 @@ GameObject:
   - component: {fileID: 7372225868}
   - component: {fileID: 7372225867}
   - component: {fileID: 7372225866}
+  - component: {fileID: 7372225870}
   m_Layer: 5
   m_Name: CanvasVictoria
   m_TagString: Untagged
@@ -3841,6 +3977,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &7372225870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7372225865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6468ee71ed5ad7640974b76ec665c9b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Conquistador::CambioMusica
+  musica: {fileID: 1406606075}
+  clip: {fileID: 8300000, guid: 9da40c82be210b940b64b2717415a7d2, type: 3}
 --- !u!1 &7637589665
 GameObject:
   m_ObjectHideFlags: 0
@@ -4669,6 +4819,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1967944258392110610, guid: c6a1f14f176582a4192c589d32928a67, type: 3}
+      propertyPath: cantidadPorTanda
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 3985474095712741015, guid: c6a1f14f176582a4192c589d32928a67, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4746,3 +4900,4 @@ SceneRoots:
   - {fileID: 1547509836}
   - {fileID: 1237339977991728521}
   - {fileID: 1247414242}
+  - {fileID: 1406606082}

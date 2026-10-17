@@ -13,7 +13,6 @@
 
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
 public class FaseBoss : MonoBehaviour
 {
@@ -24,8 +23,8 @@ public class FaseBoss : MonoBehaviour
 
     [Header("Cámara")]
     [SerializeField] private Camera camara;
-    [Tooltip("Tamaño ortográfico durante la pelea. Más grande = más lejos.")]
-    [SerializeField] private float tamanoCamaraBoss = 7f;
+    [Tooltip("Cuánto se aleja la cámara respecto de su tamaño normal. 1.15 = 15 % más lejos.")]
+    [SerializeField] private float factorZoomBoss = 1.15f;
     [SerializeField] private float duracionZoom = 2f;
     [Tooltip("Se recalculan al terminar el zoom para que el jugador use el espacio nuevo.")]
     [SerializeField] private BordesMundo bordes;
@@ -70,18 +69,15 @@ public class FaseBoss : MonoBehaviour
             musica.Play();
         }
 
-        // El Pixel Perfect Camera pisa el tamaño de la cámara cada frame y solo acerca en pasos enteros: sin apagarlo no hay zoom.
-        if (camara.TryGetComponent(out PixelPerfectCamera pixelPerfect))
-            pixelPerfect.enabled = false;
-
         float tamanoInicial = camara.orthographicSize;
+        float tamanoBoss = tamanoInicial * factorZoomBoss;
         for (float t = 0f; t < duracionZoom; t += Time.deltaTime)
         {
-            camara.orthographicSize = Mathf.Lerp(tamanoInicial, tamanoCamaraBoss, Mathf.SmoothStep(0f, 1f, t / duracionZoom));
+            camara.orthographicSize = Mathf.Lerp(tamanoInicial, tamanoBoss, Mathf.SmoothStep(0f, 1f, t / duracionZoom));
             yield return null;
         }
 
-        camara.orthographicSize = tamanoCamaraBoss;
+        camara.orthographicSize = tamanoBoss;
         bordes.Recalcular();
         jefe.Aparecer(alVencerJefe);
     }
