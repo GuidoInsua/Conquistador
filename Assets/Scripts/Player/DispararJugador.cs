@@ -80,7 +80,8 @@ public class DispararJugador : MonoBehaviour
 
 	private void Disparar()
 	{
-		if (Time.time < proximoDisparo)
+		// En pausa no dispara.
+		if (Time.timeScale == 0f || Time.time < proximoDisparo)
 			return;
 
 		proximoDisparo = Time.time + tiempoEntreDisparos;

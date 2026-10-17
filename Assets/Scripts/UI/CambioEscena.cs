@@ -16,13 +16,16 @@ using UnityEngine.SceneManagement;
 
 public class CambioEscena : MonoBehaviour
 {
+	// Desde la pausa el tiempo está congelado: la escena nueva arranca con el tiempo normal.
 	public void CargarEscena(string nombre)
 	{
+		Time.timeScale = 1f;
 		SceneManager.LoadScene(nombre);
 	}
 
 	public void Reiniciar()
 	{
+		Time.timeScale = 1f;
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}
 

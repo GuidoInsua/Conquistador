@@ -44,7 +44,7 @@ public class EfectosSonido : MonoBehaviour
             return;
 
         if (instancia.Anotar(clip, Time.unscaledTime))
-            instancia.fuente.PlayOneShot(clip);
+            instancia.fuente.PlayOneShot(clip, VolumenAudio.Efectos);
     }
 
     // Devuelve si el clip puede sonar ahora y, si puede, guarda la hora.

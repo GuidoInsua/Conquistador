@@ -31,6 +31,7 @@ public class RayoBoss : MonoBehaviour
     private Collider2D zonaDano;
     // Opcional. Es propio y no de EfectosSonido para que se corte cuando el rayo se apaga.
     private AudioSource sonido;
+    private float volumenSonido;
     private VidaJugador jugadorDentro;
     private float proximoDano;
 
@@ -39,6 +40,8 @@ public class RayoBoss : MonoBehaviour
         animator = GetComponent<Animator>();
         zonaDano = GetComponent<Collider2D>();
         sonido = GetComponent<AudioSource>();
+        if (sonido != null)
+            volumenSonido = sonido.volume;
 
         if (animator == null || zonaDano == null)
         {
@@ -62,7 +65,10 @@ public class RayoBoss : MonoBehaviour
 
         animator.Play(animActivo);
         if (sonido != null)
+        {
+            sonido.volume = volumenSonido * VolumenAudio.Efectos;
             sonido.Play();
+        }
         zonaDano.enabled = true;
         yield return new WaitForSeconds(duracionRayo);
 
