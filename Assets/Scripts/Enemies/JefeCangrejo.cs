@@ -43,6 +43,8 @@ public class JefeCangrejo : MonoBehaviour
     [Tooltip("Disparan por turnos; una pinza destruida pierde su turno.")]
     [SerializeField] private DisparoPinza[] pinzas = new DisparoPinza[0];
     [SerializeField] private float tiempoEntreDisparosPinzas = 2f;
+    [Tooltip("Si queda vacío, no saca esbirros.")]
+    [SerializeField] private InvocadorEsbirros invocador;
 
     [Header("Muerte")]
     [Tooltip("Lo que dura la animación Muerte del cuerpo (se hincha) antes de explotar.")]
@@ -100,6 +102,9 @@ public class JefeCangrejo : MonoBehaviour
 
         if (pinzas.Length > 0)
             StartCoroutine(AtacarConPinzas());
+
+        if (invocador != null)
+            invocador.Comenzar();
     }
 
     private IEnumerator AtacarConPinzas()

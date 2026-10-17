@@ -236,7 +236,10 @@ MonoBehaviour:
   - prefab: {fileID: 2045122667956163684, guid: fb8846b41dce4490a65052c7311c8f98, type: 3}
     peso: 25
   particulasGolpePrefab: {fileID: 6740004537896051600, guid: 72ff69de2002f7048b87ff5b0703ca0c, type: 3}
+  sonidoGolpe: {fileID: 8300000, guid: d3b87a62a1bcb1c4b8738f6dd64ad26d, type: 3}
   powerUpSpawnProbability: 0.8
+  amplitudOscilacion: {x: 1.2, y: 0.6}
+  frecuenciaOscilacion: 0.35
 --- !u!114 &-690365026414050843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -252,3 +255,5 @@ MonoBehaviour:
   posicionArma: {fileID: 3164548805030568712}
   balaPrefab: {fileID: 6912544722809568519, guid: 5277f4363855930408600db7901dd634, type: 3}
   intervaloDisparo: 6
+  cantidadBalas: 1
+  anguloCono: 0

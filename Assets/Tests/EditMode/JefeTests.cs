@@ -12,6 +12,7 @@
 // Desc: Pruebas de la vida y el daño visible de las partes del boss, de cuándo muere y del daño del rayo.
 
 using System.Collections;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
@@ -130,19 +131,72 @@ public class JefeTests
     }
 
     [Test]
-    public void Parte_avisa_cada_cambio_de_estado_pero_no_al_destruirse()
+    public void Pinza_suelta_dos_power_ups_al_destruirse()
     {
-        var parte = CrearParte("cuerpoConFases", 9f);
-        typeof(ParteBoss).GetField("estadosDano", privado).SetValue(parte, new[] { "Idle", "Dano1", "Dano2" });
-        var cambios = new System.Collections.Generic.List<int>();
-        parte.CambioEstado += cambios.Add;
+        var powerUp = new GameObject("powerUpPrueba");
+        typeof(ParteBoss).GetField("powerUps", privado).SetValue(pinza, new[] { new OpcionPowerUp(powerUp, 1f) });
+        int Sueltos() => Object.FindObjectsByType<Transform>(FindObjectsSortMode.None).Count(t => t.name == "powerUpPrueba(Clone)");
 
-        parte.TakeDamage(1f);
-        parte.TakeDamage(3f);
-        parte.TakeDamage(3f);
-        parte.TakeDamage(5f);
+        pinza.TakeDamage(1f);
+        Assert.AreEqual(0, Sueltos(), "viva no suelta nada");
 
-        CollectionAssert.AreEqual(new[] { 1, 2 }, cambios);
+        pinza.TakeDamage(99f);
+        Assert.AreEqual(2, Sueltos());
+
+        foreach (var t in Object.FindObjectsByType<Transform>(FindObjectsSortMode.None))
+            if (t != null && t.name.StartsWith("powerUpPrueba"))
+                Object.DestroyImmediate(t.gameObject);
+    }
+
+    Esbirro CrearEsbirro(string nombre, Vector3 posicion)
+    {
+        var go = new GameObject(nombre, typeof(Animator), typeof(EnemigoAlien), typeof(CircleCollider2D));
+        go.transform.SetParent(jefeGo.transform);
+        go.GetComponent<EnemigoAlien>().ResetEnemy();
+        var esbirro = go.AddComponent<Esbirro>();
+        typeof(Esbirro).GetMethod("Awake", privado).Invoke(esbirro, null);
+        esbirro.Iniciar(posicion, 1f, null);
+        typeof(Esbirro).GetField("isSaliendo", privado).SetValue(esbirro, false); // Ya salió del boss.
+        esbirro.transform.position = posicion;
+        return esbirro;
+    }
+
+    [Test]
+    public void Esbirros_se_empujan_poco_al_chocar_y_no_mientras_salen()
+    {
+        var izquierda = CrearEsbirro("izq", new Vector3(-0.1f, 0f, 0f));
+        var derecha = CrearEsbirro("der", new Vector3(0.1f, 0f, 0f));
+        var tocar = typeof(Esbirro).GetMethod("OnTriggerEnter2D", privado);
+        Vector2 Empuje(Esbirro e) => (Vector2)typeof(Esbirro).GetField("velocidadEmpuje", privado).GetValue(e);
+
+        tocar.Invoke(izquierda, new object[] { derecha.GetComponent<Collider2D>() });
+        Assert.AreEqual(Vector2.left * 1.5f, Empuje(izquierda), "se aleja del otro, mucho menos que del jugador (7)");
+
+        typeof(Esbirro).GetField("isSaliendo", privado).SetValue(derecha, true);
+        typeof(Esbirro).GetField("finRetroceso", privado).SetValue(izquierda, float.MinValue);
+        typeof(Esbirro).GetField("velocidadEmpuje", privado).SetValue(izquierda, Vector2.zero);
+        tocar.Invoke(izquierda, new object[] { derecha.GetComponent<Collider2D>() });
+        Assert.AreEqual(Vector2.zero, Empuje(izquierda), "con uno que todavía sale no se empujan");
+    }
+
+    [Test]
+    public void Esbirro_se_muere_solo_sin_soltar_power_up_al_pasar_su_tiempo()
+    {
+        var esbirroGo = new GameObject("esbirroViejo", typeof(Animator), typeof(EnemigoAlien));
+        esbirroGo.transform.SetParent(jefeGo.transform);
+        var alien = esbirroGo.GetComponent<EnemigoAlien>();
+        alien.ResetEnemy();
+        var esbirro = esbirroGo.AddComponent<Esbirro>();
+        typeof(Esbirro).GetMethod("Awake", privado).Invoke(esbirro, null);
+        esbirro.Iniciar(Vector3.zero, 1f, null);
+
+        typeof(Esbirro).GetMethod("Update", privado).Invoke(esbirro, null);
+        Assert.Greater(alien.GetSalud(), 0f, "recién salido sigue vivo");
+
+        typeof(Esbirro).GetField("finVida", privado).SetValue(esbirro, float.MinValue);
+        typeof(Esbirro).GetMethod("Update", privado).Invoke(esbirro, null);
+        Assert.AreEqual(0f, alien.GetSalud());
+        Assert.IsTrue((bool)typeof(EnemigoAlien).GetField("isSinPowerUp", privado).GetValue(alien));
     }
 
     [Test]

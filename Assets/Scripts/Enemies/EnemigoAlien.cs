@@ -26,8 +26,8 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
 
     [Header("Oscilación")]
     [Tooltip("Cuánto se aleja de su posición en x e y mientras espera en ella.")]
-    [SerializeField] private Vector2 amplitudOscilacion = new Vector2(0.4f, 0.25f);
-    [SerializeField] private float frecuenciaOscilacion = 0.5f;
+    [SerializeField] private Vector2 amplitudOscilacion = new Vector2(1.2f, 0.6f);
+    [SerializeField] private float frecuenciaOscilacion = 0.35f;
 
     //
 
@@ -41,6 +41,7 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
     private IObjectPool<EnemigoAlien> enemyPool;
     private int movimientoId;
     private bool isEnPosicion;
+    private bool isSinPowerUp;
     private Vector3 posicionBase;
     private float tiempoOscilacion;
     private float semillaOscilacion;
@@ -60,6 +61,7 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
         // Invalida cualquier movimiento anterior que siga en marcha.
         movimientoId++;
         isEnPosicion = false;
+        isSinPowerUp = false;
 
         vidaActual = vidaMaxima;
 
@@ -146,14 +148,22 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
         }
     }
 
+    // Muere sin soltar power-up: un esbirro que se desarma solo no es un premio.
+    public void Expirar()
+    {
+        if (vidaActual <= 0)
+            return;
+
+        vidaActual = 0;
+        isSinPowerUp = true;
+        cambiarAnimacion(animMuerte);
+    }
+
     // Este método se llama desde la animación de muerte
     private void Morir()
     {
-        PowerUp.SpawnPowerUp(
-            powerUps,
-            transform.position,
-            powerUpSpawnProbability
-        );
+        if (!isSinPowerUp)
+            PowerUp.SpawnPowerUp(powerUps, transform.position, powerUpSpawnProbability);
 
         if (enemyPool != null)
         {

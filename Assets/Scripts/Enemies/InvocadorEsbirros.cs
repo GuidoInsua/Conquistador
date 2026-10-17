@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Saca esbirros del boss, de a varios, cada vez que el cuerpo pasa a otro estado de daño.
+// Desc: Saca esbirros del boss en tandas cada cierto tiempo, mientras pelea.
 
 using System.Collections;
 using System.Collections.Generic;
@@ -20,9 +20,12 @@ public class InvocadorEsbirros : MonoBehaviour
 {
     [Tooltip("Prefab con EnemigoAlien y Esbirro.")]
     [SerializeField] private EnemigoAlien esbirroPrefab;
-    [Tooltip("Cada vez que cambia de estado de daño salen esbirros; al destruirse mueren todos.")]
+    [Tooltip("Salen desde su centro. Al destruirse mueren todos.")]
     [SerializeField] private ParteBoss cuerpo;
-    [SerializeField] private int cantidadPorFase = 6;
+    [SerializeField] private float tiempoEntreTandas = 5f;
+    [Tooltip("Uno por costado, alternando.")]
+    [SerializeField] private int cantidadPorTanda = 2;
+    [Tooltip("Tiempo entre esbirro y esbirro dentro de una tanda.")]
     [SerializeField] private float intervalo = 0.5f;
 
     private JefeCangrejo jefe;
@@ -59,8 +62,23 @@ public class InvocadorEsbirros : MonoBehaviour
                     Destroy(esbirro.gameObject);
             });
 
-        cuerpo.CambioEstado += _ => StartCoroutine(Lanzar());
         cuerpo.Destruida += MatarTodos;
+    }
+
+    // La llama el boss cuando llega a su lugar de pelea.
+    public void Comenzar()
+    {
+        if (enabled)
+            StartCoroutine(Tandas());
+    }
+
+    private IEnumerator Tandas()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(tiempoEntreTandas);
+            yield return Lanzar();
+        }
     }
 
     // Sin padre: si fueran hijos del boss se moverían con él y se apagarían al morir.
@@ -73,7 +91,7 @@ public class InvocadorEsbirros : MonoBehaviour
 
     private IEnumerator Lanzar()
     {
-        for (int i = 0; i < cantidadPorFase; i++)
+        for (int i = 0; i < cantidadPorTanda; i++)
         {
             EnemigoAlien esbirro = pool.Get();
             esbirro.GetComponent<Esbirro>().Iniciar(cuerpo.transform.position, i % 2 == 0 ? -1f : 1f, jefe.Jugador);
@@ -87,6 +105,6 @@ public class InvocadorEsbirros : MonoBehaviour
 
         // Copia: al terminar la animación de muerte cada uno se saca de la lista.
         foreach (EnemigoAlien esbirro in activos.ToArray())
-            esbirro.TakeDamage(float.MaxValue);
+            esbirro.Expirar();
     }
 }

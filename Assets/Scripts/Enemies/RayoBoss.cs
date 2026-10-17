@@ -17,7 +17,7 @@ using UnityEngine;
 public class RayoBoss : MonoBehaviour
 {
     [Tooltip("Tiempo que parpadea fino antes de hacer daño, para que el jugador pueda esquivarlo.")]
-    [SerializeField] private float duracionAviso = 0.8f;
+    [SerializeField] private float duracionAviso = 0.4f;
     [SerializeField] private float duracionRayo = 2f;
     [Tooltip("Cada cuánto saca una ficha mientras el jugador sigue dentro del rayo.")]
     [SerializeField] private float intervaloDano = 0.5f;

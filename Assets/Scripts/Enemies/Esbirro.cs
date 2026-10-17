@@ -9,7 +9,7 @@
 // ##### `._==_.' #####                                                     #
 // ###### __)(___ #####                                                     #
 // ##########################################################################
-// Desc: Esbirro del boss: sale por un costado, baja oscilando hacia el jugador, lo golpea al tocarlo y rebota.
+// Desc: Esbirro del boss: sale por un costado, baja oscilando hacia el jugador, lo golpea al tocarlo y rebota; entre esbirros se empujan para no encimarse.
 
 using UnityEngine;
 
@@ -25,10 +25,16 @@ public class Esbirro : MonoBehaviour
     [SerializeField] private Vector2 amplitudOscilacion = new Vector2(0.6f, 0.4f);
     [SerializeField] private float frecuenciaOscilacion = 0.8f;
 
+    [Tooltip("Segundos desde que sale hasta que se desarma solo, sin soltar power-up.")]
+    [SerializeField] private float tiempoVida = 5f;
+
     [Header("Golpe")]
     [Tooltip("Velocidad con la que rebota al tocar al jugador. Se frena de a poco.")]
     [SerializeField] private float velocidadRetroceso = 7f;
     [SerializeField] private float duracionRetroceso = 0.6f;
+    [Tooltip("Empujón al chocar con otro esbirro, para que no se encimen. Mucho más chico que el rebote contra el jugador.")]
+    [SerializeField] private float velocidadChoque = 1.5f;
+    [SerializeField] private float duracionChoque = 0.3f;
 
     // Igual que BalaEnemiga: cada golpe saca una ficha.
     private const int danoAlJugador = 1;
@@ -42,8 +48,12 @@ public class Esbirro : MonoBehaviour
     private bool isSaliendo;
     private Vector2 velocidadEmpuje;
     private float finRetroceso;
+    private float duracionEmpuje;
     private float tiempoOscilacion;
     private float semillaOscilacion;
+    private float finVida;
+
+    public bool EstaVivo => alien.GetSalud() > 0f;
 
     private void Awake()
     {
@@ -74,6 +84,7 @@ public class Esbirro : MonoBehaviour
         finRetroceso = 0f;
         tiempoOscilacion = 0f;
         semillaOscilacion = Random.value * 100f;
+        finVida = Time.time + tiempoVida;
     }
 
     private void Update()
@@ -81,6 +92,12 @@ public class Esbirro : MonoBehaviour
         // Muriendo: se queda donde está mientras corre la animación.
         if (alien.GetSalud() <= 0f)
             return;
+
+        if (Time.time >= finVida)
+        {
+            alien.Expirar();
+            return;
+        }
 
         if (isSaliendo)
         {
@@ -91,7 +108,7 @@ public class Esbirro : MonoBehaviour
         }
 
         if (Time.time < finRetroceso)
-            posicionBase += (Vector3)(velocidadEmpuje * ((finRetroceso - Time.time) / duracionRetroceso) * Time.deltaTime);
+            posicionBase += (Vector3)(velocidadEmpuje * ((finRetroceso - Time.time) / duracionEmpuje) * Time.deltaTime);
         else if (jugador != null)
             posicionBase = Vector3.MoveTowards(posicionBase, jugador.position, velocidadPersecucion * Time.deltaTime);
 
@@ -106,20 +123,35 @@ public class Esbirro : MonoBehaviour
         return alejarse.sqrMagnitude < 0.0001f ? Vector2.up : alejarse.normalized;
     }
 
+    // Los choques entre esbirros llegan porque el Rigidbody2D cinemático tiene "Use Full Kinematic Contacts".
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.CompareTag("Player") || alien.GetSalud() <= 0f || Time.time < finRetroceso)
+        if (alien.GetSalud() <= 0f || Time.time < finRetroceso)
             return;
 
-        // Aunque el jugador esté invulnerable rebota igual, así no se le queda encima.
-        if (collision.TryGetComponent(out VidaJugador vida))
-            vida.actualizarVida(-danoAlJugador);
+        if (collision.CompareTag("Player"))
+        {
+            // Aunque el jugador esté invulnerable rebota igual, así no se le queda encima.
+            if (collision.TryGetComponent(out VidaJugador vida))
+                vida.actualizarVida(-danoAlJugador);
 
-        velocidadEmpuje = DireccionRetroceso(transform.position, collision.transform.position) * velocidadRetroceso;
-        finRetroceso = Time.time + duracionRetroceso;
-        isSaliendo = false;
+            Rebotar(collision.transform.position, velocidadRetroceso, duracionRetroceso);
+            isSaliendo = false;
+        }
+        // Mientras salen del boss no se empujan, así no se cruzan de lado.
+        else if (!isSaliendo && collision.TryGetComponent(out Esbirro otro) && !otro.isSaliendo && otro.EstaVivo)
+        {
+            Rebotar(otro.transform.position, velocidadChoque, duracionChoque);
+        }
     }
 
-    // Si al terminar el rebote sigue tocando al jugador, vuelve a golpear.
+    private void Rebotar(Vector3 desde, float velocidad, float duracion)
+    {
+        velocidadEmpuje = DireccionRetroceso(transform.position, desde) * velocidad;
+        duracionEmpuje = duracion;
+        finRetroceso = Time.time + duracion;
+    }
+
+    // Si al terminar el rebote sigue tocando al jugador u otro esbirro, vuelve a reaccionar.
     private void OnTriggerStay2D(Collider2D collision) => OnTriggerEnter2D(collision);
 }

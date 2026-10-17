@@ -19,6 +19,13 @@ public class ParteBoss : MonoBehaviour, IDamageable
     [SerializeField] private GameObject particulasGolpePrefab;
     [SerializeField] private AudioClip sonidoGolpe;
 
+    [Header("Al destruirse")]
+    [Tooltip("Suelta esta cantidad de power-ups elegidos al azar de la lista. Lista vacía: no suelta nada.")]
+    [SerializeField] private OpcionPowerUp[] powerUps = new OpcionPowerUp[0];
+    [SerializeField] private int cantidadPowerUps = 2;
+    [Tooltip("Distancia entre power-up y power-up, para que no caigan encimados.")]
+    [SerializeField] private float separacionPowerUps = 0.8f;
+
     [Header("Animación")]
     [Tooltip("Estados del Animator de menos a más daño mientras la parte está viva. La vida se reparte en tramos iguales entre ellos.")]
     [SerializeField] private string[] estadosDano = new string[0];
@@ -40,8 +47,6 @@ public class ParteBoss : MonoBehaviour, IDamageable
     private const string sufijoEnojado = "Enojado";
 
     public event System.Action Destruida;
-    // Pasó a otro estado de daño (el índice en estadosDano). No se llama al destruirse.
-    public event System.Action<int> CambioEstado;
 
     public bool EstaViva => vidaActual > 0f;
 
@@ -88,7 +93,6 @@ public class ParteBoss : MonoBehaviour, IDamageable
             {
                 estadoActual = estado;
                 ReproducirEstado();
-                CambioEstado?.Invoke(estado);
             }
             return;
         }
@@ -102,6 +106,15 @@ public class ParteBoss : MonoBehaviour, IDamageable
             animator.Play(estadoDestruida);
             if (zonaGolpe != null)
                 zonaGolpe.enabled = false; // Queda el sprite de destruida, pero las balas la atraviesan.
+        }
+
+        if (powerUps.Length > 0)
+        {
+            for (int i = 0; i < cantidadPowerUps; i++)
+            {
+                float x = (i - (cantidadPowerUps - 1) / 2f) * separacionPowerUps;
+                PowerUp.SpawnPowerUp(powerUps, transform.position + Vector3.right * x, 1f);
+            }
         }
 
         Destruida?.Invoke();
