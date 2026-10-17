@@ -41,17 +41,23 @@ public class EfectosSonido : MonoBehaviour
     public static void Reproducir(AudioClip clip)
     {
         if (clip == null || instancia == null || !instancia.enabled)
+        {
             return;
+        }
 
         if (instancia.Anotar(clip, Time.unscaledTime))
+        {
             instancia.fuente.PlayOneShot(clip, VolumenAudio.Efectos);
+        }
     }
 
     // Devuelve si el clip puede sonar ahora y, si puede, guarda la hora.
     private bool Anotar(AudioClip clip, float ahora)
     {
         if (ultimaVez.TryGetValue(clip, out float ultima) && ahora - ultima < separacionMinima)
+        {
             return false;
+        }
 
         ultimaVez[clip] = ahora;
         return true;

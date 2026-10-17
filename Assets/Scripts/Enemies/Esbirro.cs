@@ -53,7 +53,10 @@ public class Esbirro : MonoBehaviour
     private float semillaOscilacion;
     private float finVida;
 
-    public bool EstaVivo => alien.GetSalud() > 0f;
+    public bool EstaVivo
+    {
+        get { return alien.GetSalud() > 0f; }
+    }
 
     private void Awake()
     {
@@ -91,7 +94,9 @@ public class Esbirro : MonoBehaviour
     {
         // Muriendo: se queda donde está mientras corre la animación.
         if (alien.GetSalud() <= 0f)
+        {
             return;
+        }
 
         if (Time.time >= finVida)
         {
@@ -108,32 +113,52 @@ public class Esbirro : MonoBehaviour
         }
 
         if (Time.time < finRetroceso)
-            posicionBase += (Vector3)(velocidadEmpuje * ((finRetroceso - Time.time) / duracionEmpuje) * Time.deltaTime);
+        {
+            // El empujón se frena de a poco: al principio va a toda velocidad y al final casi quieto.
+            float fuerzaRestante = (finRetroceso - Time.time) / duracionEmpuje;
+            Vector2 movimiento = velocidadEmpuje * fuerzaRestante * Time.deltaTime;
+            posicionBase += new Vector3(movimiento.x, movimiento.y, 0f);
+        }
         else if (jugador != null)
+        {
             posicionBase = Vector3.MoveTowards(posicionBase, jugador.position, velocidadPersecucion * Time.deltaTime);
+        }
 
         tiempoOscilacion += Time.deltaTime;
-        transform.position = posicionBase + (Vector3)(Oscilacion.Desvio(semillaOscilacion, tiempoOscilacion * frecuenciaOscilacion) * amplitudOscilacion);
+        Vector2 desvio = Oscilacion.Desvio(semillaOscilacion, tiempoOscilacion * frecuenciaOscilacion) * amplitudOscilacion;
+        transform.position = posicionBase + new Vector3(desvio.x, desvio.y, 0f);
     }
 
     // Se aleja del jugador; si están encimados, para arriba.
     public static Vector2 DireccionRetroceso(Vector2 esbirro, Vector2 jugador)
     {
         Vector2 alejarse = esbirro - jugador;
-        return alejarse.sqrMagnitude < 0.0001f ? Vector2.up : alejarse.normalized;
+        // Casi en el mismo punto no hay una dirección clara para alejarse.
+        if (alejarse.sqrMagnitude < 0.0001f)
+        {
+            return Vector2.up;
+        }
+
+        // normalized deja la dirección con largo 1, para que la velocidad la ponga quien la usa.
+        return alejarse.normalized;
     }
 
     // Los choques entre esbirros llegan porque el Rigidbody2D cinemático tiene "Use Full Kinematic Contacts".
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (alien.GetSalud() <= 0f || Time.time < finRetroceso)
+        {
             return;
+        }
 
         if (collision.CompareTag("Player"))
         {
             // Aunque el jugador esté invulnerable rebota igual, así no se le queda encima.
+            // TryGetComponent busca el componente: si lo encuentra devuelve true y lo deja en la variable de "out".
             if (collision.TryGetComponent(out VidaJugador vida))
+            {
                 vida.actualizarVida(-danoAlJugador);
+            }
 
             Rebotar(collision.transform.position, velocidadRetroceso, duracionRetroceso);
             isSaliendo = false;
@@ -153,5 +178,8 @@ public class Esbirro : MonoBehaviour
     }
 
     // Si al terminar el rebote sigue tocando al jugador u otro esbirro, vuelve a reaccionar.
-    private void OnTriggerStay2D(Collider2D collision) => OnTriggerEnter2D(collision);
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        OnTriggerEnter2D(collision);
+    }
 }

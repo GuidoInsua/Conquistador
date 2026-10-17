@@ -41,7 +41,9 @@ public class RayoBoss : MonoBehaviour
         zonaDano = GetComponent<Collider2D>();
         sonido = GetComponent<AudioSource>();
         if (sonido != null)
+        {
             volumenSonido = sonido.volume;
+        }
 
         if (animator == null || zonaDano == null)
         {
@@ -58,7 +60,9 @@ public class RayoBoss : MonoBehaviour
     {
         gameObject.SetActive(true);
         if (!enabled)
+        {
             yield break;
+        }
 
         animator.Play(animAviso);
         yield return new WaitForSeconds(duracionAviso);
@@ -80,7 +84,9 @@ public class RayoBoss : MonoBehaviour
     private void Update()
     {
         if (jugadorDentro == null || Time.time < proximoDano)
+        {
             return;
+        }
 
         jugadorDentro.actualizarVida(-danoAlJugador);
         proximoDano = Time.time + intervaloDano;
@@ -90,12 +96,16 @@ public class RayoBoss : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
+        {
             jugadorDentro = collision.GetComponent<VidaJugador>();
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
+        {
             jugadorDentro = null;
+        }
     }
 }

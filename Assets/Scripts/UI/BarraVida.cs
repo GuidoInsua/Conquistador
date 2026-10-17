@@ -31,12 +31,16 @@ public class BarraVida : MonoBehaviour
 	public void Mostrar(int vida)
 	{
 		if (fichas == null)
+		{
 			return;
+		}
 
 		for (int i = 0; i < fichas.Length; i++)
 		{
 			if (fichas[i] != null)
+			{
 				fichas[i].enabled = i < vida;
+			}
 		}
 	}
 }

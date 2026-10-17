@@ -19,6 +19,7 @@ public class PowerUpVida : PowerUp
 
     protected override void Aplicar(GameObject jugador)
     {
+        // TryGetComponent busca el componente: si lo encuentra devuelve true y lo deja en la variable de "out".
         if (jugador.TryGetComponent(out VidaJugador vida))
         {
             vida.actualizarVida(vidaExtra);

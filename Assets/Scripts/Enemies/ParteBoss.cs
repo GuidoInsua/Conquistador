@@ -51,7 +51,10 @@ public class ParteBoss : MonoBehaviour, IDamageable
 
     public event System.Action Destruida;
 
-    public bool EstaViva => vidaActual > 0f;
+    public bool EstaViva
+    {
+        get { return vidaActual > 0f; }
+    }
 
     private void Awake()
     {
@@ -72,21 +75,35 @@ public class ParteBoss : MonoBehaviour, IDamageable
 
     private void Update()
     {
-        spriteRenderer.color = Time.time < finGolpe ? colorGolpe : Color.white;
+        if (Time.time < finGolpe)
+        {
+            spriteRenderer.color = colorGolpe;
+        }
+        else
+        {
+            spriteRenderer.color = Color.white;
+        }
     }
 
-    public float GetSalud() => vidaActual;
+    public float GetSalud()
+    {
+        return vidaActual;
+    }
 
     public void TakeDamage(float cantidad)
     {
         if (!EstaViva)
+        {
             return;
+        }
 
         vidaActual = Mathf.Max(0f, vidaActual - cantidad);
         finGolpe = Time.time + duracionGolpe;
 
         if (particulasGolpePrefab != null)
+        {
             Instantiate(particulasGolpePrefab, transform.position, Quaternion.identity);
+        }
 
         if (EstaViva)
         {
@@ -108,20 +125,28 @@ public class ParteBoss : MonoBehaviour, IDamageable
         else
         {
             animator.Play(estadoDestruida);
+            // Queda el sprite de destruida, pero las balas la atraviesan.
             if (zonaGolpe != null)
-                zonaGolpe.enabled = false; // Queda el sprite de destruida, pero las balas la atraviesan.
+            {
+                zonaGolpe.enabled = false;
+            }
         }
 
         if (powerUps.Length > 0)
         {
             for (int i = 0; i < cantidadPowerUps; i++)
             {
+                // Los reparte a lo ancho, centrados en la parte. Con 2: uno a la izquierda y otro a la derecha.
                 float x = (i - (cantidadPowerUps - 1) / 2f) * separacionPowerUps;
                 PowerUp.SpawnPowerUp(powerUps, transform.position + Vector3.right * x, 1f);
             }
         }
 
-        Destruida?.Invoke();
+        // Avisa a quien esté escuchando (el boss), si hay alguien.
+        if (Destruida != null)
+        {
+            Destruida();
+        }
     }
 
     // La usa el boss mientras dispara el rayo.
@@ -129,20 +154,40 @@ public class ParteBoss : MonoBehaviour, IDamageable
     {
         isEnojada = enojada;
         if (EstaViva)
+        {
             ReproducirEstado();
+        }
     }
 
     // Reparte la vida en tramos iguales, uno por cada estado de la parte viva.
-    private static int EstadoSegunVida(float fraccionVida, int estadosVivos) =>
-        Mathf.Clamp((int)((1f - fraccionVida) * estadosVivos), 0, Mathf.Max(0, estadosVivos - 1));
+    // Ejemplo: con 3 estados, de 100 % a 67 % de vida es el 0, de 67 % a 33 % el 1, y de ahí para abajo el 2.
+    private static int EstadoSegunVida(float fraccionVida, int estadosVivos)
+    {
+        float fraccionPerdida = 1f - fraccionVida;
+        int estado = (int)(fraccionPerdida * estadosVivos);
+
+        // Nunca menos que el primero ni más que el último.
+        int ultimoEstado = Mathf.Max(0, estadosVivos - 1);
+        return Mathf.Clamp(estado, 0, ultimoEstado);
+    }
 
     private void ReproducirEstado()
     {
         if (estadosDano.Length == 0)
+        {
             return;
+        }
 
         // Sigue desde el mismo punto del ciclo para que el cambio no salte de frame.
+        // normalizedTime cuenta las vueltas del loop (2.3 = tercera vuelta, al 30 %); "% 1" deja solo el 0.3.
         float tiempo = animator.GetCurrentAnimatorStateInfo(0).normalizedTime % 1f;
-        animator.Play(estadosDano[estadoActual] + (isEnojada ? sufijoEnojado : ""), 0, tiempo);
+
+        string nombreEstado = estadosDano[estadoActual];
+        if (isEnojada)
+        {
+            nombreEstado = nombreEstado + sufijoEnojado;
+        }
+
+        animator.Play(nombreEstado, 0, tiempo);
     }
 }

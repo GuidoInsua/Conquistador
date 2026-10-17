@@ -21,21 +21,25 @@ public static class VolumenAudio
     // Avisa a la música que ya está sonando para que cambie al momento.
     public static event System.Action Cambio;
 
+    // Si nunca se guardó nada, devuelve 1 (volumen completo).
     public static float Musica
     {
-        get => PlayerPrefs.GetFloat(claveMusica, 1f);
-        set => Guardar(claveMusica, value);
+        get { return PlayerPrefs.GetFloat(claveMusica, 1f); }
+        set { Guardar(claveMusica, value); }
     }
 
     public static float Efectos
     {
-        get => PlayerPrefs.GetFloat(claveEfectos, 1f);
-        set => Guardar(claveEfectos, value);
+        get { return PlayerPrefs.GetFloat(claveEfectos, 1f); }
+        set { Guardar(claveEfectos, value); }
     }
 
     private static void Guardar(string clave, float valor)
     {
         PlayerPrefs.SetFloat(clave, Mathf.Clamp01(valor));
-        Cambio?.Invoke();
+        if (Cambio != null)
+        {
+            Cambio();
+        }
     }
 }

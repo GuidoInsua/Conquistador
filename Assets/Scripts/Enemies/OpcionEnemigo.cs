@@ -19,8 +19,15 @@ public class OpcionEnemigo
     [SerializeField] private EnemigoAlien prefab;
     [SerializeField] private float peso = 1f; // Chance relativa: 60 y 40 es 60% y 40%
 
-    public EnemigoAlien Prefab => prefab;
-    public float Peso => peso;
+    public EnemigoAlien Prefab
+    {
+        get { return prefab; }
+    }
+
+    public float Peso
+    {
+        get { return peso; }
+    }
 
     public OpcionEnemigo(EnemigoAlien prefab, float peso)
     {

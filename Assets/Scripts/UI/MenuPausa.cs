@@ -38,7 +38,9 @@ public class MenuPausa : MonoBehaviour
     private void Update()
     {
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
             AlternarPausa();
+        }
     }
 
     private void AlternarPausa()
@@ -52,7 +54,9 @@ public class MenuPausa : MonoBehaviour
         foreach (GameObject pantalla in pantallasFinales)
         {
             if (pantalla != null && pantalla.activeSelf)
+            {
                 return;
+            }
         }
 
         isPausado = true;

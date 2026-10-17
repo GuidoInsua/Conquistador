@@ -50,8 +50,15 @@ public class Spawner : MonoBehaviour
     private int enemigosEliminados;
     private float tiempoProximoSpawn;
 
-    public int TotalSpawneados => totalSpawneados;
-    public int EnemigosEliminados => enemigosEliminados;
+    public int TotalSpawneados
+    {
+        get { return totalSpawneados; }
+    }
+
+    public int EnemigosEliminados
+    {
+        get { return enemigosEliminados; }
+    }
 
     private void Awake()
     {
@@ -80,7 +87,9 @@ public class Spawner : MonoBehaviour
             foreach (OpcionEnemigo opcion in oleada.Enemigos)
             {
                 if (opcion.Prefab != null && !pools.ContainsKey(opcion.Prefab))
+                {
                     pools[opcion.Prefab] = CrearPool(opcion.Prefab);
+                }
             }
         }
     }
@@ -109,11 +118,15 @@ public class Spawner : MonoBehaviour
     private static Transform[] Hijos(Transform contenedor)
     {
         if (contenedor == null)
+        {
             return new Transform[0];
+        }
 
         Transform[] hijos = new Transform[contenedor.childCount];
         for (int i = 0; i < hijos.Length; i++)
+        {
             hijos[i] = contenedor.GetChild(i);
+        }
 
         return hijos;
     }
@@ -122,19 +135,15 @@ public class Spawner : MonoBehaviour
     {
         ObjectPool<EnemigoAlien> pool = null;
 
+        // El pool necesita saber cómo crear un alien nuevo cuando no le quedan guardados.
+        // "() => CrearEnemigo(prefab, pool)" es una función sin nombre que hace eso: cada pool la
+        // guarda con su propio prefab, por eso no puede ser un método común de la clase.
+        // Las otras tres acciones (sacar, devolver y destruir) son métodos normales de abajo.
         pool = new ObjectPool<EnemigoAlien>(
             () => CrearEnemigo(prefab, pool),
-            enemy =>
-            {
-                enemy.gameObject.SetActive(true);
-                enemy.ResetEnemy();
-            },
+            AlSacarDelPool,
             OnReleaseEnemy,
-            enemy =>
-            {
-                if (enemy != null)
-                    Destroy(enemy.gameObject);
-            },
+            AlDestruirDelPool,
             collectionCheck: true,
             defaultCapacity: posiciones.Length,
             maxSize: posiciones.Length);
@@ -150,6 +159,22 @@ public class Spawner : MonoBehaviour
         return enemy;
     }
 
+    // El pool la llama cada vez que se saca un alien para usarlo.
+    private void AlSacarDelPool(EnemigoAlien enemy)
+    {
+        enemy.gameObject.SetActive(true);
+        enemy.ResetEnemy();
+    }
+
+    // El pool la llama cuando ya tiene demasiados guardados y le sobra uno.
+    private void AlDestruirDelPool(EnemigoAlien enemy)
+    {
+        if (enemy != null)
+        {
+            Destroy(enemy.gameObject);
+        }
+    }
+
     private void Start()
     {
         tiempoProximoSpawn = Time.time + tiempoEntreSpawns;
@@ -158,7 +183,9 @@ public class Spawner : MonoBehaviour
     private void Update()
     {
         if (Time.time < tiempoProximoSpawn)
+        {
             return;
+        }
 
         tiempoProximoSpawn = Time.time + tiempoEntreSpawns;
         SpawnEnemy();
@@ -168,14 +195,19 @@ public class Spawner : MonoBehaviour
     {
         // La oleada ya salió completa: la siguiente espera a que mueran todos sus enemigos.
         if (spawneadosEnOleada >= oleadas[oleadaActual].Cantidad)
+        {
             return false;
+        }
 
         int indice = ElegirPosicionLibre();
         if (indice < 0)
+        {
             return false;
+        }
 
         // ValidarOleadas ya comprobó que cada oleada tiene al menos una opción válida.
-        EnemigoAlien enemy = pools[oleadas[oleadaActual].ElegirPrefab(Random.value)].Get();
+        EnemigoAlien prefabElegido = oleadas[oleadaActual].ElegirPrefab(Random.value);
+        EnemigoAlien enemy = pools[prefabElegido].Get();
         Vector3 destino = posiciones[indice].position;
 
         enemy.transform.position = ElegirPuntoSpawn(destino);
@@ -183,6 +215,7 @@ public class Spawner : MonoBehaviour
         totalSpawneados++;
         spawneadosEnOleada++;
 
+        // "_ =" indica que no esperamos a que termine: el alien viaja solo mientras el juego sigue.
         _ = enemy.MoveToPositionAsync(destino, velocidadMovimiento);
         return true;
     }
@@ -193,22 +226,41 @@ public class Spawner : MonoBehaviour
         for (int i = 0; i < ocupantes.Length; i++)
         {
             if (ocupantes[i] == null)
+            {
                 libres.Add(i);
+            }
         }
 
-        return libres.Count == 0 ? -1 : libres[Random.Range(0, libres.Count)];
+        if (libres.Count == 0)
+        {
+            return -1;
+        }
+
+        return libres[Random.Range(0, libres.Count)];
     }
 
     // Entra por uno de los puntos más cercanos a su posición: la entrada varía, pero ninguno cruza toda la pantalla.
     private Vector3 ElegirPuntoSpawn(Vector3 destino)
     {
+        // Copia de los puntos y la distancia de cada uno al destino.
         Transform[] cercanos = (Transform[])puntosSpawn.Clone();
-        System.Array.Sort(cercanos, (a, b) =>
-            Vector3.Distance(a.position, destino).CompareTo(Vector3.Distance(b.position, destino)));
+        float[] distancias = new float[cercanos.Length];
+        for (int i = 0; i < cercanos.Length; i++)
+        {
+            distancias[i] = Vector3.Distance(cercanos[i].position, destino);
+        }
 
-        Vector3 punto = cercanos[Random.Range(0, Mathf.Min(puntosSpawnCercanos, cercanos.Length))].position;
+        // Ordena los puntos según su distancia, del más cercano al más lejano.
+        System.Array.Sort(distancias, cercanos);
+
+        int cantidadParaElegir = Mathf.Min(puntosSpawnCercanos, cercanos.Length);
+        Vector3 punto = cercanos[Random.Range(0, cantidadParaElegir)].position;
+
         if (camara != null)
-            punto.x = FueraDeVista(punto.x, camara.orthographicSize * camara.aspect);
+        {
+            float mitadAnchoVista = camara.orthographicSize * camara.aspect;
+            punto.x = FueraDeVista(punto.x, mitadAnchoVista);
+        }
 
         return punto;
     }
@@ -218,21 +270,33 @@ public class Spawner : MonoBehaviour
     {
         const float margen = 1f;
         float borde = mitadAnchoVista + margen;
-        return Mathf.Abs(x) >= borde ? x : Mathf.Sign(x) * borde;
+
+        if (Mathf.Abs(x) >= borde)
+        {
+            return x;
+        }
+
+        // Mathf.Sign devuelve 1 si x es positivo y -1 si es negativo: así queda del mismo lado.
+        return Mathf.Sign(x) * borde;
     }
 
     private void OnReleaseEnemy(EnemigoAlien enemy)
     {
         int indice = System.Array.IndexOf(ocupantes, enemy);
         if (indice >= 0)
+        {
             ocupantes[indice] = null;
+        }
 
         enemy.gameObject.SetActive(false);
 
         enemigosEliminados++;
+
         // Quedan vivos o falta que salgan enemigos de esta oleada.
         if (enemigosEliminados < totalSpawneados || spawneadosEnOleada < oleadas[oleadaActual].Cantidad)
+        {
             return;
+        }
 
         if (oleadaActual < oleadas.Length - 1)
         {
@@ -242,23 +306,34 @@ public class Spawner : MonoBehaviour
         }
 
         if (faseBoss != null)
+        {
             faseBoss.Iniciar(MostrarVictoria);
+        }
         else
+        {
             MostrarVictoria();
+        }
     }
 
     private void MostrarVictoria()
     {
         // Si el jugador ya perdió, no se gana en el mismo momento.
         if (canvasDerrota != null && canvasDerrota.activeSelf)
+        {
             return;
+        }
 
         // Las balas que quedaron en el aire no pueden matar al jugador después de ganar.
-        foreach (BalaEnemiga bala in FindObjectsByType<BalaEnemiga>(FindObjectsSortMode.None))
+        BalaEnemiga[] balas = FindObjectsByType<BalaEnemiga>(FindObjectsSortMode.None);
+        foreach (BalaEnemiga bala in balas)
+        {
             Destroy(bala.gameObject);
+        }
 
         if (canvasVictoria != null)
+        {
             canvasVictoria.SetActive(true);
+        }
     }
 
     private void OnDrawGizmosSelected()
@@ -270,10 +345,14 @@ public class Spawner : MonoBehaviour
     private static void DibujarHijos(Transform contenedor, Color color)
     {
         if (contenedor == null)
+        {
             return;
+        }
 
         Gizmos.color = color;
         foreach (Transform hijo in contenedor)
+        {
             Gizmos.DrawWireSphere(hijo.position, 0.3f);
+        }
     }
 }

@@ -35,13 +35,23 @@ public class MovimientoJugador : MonoBehaviour
 	void Awake()
 	{
 		if (rigidBody == null)
+		{
 			rigidBody = GetComponent<Rigidbody2D>();
+		}
 
 		if (animacion == null)
+		{
 			animacion = GetComponent<AnimacionJugador>();
+		}
 
 		PlayerInput playerInput = GetComponent<PlayerInput>();
-		moveAction = playerInput != null ? playerInput.actions?.FindAction("Move", throwIfNotFound: false) : null;
+		// Busca la acción "Move" del Input System. Si falta algo queda en null, y abajo se avisa.
+		// throwIfNotFound: false hace que devuelva null en vez de tirar un error si no la encuentra.
+		moveAction = null;
+		if (playerInput != null && playerInput.actions != null)
+		{
+			moveAction = playerInput.actions.FindAction("Move", throwIfNotFound: false);
+		}
 
 		if (rigidBody == null || animacion == null || moveAction == null)
 		{
@@ -53,13 +63,19 @@ public class MovimientoJugador : MonoBehaviour
 	void FixedUpdate()
 	{
 		if (Time.time >= boostEndTime && speedMultiplier != 1f)
+		{
 			speedMultiplier = 1f;
+		}
 
 		Vector2 input = moveAction.ReadValue<Vector2>();
 		animacion.ActualizarDireccion(input);
 
 		// Velocidad reducida mientras la nave cambia de inclinación.
-		float multiplicadorInclinacion = animacion.EstaInclinando ? transitionSpeedMultiplier : 1f;
+		float multiplicadorInclinacion = 1f;
+		if (animacion.EstaInclinando)
+		{
+			multiplicadorInclinacion = transitionSpeedMultiplier;
+		}
 
 		rigidBody.linearVelocity = input * speed * speedMultiplier * multiplicadorInclinacion;
 	}

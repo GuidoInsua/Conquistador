@@ -43,24 +43,8 @@ public class InvocadorEsbirros : MonoBehaviour
             return;
         }
 
-        pool = new ObjectPool<EnemigoAlien>(
-            CrearEsbirro,
-            esbirro =>
-            {
-                esbirro.gameObject.SetActive(true);
-                esbirro.ResetEnemy();
-                activos.Add(esbirro);
-            },
-            esbirro =>
-            {
-                esbirro.gameObject.SetActive(false);
-                activos.Remove(esbirro);
-            },
-            esbirro =>
-            {
-                if (esbirro != null)
-                    Destroy(esbirro.gameObject);
-            });
+        // El pool llama a estos métodos para crear, sacar, devolver y destruir esbirros.
+        pool = new ObjectPool<EnemigoAlien>(CrearEsbirro, AlSacarDelPool, AlDevolverAlPool, AlDestruirDelPool);
 
         cuerpo.Destruida += MatarTodos;
     }
@@ -69,7 +53,9 @@ public class InvocadorEsbirros : MonoBehaviour
     public void Comenzar()
     {
         if (enabled)
+        {
             StartCoroutine(Tandas());
+        }
     }
 
     private IEnumerator Tandas()
@@ -89,12 +75,41 @@ public class InvocadorEsbirros : MonoBehaviour
         return esbirro;
     }
 
+    private void AlSacarDelPool(EnemigoAlien esbirro)
+    {
+        esbirro.gameObject.SetActive(true);
+        esbirro.ResetEnemy();
+        activos.Add(esbirro);
+    }
+
+    private void AlDevolverAlPool(EnemigoAlien esbirro)
+    {
+        esbirro.gameObject.SetActive(false);
+        activos.Remove(esbirro);
+    }
+
+    private void AlDestruirDelPool(EnemigoAlien esbirro)
+    {
+        if (esbirro != null)
+        {
+            Destroy(esbirro.gameObject);
+        }
+    }
+
     private IEnumerator Lanzar()
     {
         for (int i = 0; i < cantidadPorTanda; i++)
         {
             EnemigoAlien esbirro = pool.Get();
-            esbirro.GetComponent<Esbirro>().Iniciar(cuerpo.transform.position, i % 2 == 0 ? -1f : 1f, jefe.Jugador);
+
+            // Alterna los costados: el primero a la izquierda (-1), el segundo a la derecha (1), y así.
+            float lado = 1f;
+            if (i % 2 == 0)
+            {
+                lado = -1f;
+            }
+
+            esbirro.GetComponent<Esbirro>().Iniciar(cuerpo.transform.position, lado, jefe.Jugador);
             yield return new WaitForSeconds(intervalo);
         }
     }
@@ -105,6 +120,8 @@ public class InvocadorEsbirros : MonoBehaviour
 
         // Copia: al terminar la animación de muerte cada uno se saca de la lista.
         foreach (EnemigoAlien esbirro in activos.ToArray())
+        {
             esbirro.Expirar();
+        }
     }
 }

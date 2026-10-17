@@ -85,6 +85,7 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
 
         Vector3 inicio = transform.position;
         float distanciaTotal = Vector3.Distance(inicio, target);
+        // Dirección de costado al camino (perpendicular a la recta del spawn al lugar), hacia donde ondea.
         Vector3 costado = Vector3.Cross(target - inicio, Vector3.forward).normalized;
         int ondas = Mathf.Max(1, Mathf.RoundToInt(distanciaTotal / largoOndaCamino));
         float recorrido = 0f;
@@ -101,7 +102,9 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
 
         // Si murió en el camino, explota donde quedó.
         if (this == null || id != movimientoId || !gameObject.activeInHierarchy || vidaActual <= 0)
+        {
             return;
+        }
 
         // La onda termina en 0 justo al llegar, y la oscilación al azar también arranca en 0: no salta.
         transform.position = target;
@@ -112,16 +115,27 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
     }
 
     // Desvío de costado según cuánto recorrió (0 a 1): ondas parejas que se apagan al salir y al llegar.
-    public static float OndaCamino(float avance, int ondas, float amplitud) =>
-        Mathf.Sin(avance * ondas * 2f * Mathf.PI) * Mathf.Sin(avance * Mathf.PI) * amplitud;
+    public static float OndaCamino(float avance, int ondas, float amplitud)
+    {
+        // Este seno hace las ondas: da tantas vueltas completas como "ondas" en todo el camino.
+        float onda = Mathf.Sin(avance * ondas * 2f * Mathf.PI);
+
+        // Este vale 0 al salir y al llegar, y 1 en el medio: achica las ondas en las puntas.
+        float suavizado = Mathf.Sin(avance * Mathf.PI);
+
+        return onda * suavizado * amplitud;
+    }
 
     private void Update()
     {
         if (!isOscilando)
+        {
             return;
+        }
 
         tiempoOscilacion += Time.deltaTime;
-        transform.position = posicionBase + (Vector3)(Oscilacion.Desvio(semillaOscilacion, tiempoOscilacion * frecuenciaOscilacion) * amplitudOscilacion);
+        Vector2 desvio = Oscilacion.Desvio(semillaOscilacion, tiempoOscilacion * frecuenciaOscilacion) * amplitudOscilacion;
+        transform.position = posicionBase + new Vector3(desvio.x, desvio.y, 0f);
     }
 
     public void TakeDamage(float cantidad)
@@ -141,7 +155,9 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
         {
             // Las balas que pegan mientras corre la animación de muerte no lo vuelven a sonar.
             if (estabaVivo)
+            {
                 EfectosSonido.Reproducir(sonidoMuerte);
+            }
 
             cambiarAnimacion(animMuerte);
         }
@@ -172,7 +188,9 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
     public void Expirar()
     {
         if (vidaActual <= 0)
+        {
             return;
+        }
 
         vidaActual = 0;
         isSinPowerUp = true;
@@ -184,7 +202,9 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
     private void Morir()
     {
         if (!isSinPowerUp)
+        {
             PowerUp.SpawnPowerUp(powerUps, transform.position, powerUpSpawnProbability);
+        }
 
         if (enemyPool != null)
         {

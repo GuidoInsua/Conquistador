@@ -51,7 +51,10 @@ public class JefeCangrejo : MonoBehaviour
     [Tooltip("Tiempo entre la explosión y la pantalla de victoria.")]
     [SerializeField] private float esperaVictoria = 2.5f;
 
-    public Transform Jugador => jugador;
+    public Transform Jugador
+    {
+        get { return jugador; }
+    }
 
     private System.Action alMorir;
     // Lo pasa FaseBoss al crearlo. Si es null o el jugador muere, el boss se queda en el centro.
@@ -82,7 +85,9 @@ public class JefeCangrejo : MonoBehaviour
         this.jugador = jugador;
 
         if (enabled)
+        {
             StartCoroutine(Entrar());
+        }
     }
 
     private IEnumerator Entrar()
@@ -98,24 +103,37 @@ public class JefeCangrejo : MonoBehaviour
         isEnPosicion = true;
 
         if (rayo != null)
+        {
             StartCoroutine(Atacar());
+        }
 
         if (pinzas.Length > 0)
+        {
             StartCoroutine(AtacarConPinzas());
+        }
 
         if (invocador != null)
+        {
             invocador.Comenzar();
+        }
     }
 
     private IEnumerator AtacarConPinzas()
     {
-        for (int turno = 0; ; turno++)
+        int turno = 0;
+        while (true)
         {
             yield return new WaitForSeconds(tiempoEntreDisparosPinzas);
 
             // Durante el rayo no dispara: ya es bastante para esquivar.
             if (!isAtacando)
-                yield return pinzas[turno % pinzas.Length].Disparar();
+            {
+                // Se turnan: el resto de dividir por la cantidad de pinzas da 0, 1, 0, 1...
+                int indicePinza = turno % pinzas.Length;
+                yield return pinzas[indicePinza].Disparar();
+            }
+
+            turno++;
         }
     }
 
@@ -137,9 +155,16 @@ public class JefeCangrejo : MonoBehaviour
     private void Update()
     {
         if (!isEnPosicion || isAtacando)
+        {
             return;
+        }
 
-        float objetivoX = jugador != null ? Mathf.Clamp(jugador.position.x, -limiteX, limiteX) : posicionPelea.x;
+        // Va hacia la x del jugador, sin pasarse de los límites. Sin jugador, vuelve al centro.
+        float objetivoX = posicionPelea.x;
+        if (jugador != null)
+        {
+            objetivoX = Mathf.Clamp(jugador.position.x, -limiteX, limiteX);
+        }
         xSeguida = Mathf.SmoothDamp(xSeguida, objetivoX, ref velocidadX, tiempoSeguimiento, velocidadMaxima);
 
         // El tiempo propio no avanza mientras ataca, así retoma el desvío donde lo dejó.
@@ -159,24 +184,35 @@ public class JefeCangrejo : MonoBehaviour
     private IEnumerator Explotar()
     {
         if (rayo != null)
+        {
             rayo.gameObject.SetActive(false);
+        }
 
         // Mientras se hincha ya no recibe golpes.
-        foreach (var zona in GetComponentsInChildren<Collider2D>())
+        foreach (Collider2D zona in GetComponentsInChildren<Collider2D>())
+        {
             zona.enabled = false;
+        }
 
         yield return new WaitForSeconds(duracionHinchado);
 
-        foreach (var sprite in GetComponentsInChildren<SpriteRenderer>())
+        foreach (SpriteRenderer sprite in GetComponentsInChildren<SpriteRenderer>())
+        {
             sprite.enabled = false;
+        }
 
         if (explosionPrefab != null)
+        {
             Instantiate(explosionPrefab, cuerpo.transform.position, Quaternion.identity);
+        }
 
         // Sigue activo (sin verse) para que esta corrutina termine la espera.
         yield return new WaitForSeconds(esperaVictoria);
 
         gameObject.SetActive(false);
-        alMorir?.Invoke();
+        if (alMorir != null)
+        {
+            alMorir();
+        }
     }
 }

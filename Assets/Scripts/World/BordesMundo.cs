@@ -26,7 +26,9 @@ public class BordesMundo : MonoBehaviour
 	void Start()
 	{
 		if (mainCamera == null)
+		{
 			mainCamera = Camera.main;
+		}
 
 		if (mainCamera == null)
 		{
@@ -42,7 +44,9 @@ public class BordesMundo : MonoBehaviour
 	void Update()
 	{
 		if (Screen.width != anchoPantalla || Screen.height != altoPantalla)
+		{
 			Recalcular();
+		}
 	}
 
 	// Rehace las paredes con el tamaño actual de la cámara (por ejemplo, después de alejarla).
@@ -52,7 +56,9 @@ public class BordesMundo : MonoBehaviour
 		altoPantalla = Screen.height;
 
 		foreach (Transform pared in transform)
+		{
 			Destroy(pared.gameObject);
+		}
 
 		screenBounds = mainCamera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, mainCamera.transform.position.z));
 
@@ -93,10 +99,14 @@ public class BordesMundo : MonoBehaviour
 	void OnDrawGizmos()
 	{
 		if (mainCamera == null)
+		{
 			mainCamera = Camera.main;
+		}
 
 		if (mainCamera == null)
+		{
 			return;
+		}
 
 		// Calcular bordes
 		Vector3 bounds = mainCamera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, mainCamera.transform.position.z));

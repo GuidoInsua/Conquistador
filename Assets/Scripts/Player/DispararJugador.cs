@@ -43,7 +43,13 @@ public class DispararJugador : MonoBehaviour
 
 		playerInput = GetComponent<PlayerInput>();
 
-		shootAction = playerInput != null ? playerInput.actions?.FindAction("Shoot", throwIfNotFound: false) : null;
+		// Busca la acción "Shoot" del Input System. Si falta algo queda en null, y abajo se avisa.
+		// throwIfNotFound: false hace que devuelva null en vez de tirar un error si no la encuentra.
+		shootAction = null;
+		if (playerInput != null && playerInput.actions != null)
+		{
+			shootAction = playerInput.actions.FindAction("Shoot", throwIfNotFound: false);
+		}
 
 		if (shootAction == null)
 		{
@@ -82,7 +88,9 @@ public class DispararJugador : MonoBehaviour
 	{
 		// En pausa no dispara.
 		if (Time.timeScale == 0f || Time.time < proximoDisparo)
+		{
 			return;
+		}
 
 		proximoDisparo = Time.time + tiempoEntreDisparos;
 		// Uno solo aunque sea disparo doble.
@@ -105,7 +113,9 @@ public class DispararJugador : MonoBehaviour
 		Bala bala = Instantiate(balaPrefab, posicion, Quaternion.identity);
 
 		if (Time.time < finBalasPotenciadas)
+		{
 			bala.Potenciar(multiplicadorDano, multiplicadorAncho);
+		}
 	}
 
 	public void ActivarBalasPotenciadas(float multAncho, float multDano, float duracion)

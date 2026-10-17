@@ -19,8 +19,15 @@ public class OpcionPowerUp
     [SerializeField] private GameObject prefab;
     [SerializeField] private float peso = 1f; // Chance relativa: 50 y 50 es mitad y mitad, 1 y 3 es 25% y 75%
 
-    public GameObject Prefab => prefab;
-    public float Peso => peso;
+    public GameObject Prefab
+    {
+        get { return prefab; }
+    }
+
+    public float Peso
+    {
+        get { return peso; }
+    }
 
     public OpcionPowerUp(GameObject prefab, float peso)
     {

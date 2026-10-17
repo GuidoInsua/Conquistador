@@ -42,7 +42,9 @@ public class FaseBoss : MonoBehaviour
     private void Awake()
     {
         if (camara == null)
+        {
             camara = Camera.main;
+        }
 
         if (camara == null || bordes == null || jefePrefab == null)
         {
@@ -54,14 +56,19 @@ public class FaseBoss : MonoBehaviour
     public void Iniciar(System.Action alVencerJefe)
     {
         if (isIniciada)
+        {
             return;
+        }
 
         isIniciada = true;
 
         // Apagada por falta de algo (ya avisó en Awake): sin jefe, se gana directo en vez de trabar la partida.
         if (!enabled)
         {
-            alVencerJefe?.Invoke();
+            if (alVencerJefe != null)
+            {
+                alVencerJefe();
+            }
             return;
         }
 

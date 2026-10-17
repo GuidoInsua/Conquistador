@@ -28,21 +28,31 @@ public class SeleccionInicial : MonoBehaviour
         }
     }
 
-    private void OnEnable() => Seleccionar();
+    private void OnEnable()
+    {
+        Seleccionar();
+    }
 
     // Al cargar la escena el EventSystem puede prenderse después que este menú.
-    private void Start() => Seleccionar();
+    private void Start()
+    {
+        Seleccionar();
+    }
 
     // Si un clic con el mouse dejó todo sin marcar, las flechas vuelven a funcionar.
     private void Update()
     {
         if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject == null)
+        {
             Seleccionar();
+        }
     }
 
     private void Seleccionar()
     {
         if (enabled && EventSystem.current != null)
+        {
             EventSystem.current.SetSelectedGameObject(primeraOpcion);
+        }
     }
 }

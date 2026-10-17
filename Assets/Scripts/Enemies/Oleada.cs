@@ -19,8 +19,15 @@ public class Oleada
     [SerializeField] private int cantidad = 10;
     [SerializeField] private OpcionEnemigo[] enemigos;
 
-    public int Cantidad => cantidad;
-    public OpcionEnemigo[] Enemigos => enemigos;
+    public int Cantidad
+    {
+        get { return cantidad; }
+    }
+
+    public OpcionEnemigo[] Enemigos
+    {
+        get { return enemigos; }
+    }
 
     public Oleada(int cantidad, OpcionEnemigo[] enemigos)
     {
@@ -32,6 +39,33 @@ public class Oleada
     /// Elige el prefab de un enemigo según el peso de cada opción. valor va de 0 a 1.
     /// Devuelve null si ninguna opción es válida.
     /// </summary>
-    public EnemigoAlien ElegirPrefab(float valor) =>
-        SorteoPonderado.Elegir(enemigos, o => o.Prefab != null, o => o.Peso, valor)?.Prefab;
+    public EnemigoAlien ElegirPrefab(float valor)
+    {
+        if (enemigos == null)
+        {
+            return null;
+        }
+
+        // Las opciones vacías o sin prefab cuentan con peso 0, así nunca salen.
+        float[] pesos = new float[enemigos.Length];
+        for (int i = 0; i < enemigos.Length; i++)
+        {
+            if (enemigos[i] != null && enemigos[i].Prefab != null)
+            {
+                pesos[i] = enemigos[i].Peso;
+            }
+            else
+            {
+                pesos[i] = 0f;
+            }
+        }
+
+        int indice = SorteoPonderado.ElegirIndice(pesos, valor);
+        if (indice < 0)
+        {
+            return null;
+        }
+
+        return enemigos[indice].Prefab;
+    }
 }

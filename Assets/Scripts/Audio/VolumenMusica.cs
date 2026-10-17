@@ -38,7 +38,13 @@ public class VolumenMusica : MonoBehaviour
         Aplicar();
     }
 
-    private void OnDisable() => VolumenAudio.Cambio -= Aplicar;
+    private void OnDisable()
+    {
+        VolumenAudio.Cambio -= Aplicar;
+    }
 
-    private void Aplicar() => fuente.volume = volumenBase * VolumenAudio.Musica;
+    private void Aplicar()
+    {
+        fuente.volume = volumenBase * VolumenAudio.Musica;
+    }
 }

@@ -33,6 +33,12 @@ public class CamaraAjustada : MonoBehaviour
     }
 
     // En 16:9 o más ancho devuelve la altura de siempre; más angosto, la sube lo justo para el ancho mínimo.
-    public static float Altura(float alturaBase, float anchoMinimo, float aspecto) =>
-        Mathf.Max(alturaBase, anchoMinimo / 2f / aspecto);
+    public static float Altura(float alturaBase, float anchoMinimo, float aspecto)
+    {
+        // Altura que hace falta para que entre el ancho mínimo con esta forma de pantalla.
+        float alturaParaElAncho = anchoMinimo / 2f / aspecto;
+
+        // Se queda con la más grande de las dos.
+        return Mathf.Max(alturaBase, alturaParaElAncho);
+    }
 }

@@ -28,15 +28,28 @@ public class OpcionesAudio : MonoBehaviour
             return;
         }
 
-        sliderMusica.onValueChanged.AddListener(valor => VolumenAudio.Musica = valor);
-        sliderEfectos.onValueChanged.AddListener(valor => VolumenAudio.Efectos = valor);
+        // Cada vez que se mueve un slider, se llama al método que guarda ese volumen.
+        sliderMusica.onValueChanged.AddListener(CambiarVolumenMusica);
+        sliderEfectos.onValueChanged.AddListener(CambiarVolumenEfectos);
+    }
+
+    private void CambiarVolumenMusica(float valor)
+    {
+        VolumenAudio.Musica = valor;
+    }
+
+    private void CambiarVolumenEfectos(float valor)
+    {
+        VolumenAudio.Efectos = valor;
     }
 
     // Cada vez que se abre muestra lo guardado.
     private void OnEnable()
     {
         if (!enabled)
+        {
             return;
+        }
 
         sliderMusica.SetValueWithoutNotify(VolumenAudio.Musica);
         sliderEfectos.SetValueWithoutNotify(VolumenAudio.Efectos);

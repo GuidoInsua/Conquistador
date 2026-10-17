@@ -22,7 +22,9 @@ public class MovimientoFondo : MonoBehaviour
 	private void Awake()
 	{
 		if (background == null)
+		{
 			background = GetComponent<RawImage>();
+		}
 
 		if (background == null)
 		{

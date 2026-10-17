@@ -48,10 +48,14 @@ public class DisparoPinza : MonoBehaviour
     public IEnumerator Disparar()
     {
         if (!enabled || !pinza.EstaViva)
+        {
             yield break;
+        }
 
         if (bola != null)
+        {
             bola.SetActive(true);
+        }
 
         yield return new WaitForSeconds(duracionAviso);
 
@@ -63,6 +67,8 @@ public class DisparoPinza : MonoBehaviour
         }
 
         if (bola != null)
+        {
             bola.SetActive(false);
+        }
     }
 }

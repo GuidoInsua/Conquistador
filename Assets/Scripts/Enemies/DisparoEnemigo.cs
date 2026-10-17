@@ -48,7 +48,9 @@ public class DisparoEnemigo : MonoBehaviour
     {
         // Muriendo: no pisar la animación de muerte, o Morir() nunca se llama.
         if (enemigoAlien.GetSalud() <= 0)
+        {
             return;
+        }
 
         tiempoDesdeUltimoDisparo += Time.deltaTime;
 
@@ -63,7 +65,9 @@ public class DisparoEnemigo : MonoBehaviour
     {
         // Evento de la animación: si el alien ya está muriendo, no disparar ni pisar la muerte.
         if (enemigoAlien == null || enemigoAlien.GetSalud() <= 0)
+        {
             return;
+        }
 
         if (balaPrefab != null && posicionArma != null)
         {

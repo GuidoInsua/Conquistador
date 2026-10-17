@@ -35,8 +35,15 @@ public class VidaJugador : MonoBehaviour
 	private SpriteRenderer spriteRenderer;
 	private Material materialNormal;
 
-	public int VidaActual => vidaActual;
-	public bool EstaInvulnerable => Time.time < finInvulnerable;
+	public int VidaActual
+	{
+		get { return vidaActual; }
+	}
+
+	public bool EstaInvulnerable
+	{
+		get { return Time.time < finInvulnerable; }
+	}
 
 	void Awake()
 	{
@@ -57,10 +64,24 @@ public class VidaJugador : MonoBehaviour
 	private void Update()
 	{
 		// Arranca en blanco y alterna cada intervalo hasta que se termina la invulnerabilidad.
-		bool isBlanco = EstaInvulnerable && (int)((finInvulnerable - Time.time) / intervaloTitileo) % 2 == 0;
-		Material material = isBlanco ? materialDestello : materialNormal;
+		bool isBlanco = false;
+		if (EstaInvulnerable)
+		{
+			// Cuántos intervalos de titileo faltan para terminar: con número par va blanco, con impar normal.
+			float tiempoRestante = finInvulnerable - Time.time;
+			int intervalosRestantes = (int)(tiempoRestante / intervaloTitileo);
+			isBlanco = intervalosRestantes % 2 == 0;
+		}
+
+		Material material = materialNormal;
+		if (isBlanco)
+		{
+			material = materialDestello;
+		}
 		if (spriteRenderer.sharedMaterial != material)
+		{
 			spriteRenderer.sharedMaterial = material;
+		}
 	}
 
 	private void ActualizarBarra()
@@ -73,7 +94,9 @@ public class VidaJugador : MonoBehaviour
 		if (cantidad < 0)
 		{
 			if (EstaInvulnerable)
+			{
 				return;
+			}
 
 			finInvulnerable = Time.time + duracionInvulnerable;
 			EfectosSonido.Reproducir(sonidoGolpe);
@@ -86,7 +109,9 @@ public class VidaJugador : MonoBehaviour
 		if (vidaActual <= 0)
 		{
 			if (canvasMuerte != null)
+			{
 				canvasMuerte.SetActive(true);
+			}
 
 			Destroy(gameObject);
 		}

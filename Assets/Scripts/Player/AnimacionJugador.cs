@@ -42,12 +42,15 @@ public class AnimacionJugador : MonoBehaviour
 	private Coroutine transicion;
 
 	// Mientras la nave cambia de inclinación, MovimientoJugador la frena un poco.
+	// Otros scripts la pueden leer (get), pero solo este la cambia (private set).
 	public bool EstaInclinando { get; private set; }
 
 	void Awake()
 	{
 		if (animator == null)
+		{
 			animator = GetComponent<Animator>();
+		}
 
 		if (animator == null)
 		{
@@ -60,18 +63,33 @@ public class AnimacionJugador : MonoBehaviour
 	// Solo cuenta el lado: subir o bajar no cambia el sprite, así que no reinicia la inclinación.
 	public void ActualizarDireccion(Vector2 direccion)
 	{
-		LadoHorizontal nuevo = direccion.x < -0.5f ? LadoHorizontal.Izquierda
-			: direccion.x > 0.5f ? LadoHorizontal.Derecha
-			: LadoHorizontal.Ninguno;
+		// Más de la mitad hacia un lado cuenta como ese lado; si no, va derecha.
+		LadoHorizontal nuevo;
+		if (direccion.x < -0.5f)
+		{
+			nuevo = LadoHorizontal.Izquierda;
+		}
+		else if (direccion.x > 0.5f)
+		{
+			nuevo = LadoHorizontal.Derecha;
+		}
+		else
+		{
+			nuevo = LadoHorizontal.Ninguno;
+		}
 
 		if (nuevo == ladoActual)
+		{
 			return;
+		}
 
 		LadoHorizontal anterior = ladoActual;
 		ladoActual = nuevo;
 
 		if (transicion != null)
+		{
 			StopCoroutine(transicion);
+		}
 
 		transicion = StartCoroutine(ReproducirTransicion(anterior, nuevo));
 	}
@@ -96,9 +114,18 @@ public class AnimacionJugador : MonoBehaviour
 			yield return new WaitForSeconds(duracionTransicion);
 		}
 
-		CambiarAnimacion(hasta == LadoHorizontal.Izquierda ? AnimIzquierda
-			: hasta == LadoHorizontal.Derecha ? AnimDerecha
-			: AnimIdle);
+		if (hasta == LadoHorizontal.Izquierda)
+		{
+			CambiarAnimacion(AnimIzquierda);
+		}
+		else if (hasta == LadoHorizontal.Derecha)
+		{
+			CambiarAnimacion(AnimDerecha);
+		}
+		else
+		{
+			CambiarAnimacion(AnimIdle);
+		}
 
 		EstaInclinando = false;
 		transicion = null;
@@ -106,13 +133,22 @@ public class AnimacionJugador : MonoBehaviour
 
 	private void MostrarIntermedio(LadoHorizontal lado)
 	{
-		CambiarAnimacion(lado == LadoHorizontal.Izquierda ? AnimIzquierdaIntermedio : AnimDerechaIntermedio);
+		if (lado == LadoHorizontal.Izquierda)
+		{
+			CambiarAnimacion(AnimIzquierdaIntermedio);
+		}
+		else
+		{
+			CambiarAnimacion(AnimDerechaIntermedio);
+		}
 	}
 
 	private void CambiarAnimacion(int nuevoHash)
 	{
 		if (animacionActual == nuevoHash)
+		{
 			return;
+		}
 
 		animacionActual = nuevoHash;
 		animator.Play(nuevoHash);

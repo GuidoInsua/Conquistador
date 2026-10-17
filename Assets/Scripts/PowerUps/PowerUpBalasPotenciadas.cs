@@ -21,6 +21,7 @@ public class PowerUpBalasPotenciadas : PowerUp
 
     protected override void Aplicar(GameObject jugador)
     {
+        // TryGetComponent busca el componente: si lo encuentra devuelve true y lo deja en la variable de "out".
         if (jugador.TryGetComponent(out DispararJugador disparo))
         {
             disparo.ActivarBalasPotenciadas(multiplicadorAncho, multiplicadorDano, duracion);

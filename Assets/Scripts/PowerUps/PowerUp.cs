@@ -48,7 +48,9 @@ public abstract class PowerUp : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (isCollected)
+        {
             return;
+        }
 
         if (collision.CompareTag("Player"))
         {
@@ -86,7 +88,9 @@ public abstract class PowerUp : MonoBehaviour
     public static void SpawnPowerUp(OpcionPowerUp[] opciones, Vector3 position, float probability = 0.5f)
     {
         if (Random.value > probability)
+        {
             return;
+        }
 
         GameObject powerUpPrefab = ElegirPrefab(opciones, Random.value);
 
@@ -103,6 +107,33 @@ public abstract class PowerUp : MonoBehaviour
     /// Elige un prefab según el peso de cada opción. valor va de 0 a 1 (0 = primera opción, 1 = última).
     /// Ignora las opciones sin prefab o con peso 0. Devuelve null si no queda ninguna.
     /// </summary>
-    public static GameObject ElegirPrefab(OpcionPowerUp[] opciones, float valor) =>
-        SorteoPonderado.Elegir(opciones, o => o.Prefab != null, o => o.Peso, valor)?.Prefab;
+    public static GameObject ElegirPrefab(OpcionPowerUp[] opciones, float valor)
+    {
+        if (opciones == null)
+        {
+            return null;
+        }
+
+        // Las opciones vacías o sin prefab cuentan con peso 0, así nunca salen.
+        float[] pesos = new float[opciones.Length];
+        for (int i = 0; i < opciones.Length; i++)
+        {
+            if (opciones[i] != null && opciones[i].Prefab != null)
+            {
+                pesos[i] = opciones[i].Peso;
+            }
+            else
+            {
+                pesos[i] = 0f;
+            }
+        }
+
+        int indice = SorteoPonderado.ElegirIndice(pesos, valor);
+        if (indice < 0)
+        {
+            return null;
+        }
+
+        return opciones[indice].Prefab;
+    }
 }

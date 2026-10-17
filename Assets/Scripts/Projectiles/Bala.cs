@@ -31,8 +31,11 @@ public class Bala : MonoBehaviour
 		escala.x *= multiplicadorAncho;
 		transform.localScale = escala;
 
+		// TryGetComponent busca el componente: si lo encuentra devuelve true y lo deja en la variable de "out".
 		if (spritePotenciada != null && TryGetComponent(out SpriteRenderer sr))
+		{
 			sr.sprite = spritePotenciada;
+		}
 	}
 
 	void Start()
@@ -62,7 +65,9 @@ public class Bala : MonoBehaviour
 	void OnTriggerEnter2D(Collider2D collision)
 	{
 		if (colisiono)
+		{
 			return;
+		}
 
 		if (collision.CompareTag("Enemy"))
 		{

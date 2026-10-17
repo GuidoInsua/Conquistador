@@ -29,11 +29,31 @@ public class BalaEnemiga : MonoBehaviour
 	public static void DispararAbanico(GameObject prefab, Vector3 posicion, Quaternion rotacion, int cantidad, float anguloCono)
 	{
 		for (int i = 0; i < cantidad; i++)
-			Instantiate(prefab, posicion, rotacion * Quaternion.Euler(0f, 0f, AnguloAbanico(i, cantidad, anguloCono)));
+		{
+			float angulo = AnguloAbanico(i, cantidad, anguloCono);
+			Quaternion rotacionBala = rotacion * Quaternion.Euler(0f, 0f, angulo);
+			Instantiate(prefab, posicion, rotacionBala);
+		}
 	}
 
-	public static float AnguloAbanico(int indice, int cantidad, float anguloCono) =>
-		cantidad > 1 ? Mathf.Lerp(-anguloCono / 2f, anguloCono / 2f, indice / (float)(cantidad - 1)) : 0f;
+	// Ángulo de la bala número "indice" dentro del abanico.
+	// Ejemplo: 5 balas en 70 grados salen a -35, -17.5, 0, 17.5 y 35.
+	public static float AnguloAbanico(int indice, int cantidad, float anguloCono)
+	{
+		// Una sola bala sale derecha.
+		if (cantidad <= 1)
+		{
+			return 0f;
+		}
+
+		// Qué parte del abanico le toca a esta bala: 0 la primera, 1 la última.
+		float proporcion = indice / (float)(cantidad - 1);
+		float anguloInicial = -anguloCono / 2f;
+		float anguloFinal = anguloCono / 2f;
+
+		// Lerp devuelve el valor que está en esa proporción entre el inicio y el final.
+		return Mathf.Lerp(anguloInicial, anguloFinal, proporcion);
+	}
 
 	private void Start()
 	{

@@ -22,7 +22,9 @@ public static class Pantalla
 	{
 		Camera mainCamera = Camera.main;
 		if (mainCamera == null)
+		{
 			return false;
+		}
 
 		Vector3 screenPos = mainCamera.WorldToScreenPoint(posicionMundo);
 
