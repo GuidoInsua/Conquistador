@@ -136,7 +136,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4923152364473930197}
-  m_BodyType: 2
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -240,6 +240,8 @@ MonoBehaviour:
   powerUpSpawnProbability: 0.8
   amplitudOscilacion: {x: 1.6, y: 0.8}
   frecuenciaOscilacion: 0.4
+  amplitudCamino: 0.6
+  largoOndaCamino: 4
 --- !u!114 &-690365026414050843
 MonoBehaviour:
   m_ObjectHideFlags: 0
