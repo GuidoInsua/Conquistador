@@ -17,6 +17,7 @@ public class ParteBoss : MonoBehaviour, IDamageable
 {
     [SerializeField] private float vidaMaxima = 40f;
     [SerializeField] private GameObject particulasGolpePrefab;
+    [SerializeField] private AudioClip sonidoGolpe;
 
     [Header("Animación")]
     [Tooltip("Estados del Animator de menos a más daño mientras la parte está viva. La vida se reparte en tramos iguales entre ellos.")]
@@ -75,6 +76,7 @@ public class ParteBoss : MonoBehaviour, IDamageable
 
         vidaActual = Mathf.Max(0f, vidaActual - cantidad);
         finGolpe = Time.time + duracionGolpe;
+        EfectosSonido.Reproducir(sonidoGolpe);
 
         if (particulasGolpePrefab != null)
             Instantiate(particulasGolpePrefab, transform.position, Quaternion.identity);

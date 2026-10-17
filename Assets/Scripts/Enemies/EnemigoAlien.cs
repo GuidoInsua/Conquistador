@@ -19,6 +19,7 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
     [SerializeField] float vidaMaxima = 4f;
     [SerializeField] private OpcionPowerUp[] powerUps;
     [SerializeField] private GameObject particulasGolpePrefab;
+    [SerializeField] private AudioClip sonidoGolpe;
 
     [SerializeField, Range(0f, 1f)]
     private float powerUpSpawnProbability = 0.2f;
@@ -110,6 +111,7 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
         if (vidaActual > 0)
         {
             vidaActual = Mathf.Max(0f, vidaActual - cantidad);
+            EfectosSonido.Reproducir(sonidoGolpe);
         }
 
         // Vivo es vida > 0, igual que en DisparoEnemigo: si no, el disparo pisa la animación de muerte.

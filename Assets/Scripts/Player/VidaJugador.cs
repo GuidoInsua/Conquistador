@@ -28,6 +28,7 @@ public class VidaJugador : MonoBehaviour
 	[SerializeField] private float intervaloTitileo = 0.08f;
 	[Tooltip("Pinta el sprite entero de blanco (shader GUI/Text Shader).")]
 	[SerializeField] private Material materialDestello;
+	[SerializeField] private AudioClip sonidoGolpe;
 
 	private int vidaActual;
 	private float finInvulnerable;
@@ -73,6 +74,7 @@ public class VidaJugador : MonoBehaviour
 				return;
 
 			finInvulnerable = Time.time + duracionInvulnerable;
+			EfectosSonido.Reproducir(sonidoGolpe);
 		}
 
 		vidaActual += cantidad;

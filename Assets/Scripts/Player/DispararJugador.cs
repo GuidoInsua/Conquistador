@@ -19,6 +19,7 @@ public class DispararJugador : MonoBehaviour
 	[SerializeField] Transform posicionArma;
 	[SerializeField] Bala balaPrefab;
 	[SerializeField] float tiempoEntreDisparos = 0.15f;
+	[SerializeField] AudioClip sonidoDisparo;
 
 	[Header("Disparo doble (power-up)")]
 	[SerializeField] float separacionDisparoDoble = 0.4f;
@@ -83,6 +84,8 @@ public class DispararJugador : MonoBehaviour
 			return;
 
 		proximoDisparo = Time.time + tiempoEntreDisparos;
+		// Uno solo aunque sea disparo doble.
+		EfectosSonido.Reproducir(sonidoDisparo);
 
 		if (Time.time < finDisparoDoble)
 		{
