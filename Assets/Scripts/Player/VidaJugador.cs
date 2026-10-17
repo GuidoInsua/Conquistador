@@ -58,7 +58,9 @@ public class VidaJugador : MonoBehaviour
 	{
 		// Arranca en blanco y alterna cada intervalo hasta que se termina la invulnerabilidad.
 		bool isBlanco = EstaInvulnerable && (int)((finInvulnerable - Time.time) / intervaloTitileo) % 2 == 0;
-		spriteRenderer.sharedMaterial = isBlanco ? materialDestello : materialNormal;
+		Material material = isBlanco ? materialDestello : materialNormal;
+		if (spriteRenderer.sharedMaterial != material)
+			spriteRenderer.sharedMaterial = material;
 	}
 
 	private void ActualizarBarra()

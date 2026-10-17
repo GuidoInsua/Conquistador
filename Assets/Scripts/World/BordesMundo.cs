@@ -20,6 +20,8 @@ public class BordesMundo : MonoBehaviour
 	private Vector3 screenBounds;
 	private float containerWidth;
 	private float containerHeight;
+	private int anchoPantalla;
+	private int altoPantalla;
 
 	void Start()
 	{
@@ -36,9 +38,19 @@ public class BordesMundo : MonoBehaviour
 		Recalcular();
 	}
 
+	// Si cambia el tamaño de la ventana, cambia lo que se ve y las paredes tienen que seguirlo.
+	void Update()
+	{
+		if (Screen.width != anchoPantalla || Screen.height != altoPantalla)
+			Recalcular();
+	}
+
 	// Rehace las paredes con el tamaño actual de la cámara (por ejemplo, después de alejarla).
 	public void Recalcular()
 	{
+		anchoPantalla = Screen.width;
+		altoPantalla = Screen.height;
+
 		foreach (Transform pared in transform)
 			Destroy(pared.gameObject);
 

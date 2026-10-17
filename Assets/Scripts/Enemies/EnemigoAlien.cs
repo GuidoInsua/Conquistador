@@ -90,7 +90,7 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
         float recorrido = 0f;
 
         // this == null: el alien fue destruido (por ejemplo al recargar la escena).
-        while (this != null && id == movimientoId && gameObject.activeInHierarchy && recorrido < distanciaTotal)
+        while (this != null && id == movimientoId && gameObject.activeInHierarchy && vidaActual > 0 && recorrido < distanciaTotal)
         {
             recorrido = Mathf.Min(distanciaTotal, recorrido + speedMove * Time.deltaTime);
             float avance = recorrido / distanciaTotal;
@@ -99,7 +99,8 @@ public class EnemigoAlien : MonoBehaviour, IDamageable
             await Awaitable.NextFrameAsync();
         }
 
-        if (this == null || id != movimientoId || !gameObject.activeInHierarchy)
+        // Si murió en el camino, explota donde quedó.
+        if (this == null || id != movimientoId || !gameObject.activeInHierarchy || vidaActual <= 0)
             return;
 
         // La onda termina en 0 justo al llegar, y la oscilación al azar también arranca en 0: no salta.

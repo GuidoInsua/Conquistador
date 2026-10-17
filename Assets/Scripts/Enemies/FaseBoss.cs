@@ -53,10 +53,18 @@ public class FaseBoss : MonoBehaviour
 
     public void Iniciar(System.Action alVencerJefe)
     {
-        if (isIniciada || !enabled)
+        if (isIniciada)
             return;
 
         isIniciada = true;
+
+        // Apagada por falta de algo (ya avisó en Awake): sin jefe, se gana directo en vez de trabar la partida.
+        if (!enabled)
+        {
+            alVencerJefe?.Invoke();
+            return;
+        }
+
         this.alVencerJefe = alVencerJefe;
         StartCoroutine(Transicion());
     }

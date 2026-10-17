@@ -190,6 +190,22 @@ public class SpawnerTests
     }
 
     [Test]
+    public void Spawner_con_boss_mal_configurado_muestra_la_victoria_igual()
+    {
+        var faseBoss = new GameObject("faseBoss").AddComponent<FaseBoss>();
+        faseBoss.enabled = false; // Lo que hace su Awake si le falta el prefab del jefe.
+        Asignar("faseBoss", faseBoss);
+        Iniciar(new[] { new Oleada(1, Solo(alienA)) }, 1);
+
+        spawner.SpawnEnemy();
+        Matar(Vivos().Single());
+
+        Assert.IsTrue(canvasVictoria.activeSelf);
+
+        Object.DestroyImmediate(faseBoss.gameObject);
+    }
+
+    [Test]
     public void Spawner_con_boss_inicia_la_fase_en_vez_de_la_victoria()
     {
         var camara = new GameObject("camara", typeof(Camera)).GetComponent<Camera>();
