@@ -192,6 +192,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 429bcb08f9da4b06aebc46ebe4f46e98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpVelocidad
-  speedBoostPercentage: 1
-  boostDuration: 10
   collectEffect: {fileID: 0}
+  speedBoostPercentage: 0.5
+  boostDuration: 10
