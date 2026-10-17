@@ -52,7 +52,6 @@ MonoBehaviour:
   cuerpo: {fileID: 3409176086588504798}
   posicionPelea: {x: 0, y: 3.5, z: 0}
   velocidadEntrada: 1.5
-  jugador: {fileID: 0}
   tiempoSeguimiento: 1.5
   velocidadMaxima: 2.5
   limiteX: 8
@@ -284,7 +283,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Conquistador::ParteBoss
   vidaMaxima: 40
   particulasGolpePrefab: {fileID: 6740004537896051600, guid: 72ff69de2002f7048b87ff5b0703ca0c, type: 3}
-  sonidoGolpe: {fileID: 8300000, guid: d3b87a62a1bcb1c4b8738f6dd64ad26d, type: 3}
+  sonidoMuerte: {fileID: 8300000, guid: d3b87a62a1bcb1c4b8738f6dd64ad26d, type: 3}
   powerUps:
   - prefab: {fileID: 2045122667956163684, guid: 9e064bbf9ee1936499e8d3034c555811, type: 3}
     peso: 25
@@ -556,7 +555,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Conquistador::ParteBoss
   vidaMaxima: 100
   particulasGolpePrefab: {fileID: 6740004537896051600, guid: 72ff69de2002f7048b87ff5b0703ca0c, type: 3}
-  sonidoGolpe: {fileID: 8300000, guid: d3b87a62a1bcb1c4b8738f6dd64ad26d, type: 3}
+  sonidoMuerte: {fileID: 8300000, guid: d3b87a62a1bcb1c4b8738f6dd64ad26d, type: 3}
   powerUps: []
   cantidadPowerUps: 2
   separacionPowerUps: 0.8
@@ -826,7 +825,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Conquistador::ParteBoss
   vidaMaxima: 40
   particulasGolpePrefab: {fileID: 6740004537896051600, guid: 72ff69de2002f7048b87ff5b0703ca0c, type: 3}
-  sonidoGolpe: {fileID: 8300000, guid: d3b87a62a1bcb1c4b8738f6dd64ad26d, type: 3}
+  sonidoMuerte: {fileID: 8300000, guid: d3b87a62a1bcb1c4b8738f6dd64ad26d, type: 3}
   powerUps:
   - prefab: {fileID: 2045122667956163684, guid: 9e064bbf9ee1936499e8d3034c555811, type: 3}
     peso: 25

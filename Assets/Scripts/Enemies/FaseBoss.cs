@@ -16,8 +16,10 @@ using UnityEngine;
 
 public class FaseBoss : MonoBehaviour
 {
-    [Tooltip("Desactivado en la escena, arriba de la pantalla. Aparece al terminar la transición.")]
-    [SerializeField] private JefeCangrejo jefe;
+    [Tooltip("Se crea al terminar la transición, en la posición del prefab (arriba de la pantalla).")]
+    [SerializeField] private JefeCangrejo jefePrefab;
+    [Tooltip("A quién sigue el boss. Si queda vacío, se queda en el centro.")]
+    [SerializeField] private Transform jugador;
     [Tooltip("Pausa después de matar al último alien, antes de que empiece el zoom.")]
     [SerializeField] private float esperaInicial = 1.5f;
 
@@ -42,9 +44,9 @@ public class FaseBoss : MonoBehaviour
         if (camara == null)
             camara = Camera.main;
 
-        if (camara == null || bordes == null || jefe == null)
+        if (camara == null || bordes == null || jefePrefab == null)
         {
-            Debug.LogError("FaseBoss: falta asignar la cámara, los bordes o el jefe.");
+            Debug.LogError("FaseBoss: falta asignar la cámara, los bordes o el prefab del jefe.");
             enabled = false;
         }
     }
@@ -79,6 +81,6 @@ public class FaseBoss : MonoBehaviour
 
         camara.orthographicSize = tamanoBoss;
         bordes.Recalcular();
-        jefe.Aparecer(alVencerJefe);
+        Instantiate(jefePrefab).Aparecer(alVencerJefe, jugador);
     }
 }

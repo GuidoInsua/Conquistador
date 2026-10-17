@@ -25,8 +25,6 @@ public class JefeCangrejo : MonoBehaviour
     [SerializeField] private float velocidadEntrada = 1.5f;
 
     [Header("Movimiento")]
-    [Tooltip("Si queda vacío o el jugador muere, el boss se queda en el centro.")]
-    [SerializeField] private Transform jugador;
     [Tooltip("Retraso al seguir al jugador en x. Más alto = más lento.")]
     [SerializeField] private float tiempoSeguimiento = 1.5f;
     [SerializeField] private float velocidadMaxima = 2.5f;
@@ -56,6 +54,8 @@ public class JefeCangrejo : MonoBehaviour
     public Transform Jugador => jugador;
 
     private System.Action alMorir;
+    // Lo pasa FaseBoss al crearlo. Si es null o el jugador muere, el boss se queda en el centro.
+    private Transform jugador;
     private bool isEnPosicion;
     private bool isAtacando;
     private float xSeguida;
@@ -75,11 +75,11 @@ public class JefeCangrejo : MonoBehaviour
         cuerpo.Destruida += Morir;
     }
 
-    // El boss empieza desactivado en la escena, arriba de la pantalla.
-    public void Aparecer(System.Action alMorir)
+    // La llama FaseBoss justo después de crearlo desde el prefab, arriba de la pantalla.
+    public void Aparecer(System.Action alMorir, Transform jugador)
     {
         this.alMorir = alMorir;
-        gameObject.SetActive(true);
+        this.jugador = jugador;
 
         if (enabled)
             StartCoroutine(Entrar());
