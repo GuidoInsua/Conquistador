@@ -42,6 +42,33 @@ public class VidaTests
     }
 
     [Test]
+    public void Enemigo_suena_solo_al_morir_y_una_sola_vez()
+    {
+        var sonidos = new GameObject("sonidos", typeof(AudioSource), typeof(EfectosSonido));
+        var efectos = sonidos.GetComponent<EfectosSonido>();
+        typeof(EfectosSonido).GetMethod("Awake", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(efectos, null);
+        var ultimaVez = (System.Collections.Generic.Dictionary<AudioClip, float>)typeof(EfectosSonido).GetField("ultimaVez", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(efectos);
+        var muerte = AudioClip.Create("muerte", 100, 1, 44100, false);
+
+        go = new GameObject("alien", typeof(Animator), typeof(EnemigoAlien));
+        var alien = go.GetComponent<EnemigoAlien>();
+        typeof(EnemigoAlien).GetField("sonidoMuerte", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(alien, muerte);
+        alien.ResetEnemy(); // vida 4
+
+        alien.TakeDamage(1f);
+        Assert.IsFalse(ultimaVez.ContainsKey(muerte), "un golpe que no lo mata no suena");
+
+        alien.TakeDamage(10f);
+        Assert.IsTrue(ultimaVez.ContainsKey(muerte));
+
+        ultimaVez.Clear();
+        alien.TakeDamage(1f);
+        Assert.IsFalse(ultimaVez.ContainsKey(muerte), "ya muerto no vuelve a sonar");
+
+        Object.DestroyImmediate(sonidos);
+    }
+
+    [Test]
     public void Enemigo_con_vida_fraccionaria_sigue_vivo()
     {
         go = new GameObject("alien", typeof(Animator), typeof(EnemigoAlien));

@@ -30,6 +30,14 @@ public class OscilacionTests
     }
 
     [Test]
+    public void Onda_del_camino_arranca_y_termina_en_cero_y_se_abre_en_el_medio()
+    {
+        Assert.AreEqual(0f, EnemigoAlien.OndaCamino(0f, 3, 0.6f), 0.0001f);
+        Assert.AreEqual(0f, EnemigoAlien.OndaCamino(1f, 3, 0.6f), 0.0001f);
+        Assert.Greater(Mathf.Abs(EnemigoAlien.OndaCamino(5f / 12f, 3, 0.6f)), 0.5f, "en una cresta cerca del medio se corre casi toda la amplitud");
+    }
+
+    [Test]
     public void Desvio_cambia_con_el_tiempo()
     {
         Assert.AreNotEqual(Oscilacion.Desvio(7.1f, 0f), Oscilacion.Desvio(7.1f, 1.3f));

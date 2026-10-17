@@ -204,7 +204,7 @@ MonoBehaviour:
   - prefab: {fileID: 2045122667956163684, guid: fb8846b41dce4490a65052c7311c8f98, type: 3}
     peso: 25
   particulasGolpePrefab: {fileID: 6740004537896051600, guid: 72ff69de2002f7048b87ff5b0703ca0c, type: 3}
-  sonidoGolpe: {fileID: 8300000, guid: d3b87a62a1bcb1c4b8738f6dd64ad26d, type: 3}
+  sonidoMuerte: {fileID: 8300000, guid: d3b87a62a1bcb1c4b8738f6dd64ad26d, type: 3}
   powerUpSpawnProbability: 0.25
   amplitudOscilacion: {x: 0.4, y: 0.25}
   frecuenciaOscilacion: 0.5

@@ -12,12 +12,15 @@
 // Desc: Una parte del boss (cuerpo o pinza) con vida propia que se va gastando con los golpes y cambia de animación según el daño.
 
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ParteBoss : MonoBehaviour, IDamageable
 {
     [SerializeField] private float vidaMaxima = 40f;
     [SerializeField] private GameObject particulasGolpePrefab;
-    [SerializeField] private AudioClip sonidoGolpe;
+    [Tooltip("Suena una vez, al romperse.")]
+    [FormerlySerializedAs("sonidoGolpe")]
+    [SerializeField] private AudioClip sonidoMuerte;
 
     [Header("Al destruirse")]
     [Tooltip("Suelta esta cantidad de power-ups elegidos al azar de la lista. Lista vacía: no suelta nada.")]
@@ -81,7 +84,6 @@ public class ParteBoss : MonoBehaviour, IDamageable
 
         vidaActual = Mathf.Max(0f, vidaActual - cantidad);
         finGolpe = Time.time + duracionGolpe;
-        EfectosSonido.Reproducir(sonidoGolpe);
 
         if (particulasGolpePrefab != null)
             Instantiate(particulasGolpePrefab, transform.position, Quaternion.identity);
@@ -96,6 +98,8 @@ public class ParteBoss : MonoBehaviour, IDamageable
             }
             return;
         }
+
+        EfectosSonido.Reproducir(sonidoMuerte);
 
         if (string.IsNullOrEmpty(estadoDestruida))
         {
