@@ -36,8 +36,9 @@ public class Spawner : MonoBehaviour
     [Tooltip("Cada alien entra por uno de estos N puntos de spawn más cercanos a su posición, elegido al azar.")]
     [SerializeField, Min(1)] private int puntosSpawnCercanos = 2;
     [SerializeField] private float velocidadMovimiento = 3f;
-    [SerializeField] private bool spawnAutomatico = true;
     [SerializeField] private float tiempoEntreSpawns = 2f;
+    [Tooltip("En pantallas más anchas que 16:9 los puntos de entrada quedarían a la vista: se corren afuera. Vacía, no los corre.")]
+    [SerializeField] private Camera camara;
 
     private Transform[] puntosSpawn;
     private Transform[] posiciones;
@@ -156,7 +157,7 @@ public class Spawner : MonoBehaviour
 
     private void Update()
     {
-        if (!spawnAutomatico || Time.time < tiempoProximoSpawn)
+        if (Time.time < tiempoProximoSpawn)
             return;
 
         tiempoProximoSpawn = Time.time + tiempoEntreSpawns;
@@ -205,7 +206,19 @@ public class Spawner : MonoBehaviour
         System.Array.Sort(cercanos, (a, b) =>
             Vector3.Distance(a.position, destino).CompareTo(Vector3.Distance(b.position, destino)));
 
-        return cercanos[Random.Range(0, Mathf.Min(puntosSpawnCercanos, cercanos.Length))].position;
+        Vector3 punto = cercanos[Random.Range(0, Mathf.Min(puntosSpawnCercanos, cercanos.Length))].position;
+        if (camara != null)
+            punto.x = FueraDeVista(punto.x, camara.orthographicSize * camara.aspect);
+
+        return punto;
+    }
+
+    // Si x cae dentro de la vista (más un margen para que no asome el alien), lo lleva justo afuera, del mismo lado.
+    public static float FueraDeVista(float x, float mitadAnchoVista)
+    {
+        const float margen = 1f;
+        float borde = mitadAnchoVista + margen;
+        return Mathf.Abs(x) >= borde ? x : Mathf.Sign(x) * borde;
     }
 
     private void OnReleaseEnemy(EnemigoAlien enemy)

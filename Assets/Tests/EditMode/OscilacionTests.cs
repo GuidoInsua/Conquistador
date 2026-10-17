@@ -38,6 +38,23 @@ public class OscilacionTests
     }
 
     [Test]
+    public void Camara_no_cambia_en_16_9_y_sube_en_pantallas_angostas()
+    {
+        Assert.AreEqual(6.3f, CamaraAjustada.Altura(6.3f, 22.4f, 16f / 9f), 0.0001f, "16:9 queda igual");
+        Assert.AreEqual(6.3f, CamaraAjustada.Altura(6.3f, 22.4f, 21f / 9f), 0.0001f, "más ancho queda igual");
+        Assert.AreEqual(8.4f, CamaraAjustada.Altura(6.3f, 22.4f, 4f / 3f), 0.0001f, "4:3 sube para que entren los 22.4 de ancho");
+    }
+
+    [Test]
+    public void Punto_de_entrada_solo_se_corre_si_quedaria_a_la_vista()
+    {
+        Assert.AreEqual(14.5f, Spawner.FueraDeVista(14.5f, 6.3f * 16f / 9f), "en 16:9 queda donde está");
+        Assert.AreEqual(-14.9f, Spawner.FueraDeVista(-14.9f, 6.3f * 16f / 9f));
+        Assert.AreEqual(6.3f * 21f / 9f + 1f, Spawner.FueraDeVista(14.5f, 6.3f * 21f / 9f), 0.0001f, "en 21:9 se corre afuera");
+        Assert.AreEqual(-(6.3f * 21f / 9f + 1f), Spawner.FueraDeVista(-14.9f, 6.3f * 21f / 9f), 0.0001f);
+    }
+
+    [Test]
     public void Desvio_cambia_con_el_tiempo()
     {
         Assert.AreNotEqual(Oscilacion.Desvio(7.1f, 0f), Oscilacion.Desvio(7.1f, 1.3f));
